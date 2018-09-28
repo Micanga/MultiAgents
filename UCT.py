@@ -377,10 +377,10 @@ class UCT:
             time_step += 1
 
         # print_search_tree(main_time_step)
-        print(
-        '_________________________________________________________________________________________________________')
-        print "----- End of monte_carlo_planning ---- "
-        self.print_Q_table(node)
+        # print(
+        # '_________________________________________________________________________________________________________')
+        # print "----- End of monte_carlo_planning ---- "
+        # self.print_Q_table(node)
 
         best_selected_action = self.best_action(node)
         # print "Selected Action: ", best_selected_action

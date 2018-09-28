@@ -4,11 +4,11 @@ import os
 
 config_path = None
 
-for dirs in os.listdir("input"):
+for dirs in os.listdir("inputs/2"):
 
     for files in os.walk(""
                          ""
-                         "input/" + str(dirs)):
+                         "inputs/2/" + str(dirs)):
         config_path = str(files[0]) + '/'
 
         print config_path

@@ -11,54 +11,183 @@ import numpy as np
 import matplotlib.pyplot as plt
 import parameter_estimation
 import psutil
+import train_data
 
-def plot_data_set(main_sim , estimated_parameter):
 
-    d = estimated_parameter[0].l1_estimation.data_set
-    parameters = []
-    for ds in d:
-        parameters.append(ds["parameter"])
+x_train_set = []
+level_set = []
+angle_set = []
+radius_set = []
 
-    true_level = main_sim.agents[0].level
-    true_angle = main_sim.agents[0].angle
-    true_radius = main_sim.agents[0].radius
-    a_data_set = np.transpose(np.array(parameters))
 
-    levels = a_data_set[0, :]
-    angle = a_data_set[1, :]
-    radius = a_data_set[2, :]
+dataMean = np.zeros((100, 3))
+dataStd = np.zeros((100, 3))
+
+def plot_data_set(agent, estimated_parameter):
+    parameters = estimated_parameter.l1_estimation.estimation_history
+    # parameters = []
+    # for ds in d:
+    #     parameters.append(ds["parameter"])
+
+    true_level = agent.level
+    true_angle = agent.angle
+    true_radius = agent.radius
+
+    levels = []
+    angles = []
+    radius = []
+
+    # for pr in parameters:
+    #     print pr.level,pr.angle,pr.radius
+    #     levels.append(pr.level)
+    #     angles.append(pr.angle)
+    #     radius.append(pr.radius)
+
+    for pr in parameters:
+        levels.append(abs(true_level - pr.level))
+        angles.append(abs(true_angle - pr.angle))
+        radius.append(abs(true_radius - pr.radius))
+
     fig = plt.figure(1)
-#    w = main_sim.agents[0].estimated_parameter.l1_estimation.weight
-    N = len(levels)
+#   w = main_sim.agents[0].estimated_parameter.l1_estimation.weight
 
-    colors = np.random.rand(N)
-    print colors
-    area = (10) ** 2  # 0 to 15 point radii
-    w = [i for i in range(len( levels))]
     plt.subplot(3, 1, 1)
-    plt.scatter(w, levels, s=area, c='r', alpha=0.5)
-    plt.plot([i for i in range(2)], [true_level for i in range(2)], label='PF', linestyle='-', color='cornflowerblue',
+    print levels
+    plt.plot([i for i in range(len(levels))], levels,
+             label='levels',
+             linestyle='-',
+             color='cornflowerblue',
              linewidth=1)
     ax = plt.gca()
-    ax.set_ylabel('Level dataset')
+    ax.set_ylabel('Level error')
     ax.legend(loc="upper right", shadow=True, fontsize='x-large')
     plt.subplot(3, 1, 2)
-    plt.scatter(w, angle, s=area, c='r', alpha=0.5)
-    plt.plot([i for i in range(2)], [true_angle for i in range(2)], label='PF', linestyle='-', color='cornflowerblue',
+
+    plt.plot([i for i in range(len(angles))], angles, label='Angle', linestyle='-', color='cornflowerblue',
              linewidth=1)
     ax = plt.gca()
-    ax.set_ylabel('Angle dataset')
+    ax.set_ylabel('Angle error')
 
     plt.subplot(3, 1, 3)
-    plt.scatter(w, radius, s=area, c='r', alpha=0.5)
-    plt.plot([i for i in range(2)], [true_radius for i in range(2)], label='PF', linestyle='-', color='cornflowerblue',
+
+    plt.plot([i for i in range(len(radius))], radius, label='Radius', linestyle='-', color='cornflowerblue',
              linewidth=1)
+
     ax = plt.gca()
-    ax.set_ylabel('radius dataset')
+    ax.set_ylabel('radius error')
     ax.set_xlabel('weight')
+
+
+    fig.savefig("./plots/dataset_history_based.jpg")
     plt.show()
 
-    #fig.savefig("./plots/dataset.jpg")
+def plot_errors(iterations_number, x_train_set):
+    # level_set = []
+    # angle_set = []
+    # radius_set = []
+    # for x_train in x_train_set:
+    #     a_data_set = np.transpose(np.array(x_train))
+    #
+    #     if a_data_set != []:
+    #
+    #         levels = a_data_set[0, :]
+    #         angle = a_data_set[1, :]
+    #         radius = a_data_set[2, :]
+    #
+    #         level_set.append(levels)
+    #         angle_set.append(angle)
+    #         radius_set.append(radius)
+    #     else:
+    #         level_set.append([])
+    #         angle_set.append([])
+    #         radius_set.append([])
+
+
+    parameters = ["Level", "Angle","Radius"]
+    parametersLabels = ["Level", "Angle","Radius"]
+
+    parametersSymbol = ["o","v","s"]
+
+    nIterations = [i for i in range(1,iterations_number)]
+
+    #
+    # # data = np.zeros((len(nIterations), len(parameters), len(range(max_time_steps))))
+    # data = []
+    # data.append(level_set)
+    # data.append(angle_set)
+    # data.append(radius_set)
+    #
+    # count = np.zeros(2 * len(nIterations))
+    #
+    #
+    # dataMean = np.zeros((len(nIterations)+1, len(parameters)))
+    #
+    # dataStd = np.zeros((len(nIterations)+1, len(parameters)))
+    # print "iterations_number : ", iterations_number
+    # print '********Data************'
+    # print len(x_train_set)
+    # print x_train_set
+    # print '********Data Mean************'
+    # print len(dataMean)
+    # print dataMean
+    # print '********Count************'
+    # print len(count)
+    # print count
+
+
+    # for n in range(iterations_number):
+    #     if level_set[n] == []:
+    #         dataMean[n, 0] = np.mean(level_set[n])
+    #         dataStd[n, 0] = np.std(level_set[n], ddof=1)
+    #     else :
+    #         dataMean[n, 0] = 0
+    #         dataStd[n, 0] = 0
+    #
+    # for n in range(iterations_number):
+    #     if angle_set[n] == []:
+    #         dataMean[n, 1] = np.mean(angle_set[n])
+    #         dataStd[n, 1] = np.std(angle_set[n], ddof=1)
+    #     else :
+    #         dataMean[n, 1] = 0
+    #         dataStd[n, 1] = 0
+    #
+    # for n in range(iterations_number):
+    #     if radius_set[n] == []:
+    #         dataMean[n, 2] = np.mean(radius_set[n])
+    #         dataStd[n, 2] = np.std(radius_set[n], ddof=1)
+    #     else :
+    #         dataMean[n, 2] = 0
+    #         dataStd[n, 2] = 0
+    #     # for a in range(len(parameters)):
+    #     #     print data[n, a]
+    #         # dataMean[n, a] = np.mean(data[n, a, 0:int(count[(n * 2) + a])])
+    #         # dataStd[n, a] = np.std(data[n, a, 0:int(count[(n * 2) + a])], ddof=1)
+    #
+
+    plt.figure(figsize=(4, 3.0))
+
+    for a in range(len(parameters)):
+        print parameters[a]
+        print dataMean[:len(nIterations), a]
+        print dataStd[:len(nIterations), a]
+        plt.errorbar(nIterations, dataMean[:len(nIterations), a], yerr=dataStd[:len(nIterations), a],
+                      label=parametersLabels[a], marker=parametersSymbol[a])
+        # plt.errorbar(nIterations,  dataMean[:len(nIterations), a],
+        #              yerr=[m - n for m, n in zip(dataStd[:len(nIterations), a], dataMean[:len(nIterations), a])],
+        #              label=parametersLabels[a],
+        #              marker=parametersSymbol[a])
+
+    plt.legend(loc=9, prop={'size': 9})
+
+    plt.ylim(ymax=1)
+    plt.ylim(ymin=0)
+
+    plt.xlim([0,len(nIterations) + 2 ])
+    plt.xlabel("Iteration number")
+    plt.ylabel("Error")
+    plt.savefig("plots/Error.pdf", bbox_inches='tight')
+    plt.show()
+
 
 memory_usage = 0
 iMaxStackSize = 2000
@@ -76,13 +205,14 @@ do_estimation = True
 # Multiple State Per Action (MSPA)/ One State Per Action (OSPA)
 mcts_mode = None
 PF_add_threshold = None
-PF_del_threshold = None
-PF_weight = None
+
+train_mode = None
 
 now = datetime.datetime.now()
 # sub_dir = now.strftime("%Y-%m-%d %H:%M")
 sub_dir = str(now.day) + "_"+ str(now.hour)+ "_" + str(now.minute)
-current_folder = "outputs/"+ sub_dir + '/'
+current_folder = "outputs/"
+                 # + sub_dir + '/'
 if not os.path.exists(current_folder):
     os.mkdir(current_folder, 0755)
 
@@ -91,7 +221,7 @@ if len(sys.argv) > 1 :
     dir = str(sys.argv[1])
 
 #dir = "inputs/2/"
-path = dir + 'config.csv'
+path = 'config.csv'
 
 info = defaultdict(list)
 with open(path) as info_read:
@@ -108,6 +238,9 @@ for k, v in info.items():
 
     if 'parameter_estimation_mode' in k:
         parameter_estimation_mode = str(v[0][0]).strip()
+
+    if 'train_mode' in k:
+        train_mode = str(v[0][0]).strip()
 
     if 'generated_data_number' in k:
         generated_data_number = int(v[0][0])
@@ -169,100 +302,114 @@ search_tree = None
 
 time_step = 0
 begin_time = time.time()
+begin_cpu_time = psutil.cpu_times()
 
 polynomial_degree = 4
-agants_parameter_estimation = []
+agents_parameter_estimation = []
+agents_previous_step_info = []
 for i in range(len(main_sim.agents)):
-    param_estim = parameter_estimation.ParameterEstimation()
+    # train_d = train_data.TrainData(generated_data_number, PF_add_threshold,  train_mode)
+    param_estim = parameter_estimation.ParameterEstimation(generated_data_number, PF_add_threshold, train_mode)
+
     param_estim.estimation_initialisation()
 
-    param_estim.estimation_configuration(type_selection_mode, parameter_estimation_mode, generated_data_number,
-                                         polynomial_degree, PF_add_threshold, PF_del_threshold, PF_weight)
+    param_estim.estimation_configuration(type_selection_mode, parameter_estimation_mode, polynomial_degree )
+    param_estim.choose_target_state = deepcopy(main_sim)
+    # Each element of list have estimation for each selfish agent
+    agents_parameter_estimation.append(param_estim)
 
 
-    agants_parameter_estimation.append(param_estim)
+while main_sim.items_left() > 0:
 
-
-while main_sim.items_left() > 0 :
-# while time_step < 110:
     print 'main run count: ', time_step
 
-
     for i in range(len(main_sim.agents)):
-        main_sim.agents[i].old_direction = main_sim.agents[i].direction
-
-       #main_sim.agents[i].state_history.append(tmp_sim)
-        main_sim.agents[i].previous_state =  main_sim.copy()
-        # temp_agent = deepcopy(main_sim.agents[i])
+        agents_parameter_estimation[i].previous_agent_status = deepcopy(main_sim.agents[i])
+        agents_parameter_estimation[i].previous_state = main_sim
 
         main_sim.agents[i] = main_sim.move_a_agent(main_sim.agents[i])
+        # main_sim.draw_map()
+        print 'agent_next_action: ', main_sim.agents[i].next_action
+        print 'target: ', main_sim.agents[i].get_memory()
 
-    print('***********************************************************************************************************')
+    print('****** Movement of Intelligent agent based on MCTS ****************************************************')
     if main_sim.main_agent is not None:
-        # main_sim.main_agent.previous_state = tmp_sim
-        # tmp_sim = main_sim.copy()
-        # tmp_sim = deepcopy(main_sim)
-        if not reuseTree:
-            main_agent_next_action, search_tree = uct.m_agent_planning(0, None, main_sim,agants_parameter_estimation)
-        else:
-            main_agent_next_action, search_tree = uct.m_agent_planning(time_step, search_tree, main_sim,agants_parameter_estimation)
 
-        # print 'main_agent_direction: ', main_agent.get_agent_direction()
-        print 'main_agent_next_action: ', main_agent_next_action
+        if not reuseTree:
+            main_agent_next_action, search_tree = uct.m_agent_planning(0, None, main_sim, agents_parameter_estimation)
+        else:
+            main_agent_next_action, search_tree = uct.m_agent_planning(time_step, search_tree, main_sim,
+                                                                       agents_parameter_estimation)
+
+        # print 'main_agent_next_action: ', main_agent_next_action
 
         r = uct.do_move(main_sim, main_agent_next_action)
-
-    ## DEBUG
-
-    # for agent_i in range(len(main_sim.agents)):
-    #     print "agent " + str(agent_i)
-    #     print " heading:" + main_sim.agents[agent_i].get_agent_direction()
-    #     print 'agent position:', main_sim.agents[agent_i].get_position()
-    #     print 'target:', main_sim.agents[agent_i].memory.get_position()
-    #     print 'Next action:',main_sim.agents[agent_i].next_action
 
     main_sim.update_all_A_agents()
     main_sim.do_collaboration()
 
-
+    '********* Estimation for selfish agents ******'
     if do_estimation:
-        for i in range(len(agants_parameter_estimation)):
+        for i in range(len(agents_parameter_estimation)):
             p_agent = main_sim.agents[i]
-            agants_parameter_estimation[i].process_parameter_estimations(time_step,
-                                                                     p_agent.old_direction,
-                                                                     p_agent.next_action,
-                                                                     p_agent.index,
-                                                                     p_agent.actions_history,
-                                                                     p_agent.previous_state)
 
-   # print agants_parameter_estimation[0].l1_estimation.data_set
+            new_estimated_parameter, x_train = agents_parameter_estimation[i].process_parameter_estimations(time_step,
+                                                                                    p_agent.next_action, main_sim)
 
-    # ## DEBUG
-    # for agent_i in range(len(main_sim.agents)):
-    #     print "agent " + str(agent_i) + " next action:" + main_sim.agents[agent_i].next_action
+            # print 'x_train in step ',time_step,' is ', x_train
+            # print 'x_train_set is ', x_train_set
+
+            a_data_set = np.transpose(np.array(x_train))
+            n = time_step
+            if a_data_set != []:
+                levels = a_data_set[0, :]
+                angle = a_data_set[1, :]
+                radius = a_data_set[2, :]
+
+                dataMean[n, 0] = np.mean(levels)
+                dataStd[n, 0] = np.std(levels, ddof=1)
+                dataMean[n, 1] = np.mean(angle)
+                dataStd[n, 1] = np.std(angle, ddof=1)
+                dataMean[n, 2] = np.mean(radius)
+                dataStd[n, 2] = np.std(radius, ddof=1)
+            else:
+                dataMean[n, 0] = 0
+                dataStd[n, 0] = 0
+                dataMean[n, 1] = 0
+                dataStd[n, 1] = 0
+
+                dataMean[n, 2] = 0
+                dataStd[n, 2] = 0
+            # print dataMean
+            # print dataStd
+            x_train_set.append(x_train)
+
+            # print 'true parameters:', str(main_sim.agents[i].level),  str(main_sim.agents[i].radius), str(main_sim.agents[i].angle)
+            # print 'estimated parameters:', str(new_estimated_parameter.level), str(new_estimated_parameter.radius), str(new_estimated_parameter.angle)
+
     time_step += 1
-    # plot_data_set(main_sim,agants_parameter_estimation)
+    # print '---x_train_set in time step ', time_step ,' is :  '
+    # for xts in x_train_set:
+    #     print xts
 
     print('***********************************************************************************************************')
 
-    # import ipdb; ipdb.set_trace()
-    
     main_sim.draw_map()
     main_sim.log_map(logfile)
 
-    # main_sim.draw_map_with_level()
-
     if main_sim.items_left() == 0:
         break
+
     print "left items", main_sim.items_left()
+
+# plot_data_set(main_sim.agents[0],agents_parameter_estimation[0])
+plot_errors(time_step,x_train_set)
 
 end_time = time.time()
 used_mem_after = psutil.virtual_memory().used
+end_cpu_time = psutil.cpu_times()
 memory_usage = used_mem_after - used_mem_before
 
-#
-# for i in range(len(main_sim.agents)):
-#     print agants_parameter_estimation['estimated_parameters'][i]
 
 def print_result(main_sim,  time_steps, begin_time, end_time,mcts_mode,estimated_parameter):
 
@@ -291,9 +438,10 @@ def print_result(main_sim,  time_steps, begin_time, end_time,mcts_mode,estimated
     systemDetails['simHeight'] = main_sim.dim_h
     systemDetails['agentsCounts'] = len(main_sim.agents)
     systemDetails['itemsCounts'] = len(main_sim.items)
-    systemDetails['timeSteps'] = time_steps
+    systemDetails['timeSteps'] = end_cpu_time - begin_cpu_time
     systemDetails['beginTime'] = begin_time
     systemDetails['endTime'] = end_time
+    systemDetails['CPU_Time'] = end_time
     systemDetails['memory_usage'] = memory_usage
 
     systemDetails['estimationMode'] = parameter_estimation_mode
@@ -411,14 +559,6 @@ def print_result(main_sim,  time_steps, begin_time, end_time,mcts_mode,estimated
     pickle.dump(dataList,pickleFile)
     print "writing over "
 
-#plot_data_set(main_sim , agants_parameter_estimation)
-print_result(main_sim, time_step, begin_time, end_time,mcts_mode,agants_parameter_estimation)
 
-
-# selected_type = estimated_parameter[i].get_highest_probability()
-# estimated_value = estimated_parameter[i].get_properties_for_selected_type(selected_type)
-#
-# file.write('highest property :' + str(selected_type) + ' level :' + str(estimated_value.level) + ', radius: ' +
-#            str(estimated_value.radius) + ' angle: ' + str(estimated_value.angle) + '\n')
-#
+# print_result(main_sim, time_step, begin_time, end_time,mcts_mode,agants_parameter_estimation)
 
