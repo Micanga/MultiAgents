@@ -68,6 +68,7 @@ def main():
     print 'starting the simulation test'
     sim = posimulator.POSimulator(pomdp,items,agents,main_agent)
     while True:
+        pomcp.pouct.search_tree.show(pomcp.pouct.search_tree.root)
         # a. running the  simulation
         print '----------------- a. sim + plannig'
         sim.show()
@@ -77,8 +78,15 @@ def main():
         # b. moving the main agt and walking on search tree
         print '----------------- b. main move'
         new_state, observation, reward = sim.real_run(next_a)
+
         sim.main_agent.position = new_state
-        pomcp.pouct.search_tree.change_root(next_root)
+
+        new_h = deepcopy(next_root.history)
+        new_h.append(observation)
+        next_root = pomcp.pouct.search_history(new_h)
+        sim.main_agent.history = new_h
+
+        #pomcp.pouct.search_tree.change_root(next_root)
         sim.show()
 
         # c. 

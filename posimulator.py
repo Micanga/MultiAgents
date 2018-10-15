@@ -112,16 +112,26 @@ class POSimulator:
 			for (p,s) in self.main_agent.T(state,a):
 				if a != 'L':
 					if s not in [ag.position for ag in self.agents]:
-
 						if s not in [item.get_position() for item in self.items]:
 							possible_actions.append(a)
 				else:
-					possible_actions.append(a)
+					if self.is_item_nearby():
+						possible_actions.append(a)
 		return possible_actions
 
 	def m_random_action_given_state(self,state):
 		possible_actions = self.possible_actions_given_state(state)
 		return choice(possible_actions)
+
+	def is_item_nearby(self):
+		pos = self.main_agent.position
+		for itm in self.items:
+			if not itm.loaded:
+				(xI, yI) = itm.position.get_position()
+				if (yI == pos[1] and abs(pos[0] - xI) == 1) or (xI == pos[0] and abs(pos[1] - yI) == 1):
+					return True
+		return False
+
 
 	def go(self,agent,action):
 		# 1. Initializing the action results

@@ -49,8 +49,10 @@ class Search_Tree:
 			self.show(c)
 
 	def update_depth_from(self,cur_node):
-		if(cur_node.depth != 0):
+		if(cur_node != self.root):
 			cur_node.depth = cur_node.parent.depth+1
+		else:
+			cur_node.depth = 0
 			
 		for c in cur_node.child_nodes:
 			self.update_depth_from(c)
@@ -68,25 +70,26 @@ class Search_Tree:
 		return
 
 	def change_root(self,new_root):
-		depth = 0
-		cur_node = self.root
+		# 1. Killing the action childs
+		for child in self.root.child_nodes:
+			if child.history[len(child.history)-1] != new_root.history[len(child.history)-1]:
+				self.destroy_from(child)
 
-		while depth < len(new_root.history):
-			for c in cur_node.child_nodes:
-				if c.history[depth] != new_root.history[depth]:
-					self.destroy_from(c) 
+		self.root = new_root.parent
+		self.root.parent.child = None
+		self.root.parent = None
 
-			for c in cur_node.child_nodes:
-				if c.history[depth] == new_root.history[depth]:
-					cur_node = c
-
-			print 'change'
-			cur_node.show()
-			del cur_node.parent
-			cur_node.parent = None
-			depth = depth + 1
+		# 2. Killing the observation childs
+		for child in self.root.child_nodes:
+			if child.history[len(child.history)-1] != new_root.history[len(child.history)-1]:
+				self.destroy_from(child)
 
 		self.root = new_root
+		self.root.parent.child = None
+		self.root.parent = None
+
+		# 3. Updating depth
+		self.update_depth_from(self.root)
 
 class Node:
 
@@ -106,4 +109,4 @@ class Node:
 		self.child_nodes.append(new_child)
 
 	def show(self):
-		print self.depth,';',self.visits,';',self.value,';',self.history,';',self.reward
+		print self.depth,';',self.visits,';',self.value,';',self.history,';',self.reward,';',self.parent

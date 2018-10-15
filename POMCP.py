@@ -33,6 +33,7 @@ class POMCP:
 		 
 
 	def search(self,history,posim):
+		print history
 		it = 0	
 		while it < self.max_iteration:
 			# 1. Sampling a state
