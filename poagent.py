@@ -54,6 +54,10 @@ class POAgent:
     def get_history(self):
         return self.history
 
+    """ get_position """
+    def get_position(self):
+        return (self.position[0],self.position[1])
+
     def belief_reward(self):
         sum_ = 0
         for s in self.pomdp.states:

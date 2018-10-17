@@ -16,23 +16,23 @@ class POMCP:
 		self.max_iteration = max_iteration
 		self.max_depth = max_depth
 
-	def m_poagent_planning(self,posim):
+	def m_poagent_planning(self,posim,param_est):
 		# . Copying the current simulation
 		self.posimulation = deepcopy(posim)
 
 		# . Running the POMCP planning
-		next_move, next_root = self.po_monte_carlo_planning(posimulation)
+		next_move, next_root = self.po_monte_carlo_planning(posimulation,param_est)
 
 		return next_move, next_root
 
 
-	def po_monte_carlo_planning(self,posim):
+	def po_monte_carlo_planning(self,posim,param_est):
 		# 1. planning
-		next_action,next_node = self.search(self.poagent.history,posim)
+		next_action,next_node = self.search(self.poagent.history,posim,param_est)
 		return next_action, next_node
 		 
 
-	def search(self,history,posim):
+	def search(self,history,posim,param_est):
 		print history
 		it = 0	
 		while it < self.max_iteration:
@@ -43,7 +43,7 @@ class POMCP:
 				state = sample(self.sample_belief,1)[0]
 
 			# 2. Simulating
-			self.simulate(state,history,len(history),posim)
+			self.simulate(state,history,len(history),posim,param_est)
 
 			# 3. Incrementing the iteration counter
 			it = it + 1
@@ -72,7 +72,7 @@ class POMCP:
   		new_h.append(observation)
   		choosen_child.add_child(1,0,0,dict(),new_h)
 
-	def simulate(self,state,history,depth,posim):
+	def simulate(self,state,history,depth,posim,param_est):
 		# 1. depth verification
 		if depth > self.max_depth:
 			return 0
@@ -88,7 +88,7 @@ class POMCP:
 			# calculates the your value
 			if(found_node.child_nodes == []):
 				self.evaluate_simulate_actions(state,found_node,posim)
-			return self.rollout(state,history,depth,posim)
+			return self.rollout(state,history,depth,posim,param_est)
 
 		# 3. else we update our node
 		# a. taking the best action : Q-function
@@ -102,7 +102,7 @@ class POMCP:
 		# b. updating the agent belief states
 		# (s',o,r) ~ G(s,a)
 		new_sim = deepcopy(posim)
-		new_state,observation,reward = new_sim.run(state,action)
+		new_state,observation,reward = new_sim.run(state,action,param_est)
 
 		# c. calculating the reward
 		# R <- r + gamma*SIMULATE(s',hao,depth+1)
@@ -112,7 +112,7 @@ class POMCP:
 		if(new_history != found_node.history):
 			self.evaluate_simulate_observation(observation,choosen_child)
 
-		R = reward + gamma*self.simulate(new_state,new_history,depth+2,new_sim)
+		R = reward + gamma*self.simulate(new_state,new_history,depth+2,new_sim,param_est)
 
 		# d. updating infos
 		self.sample_belief.add(state)
@@ -123,7 +123,7 @@ class POMCP:
 		return R
 		
 
-	def rollout(self,state,history,depth,posim):
+	def rollout(self,state,history,depth,posim,param_est):
 		if(depth > self.max_depth):
 			return 0
 
@@ -137,7 +137,7 @@ class POMCP:
 		# 2. Simulating the particle
 		# (s',o,r) ~ G(s,a)
 		new_sim = deepcopy(posim)
-		new_state, observation, reward = new_sim.run(state,action)
+		new_state, observation, reward = new_sim.run(state,action,param_est)
 
 		# 3. Building the new history
 		new_history = deepcopy(history)

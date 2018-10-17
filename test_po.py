@@ -72,7 +72,7 @@ def main():
         # a. running the  simulation
         print '----------------- a. sim + plannig'
         sim.show()
-        next_a, next_root = pomcp.po_monte_carlo_planning(sim)
+        next_a, next_root = pomcp.po_monte_carlo_planning(sim,None)
         print next_a
 
         # b. moving the main agt and walking on search tree
