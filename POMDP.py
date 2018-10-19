@@ -30,7 +30,7 @@ class POMDP:
 		self.evidences_list = {}
 		for x in range(self.map_dimension[width]):
 			for y in range(self.map_dimension[height]):
-				if self.evidences[x][y] not in self.evidences_list:
+				if self.evidences != [] and self.evidences[x][y] not in self.evidences_list:
 					ne = self.count_evidence(self.evidences[x][y])
 					self.evidences_list[self.evidences[x][y]] = (1.0/ne)
 		self.gamma = gamma
