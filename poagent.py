@@ -5,6 +5,7 @@ from numpy.random import choice
 from math import sqrt
 import parameter_estimation
 import simulatorCommonMethods
+from copy import deepcopy
 
 class POAgent:
 
@@ -50,7 +51,21 @@ class POAgent:
 		self.actions_probability = {'L': 0.20, 'N': 0.20, 'E': 0.20, 'S': 0.20, 'W': 0.20}
 		self.next_action = None
 		self.state_dim = []
-	
+
+	def copy(self):
+		x, y, direc = self.position[0], self.position[1], self.direction
+		radius, angle = self.radius, self.angle
+		cp_pomdp = self.pomdp.copy()
+		copy = POAgent(x,y,direc,self.agent_type,self.index,self.level,radius,angle,cp_pomdp)
+		copy.t, copy.item_to_load = self.t, self.item_to_load
+		copy.next_action = self.next_action
+		copy.state_dim = self.state_dim
+		history_copy = []
+		for i in range(len(self.history)):
+			history_copy.append(self.history[i])
+		copy.history = history_copy
+		return copy
+
 	####################################################
 	#   GET FUNCTIONS   ################################
 	####################################################

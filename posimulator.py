@@ -110,7 +110,7 @@ class POSimulator:
 			c_reward = 0
 
 		total_reward = float(m_reward + a_reward + c_reward) / len(tmp_sim.items)
-
+		del tmp_sim
 		return new_state, observation, total_reward
 
 	def perform_agent_sample(self):
@@ -218,7 +218,7 @@ class POSimulator:
 			elif 'main' in k:
 				# x-coord, y-coord, direction, type, index
 													#x        y       dir     type      idx   lv radius angle, pomdp
-				self.main_agent = poagent.POAgent(v[0][0], v[0][1], v[0][2], v[0][3], v[0][4], 1, 0.5, np.pi, self.the_map)
+				self.main_agent = poagent.POAgent(v[0][0], v[0][1], v[0][2], v[0][3], v[0][4], 1, 0.2, np.pi/2, self.the_map)
 			elif 'obstacle' in k:
 				self.obstacles.append(obstacle.Obstacle(v[0][0], v[0][1]))
 				nobs += 1
@@ -232,6 +232,24 @@ class POSimulator:
 		print('Grid Size: {} \n{} Items Loaded\n{} Agents Loaded\n{} Obstacles Loaded'.format(self.dim_w,len(self.items),len(self.agents),len(self.obstacles)))
 		simulatorCommonMethods.update_the_map(self)
 		self.main_agent.pomdp = self.the_map
+
+	def copy(self):
+		copy_items = []
+		for i in self.items:
+			ci = i.copy()
+			copy_items.append(ci)
+		copy_agents = []
+
+		for a in self.agents:
+			ca = a.copy()
+			copy_agents.append(ca)
+
+		copy_map = self.the_map.copy()
+		copy_m = self.main_agent.copy()
+		copy = POSimulator(copy_map,copy_items,copy_agents,copy_m)
+		copy.dim_w, copy.dim_h = self.dim_w, self.dim_h
+		copy.sampled_item, copy.sampled_agents = self.sampled_item, self.sampled_agents
+		return copy
 
 	##########################################################
 	#   ACTION EVALUATE METHODS						##########

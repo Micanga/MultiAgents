@@ -11,16 +11,17 @@ class POMCP:
 		self.pouct = POUCT.POUCT(poagent,search_tree)
 		self.poagent = poagent
 		self.pomdp = poagent.pomdp
-		self.sample_belief = set()
+		self.sample_belief = list()
 		self.max_iteration = max_iteration
 		self.max_depth = max_depth
+		self.k = 300
 
 	def m_poagent_planning(self,posim,param_est):
 		print 'starting main po-agent planning'
-		# . Copying the current simulation
-		posimulation = deepcopy(posim)
+		# 1. Copying the current simulation
+		posimulation = posim.copy()
 
-		# . Running the POMCP planning
+		# 2. Running the POMCP planning
 		next_move, next_root = self.po_monte_carlo_planning(posimulation,param_est)
 
 		return next_move, next_root
@@ -31,6 +32,24 @@ class POMCP:
 		next_action,next_node = self.search(self.poagent.history,posim,param_est)
 		return next_action, next_node
 		 
+	def black_box(self,history,posim,param_est):
+		cur_belief = list()
+		for state in self.sample_belief:
+			cur_belief.append(state)
+
+		self.sample_belief = list()
+		while len(self.sample_belief) != self.k:
+
+			new_sim = posim.copy()
+			state = sample(cur_belief,1)[0]
+			new_state,observation,reward = new_sim.run(state,history[len(history)-2],param_est)
+
+			if observation == history[len(history)-1]:
+				self.sample_belief.append(new_state)
+
+			del new_sim
+		del cur_belief
+		print self.sample_belief
 
 	def search(self,history,posim,param_est):
 		print 'history:',history
@@ -92,7 +111,7 @@ class POMCP:
 				self.evaluate_simulate_actions(state,found_node,posim)
 			return self.rollout(state,history,depth,posim,param_est)
 
-		print 'simulating (',depth,')...'
+		#print 'simulating (',depth,')...'
 		# 3. else we update our node
 		# a. taking the best action : Q-function
 		c, gamma = 1, self.pomdp.gamma
@@ -104,7 +123,7 @@ class POMCP:
 
 		# b. updating the agent belief states
 		# (s',o,r) ~ G(s,a)
-		new_sim = deepcopy(posim)
+		new_sim = posim.copy()
 		new_state,observation,reward = new_sim.run(state,action,param_est)
 
 		# c. calculating the reward
@@ -118,16 +137,17 @@ class POMCP:
 		R = reward + gamma*self.simulate(new_state,new_history,depth+2,new_sim,param_est)
 
 		# d. updating infos
-		self.sample_belief.add(state)
+		self.sample_belief.append(state)
 		found_node.visits = found_node.visits + 1
 		choosen_child.visits = choosen_child.visits + 1
 		choosen_child.value = choosen_child.value + (R - choosen_child.value)/choosen_child.visits
 
+		del new_sim
 		return R
 		
 
 	def rollout(self,state,history,depth,posim,param_est):
-		print 'rollouting (',depth,')...'
+		#print 'rollouting (',depth,')...'
 		if(depth > self.max_depth):
 			return 0
 
@@ -140,7 +160,7 @@ class POMCP:
 
 		# 2. Simulating the particle
 		# (s',o,r) ~ G(s,a)
-		new_sim = deepcopy(posim)
+		new_sim = posim.copy()
 		new_state, observation, reward = new_sim.run(state,action,param_est)
 
 		# 3. Building the new history
@@ -149,7 +169,9 @@ class POMCP:
 		new_history.append(observation)
 
 		# 4. Calculating the reward
-		return reward + self.rollout(new_state,new_history,depth+2,new_sim,param_est)
+		result = reward + self.rollout(new_state,new_history,depth+2,new_sim,param_est)
+		del new_sim
+		return result
 	
 	def show(self):
 		for x in range(self.pomdp.map_dimension[0]):

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 import operator, random
+from copy import deepcopy
 
 class POMDP:
 
@@ -35,6 +36,19 @@ class POMDP:
 					self.evidences_list[self.evidences[x][y]] = (1.0/ne)
 		self.gamma = gamma
 		self.belief = dict([(s,1.0/float((len(self.states)-len(self.terminals))) if s not in self.terminals else 0) for s in self.states])
+
+	def copy(self):
+		map_copy = list()
+		row = [0]*self.map_dimension[1]
+		for i in range(self.map_dimension[0]):
+			map_copy.append(list(row))
+
+		for i in range(self.map_dimension[0]):
+			for j in range(self.map_dimension[1]):
+				map_copy[i][j] = self.problem_map[i][j]
+
+		copy = POMDP(self.map_dimension[0],self.map_dimension[1],map_copy,self.terminals,self.evidences,self.gamma)
+		return copy
 
 	def R(self, state):
 		return self.reward[state]
