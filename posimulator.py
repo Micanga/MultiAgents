@@ -69,17 +69,17 @@ class POSimulator:
 		# 3. Creating a temporary simulation with sampled information
 		tmp_agents = []
 		for agn in self.main_agent.visible_agents:
-			tmp_agents.append(agn)
+			tmp_agents.append(agn.copy())
 		for agn in self.sampled_agents:
-			tmp_agents.append(agn)
+			tmp_agents.append(agn.copy())
 
 		tmp_items = []
 		for itm in self.main_agent.visible_items:
-			tmp_items.append(itm)
+			tmp_items.append(itm.copy())
 		for itm in self.sampled_items:
-			tmp_items.append(itm)
+			tmp_items.append(itm.copy())
 
-		tmp_sim = deepcopy(self)
+		tmp_sim = self.copy()
 		tmp_sim.agents = tmp_agents
 		tmp_sim.items = tmp_items
 		tmp_sim.main_agent.position = state
@@ -248,7 +248,16 @@ class POSimulator:
 		copy_m = self.main_agent.copy()
 		copy = POSimulator(copy_map,copy_items,copy_agents,copy_m)
 		copy.dim_w, copy.dim_h = self.dim_w, self.dim_h
-		copy.sampled_item, copy.sampled_agents = self.sampled_item, self.sampled_agents
+
+		copy_si = list()
+		for si in self.sampled_item:
+			copy_si.append(si)
+
+		copy_sa = list()
+		for sa in self.sampled_agents:
+			copy_sa.append(sa)
+
+		copy.sampled_item, copy.sampled_agents = copy_si, copy_sa 
 		return copy
 
 	##########################################################

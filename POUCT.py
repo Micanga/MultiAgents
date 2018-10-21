@@ -59,12 +59,24 @@ class Search_Tree:
 
 		return
 
+	def reset_visits_from(self,cur_node):
+		cur_node.visits = 1
+			
+		for c in cur_node.child_nodes:
+			self.reset_visits_from(c)
+
+		return
+
 	def destroy_from(self,cur_node):
+		if cur_node == None:
+			return
+		if cur_node.child_nodes == None:
+			return
+
 		for c in cur_node.child_nodes:
 			self.destroy_from(c)
 
 		cur_node.child_nodes = None
-		cur_node.parent = None
 		del cur_node
 
 		return
@@ -76,7 +88,8 @@ class Search_Tree:
 				self.destroy_from(child)
 
 		self.root = new_root.parent
-		self.root.parent.child = None
+		if(self.root.parent != None):
+			self.root.parent.child = None
 		self.root.parent = None
 
 		# 2. Killing the observation childs
@@ -85,11 +98,13 @@ class Search_Tree:
 				self.destroy_from(child)
 
 		self.root = new_root
-		self.root.parent.child = None
+		if(self.root.parent != None):
+			self.root.parent.child = None
 		self.root.parent = None
 
 		# 3. Updating depth
 		self.update_depth_from(self.root)
+		self.reset_visits_from(self.root)
 
 class Node:
 
@@ -104,8 +119,8 @@ class Node:
 		self.history = history
 		self.child_nodes = []
 
-	def add_child(self,visits = 1, value = 0, reward = 0, belief = dict(),history = None):
-		new_child = Node(visits,value,reward,belief,history,self.depth+1,self)
+	def add_child(self,visits = 1, value = 0.0, reward = 0.0, belief = dict(),history = None):
+		new_child = Node(visits,float(value),float(reward),belief,history,self.depth+1,self)
 		self.child_nodes.append(new_child)
 
 	def show(self):

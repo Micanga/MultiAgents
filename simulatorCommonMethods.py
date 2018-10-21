@@ -71,7 +71,7 @@ def do_m_agent_move(sim, move):
                 sim.main_agent = load_item(sim,sim.main_agent, destination_item_index)
                 loaded_item = sim.items[destination_item_index]
                 sim.items[destination_item_index].loaded = True
-                get_reward += float(1.0)
+                get_reward = get_reward + float(1.0)
             else:
                 sim.items[destination_item_index].agents_load_item.append(sim.main_agent)
 	# 3. Else move
@@ -81,7 +81,8 @@ def do_m_agent_move(sim, move):
         # If there new position is empty
         if position_is_empty(x_new, y_new, sim):
             sim.main_agent.next_action = move
-            sim.main_agent.change_position_direction(sim.dim_w, sim.dim_h)
+            sim.main_agent.position = (x_new,y_new)
+            #sim.main_agent.change_position_direction(sim.dim_w, sim.dim_h)
 
         else:
             sim.main_agent.change_direction_with_action(move)
@@ -363,7 +364,7 @@ def position_is_empty(x, y, sim):
             return False
 
     if sim.main_agent is not None:
-        (m_agent_x, m_agent_y) =sim.main_agent.get_position()
+        (m_agent_x, m_agent_y) = sim.main_agent.get_position()
         if (m_agent_x, m_agent_y) == (x, y):
             return False
 

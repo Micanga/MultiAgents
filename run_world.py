@@ -246,19 +246,21 @@ while simulatorCommonMethods.items_left(main_sim) > 0:
             r = uct.do_move(main_sim, main_agent_next_action)
 
         else:
-            if main_sim.main_agent.history != []:
-                print 'updating the sampled state'
-                pomcp.black_box(main_sim.main_agent.history,main_sim,agents_parameter_estimation)
-                print 'updated - real position:', main_sim.main_agent.position
-
             if not reuseTree:
                 main_agent_next_action, next_node = pomcp.m_poagent_planning(main_sim,agents_parameter_estimation)
             else:
                 main_agent_next_action, next_node = pomcp.m_poagent_planning(main_sim,agents_parameter_estimation)
 
-            print 'main ag action:',main_agent_next_action
-            main_sim.draw_map()
+            print 'main ag action:',main_agent_next_action,'and cur dir:',main_sim.main_agent.direction
+            black_box_sim = main_sim.copy()
             r = simulatorCommonMethods.do_m_agent_move(main_sim, main_agent_next_action)
+            print 'main ag new dir:',main_sim.main_agent.direction
+
+            observation = main_sim.main_agent.history[len(main_sim.main_agent.history)-1]
+            print 'updating the sampled states (~BeliefStates) - observation:', observation
+            pomcp.black_box(main_agent_next_action,observation,black_box_sim,agents_parameter_estimation)
+            print 'updated - real position:', main_sim.main_agent.position
+
             print 'change root'
             next_node.show()
             print 'main history', main_sim.main_agent.history

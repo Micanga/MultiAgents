@@ -1,5 +1,6 @@
 import POUCT
 import posimulator
+import simulatorCommonMethods
 from copy import deepcopy
 from math import sqrt, log
 from numpy.random import choice
@@ -14,7 +15,7 @@ class POMCP:
 		self.sample_belief = list()
 		self.max_iteration = max_iteration
 		self.max_depth = max_depth
-		self.k = 300
+		self.k = 500
 
 	def m_poagent_planning(self,posim,param_est):
 		print 'starting main po-agent planning'
@@ -32,7 +33,7 @@ class POMCP:
 		next_action,next_node = self.search(self.poagent.history,posim,param_est)
 		return next_action, next_node
 		 
-	def black_box(self,history,posim,param_est):
+	def black_box(self,act,obs,posim,param_est):
 		cur_belief = list()
 		for state in self.sample_belief:
 			cur_belief.append(state)
@@ -42,10 +43,13 @@ class POMCP:
 
 			new_sim = posim.copy()
 			state = sample(cur_belief,1)[0]
-			new_state,observation,reward = new_sim.run(state,history[len(history)-2],param_est)
+			new_state,observation,reward = new_sim.run(state,act,param_est)
 
-			if observation == history[len(history)-1]:
-				self.sample_belief.append(new_state)
+			if observation == obs:
+				if simulatorCommonMethods.position_is_empty(new_state[0],new_state[1],posim):
+					self.sample_belief.append(new_state)
+				else:
+					self.sample_belief.append(posim.main_agent.position)
 
 			del new_sim
 		del cur_belief
@@ -64,7 +68,7 @@ class POMCP:
 				state = sample(self.sample_belief,1)[0]
 
 			# 2. Simulating
-			self.simulate(state,history,len(history),posim,param_est)
+			self.simulate(state,history,0,posim,param_est)
 
 			# 3. Incrementing the iteration counter
 			it = it + 1
@@ -109,15 +113,17 @@ class POMCP:
 			# calculates the your value
 			if(found_node.child_nodes == []):
 				self.evaluate_simulate_actions(state,found_node,posim)
-			return self.rollout(state,history,depth,posim,param_est)
+				R = self.rollout(state,history,depth,posim,param_est)
+				found_node.reward = R
+				return R
 
 		#print 'simulating (',depth,')...'
 		# 3. else we update our node
 		# a. taking the best action : Q-function
-		c, gamma = 1, self.pomdp.gamma
+		c, gamma = 0.9, self.pomdp.gamma
 
 		# a <- argmax V(hb) + c sqrt( log(N(h)) / N(hb))
-		actions_value = [(child.value + 1*sqrt(log(found_node.visits))/child.visits,child.history[len(child.history)-1],child) for child in found_node.child_nodes]
+		actions_value = [(child.value + c*sqrt(log(found_node.visits)/child.visits),child.history[len(child.history)-1],child) for child in found_node.child_nodes]
 		action = max(actions_value,key=lambda item:item[0])[1]
 		choosen_child = max(actions_value,key=lambda item:item[0])[2]
 
@@ -135,13 +141,12 @@ class POMCP:
 			self.evaluate_simulate_observation(observation,choosen_child)
 
 		R = reward + gamma*self.simulate(new_state,new_history,depth+2,new_sim,param_est)
-
+		found_node.reward = R
 		# d. updating infos
 		self.sample_belief.append(state)
 		found_node.visits = found_node.visits + 1
 		choosen_child.visits = choosen_child.visits + 1
-		choosen_child.value = choosen_child.value + (R - choosen_child.value)/choosen_child.visits
-
+		choosen_child.value = float(choosen_child.value + ((R - choosen_child.value)/choosen_child.visits))
 		del new_sim
 		return R
 		
@@ -169,9 +174,10 @@ class POMCP:
 		new_history.append(observation)
 
 		# 4. Calculating the reward
-		result = reward + self.rollout(new_state,new_history,depth+2,new_sim,param_est)
+		R = reward + 0.95*self.rollout(new_state,new_history,depth+2,new_sim,param_est)
 		del new_sim
-		return result
+
+		return R
 	
 	def show(self):
 		for x in range(self.pomdp.map_dimension[0]):

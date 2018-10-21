@@ -199,7 +199,7 @@ class POAgent:
 	def new_position_with_given_action(self, action):
 		# 1. Initializing the action results
 		action_diff = {'L': (0,0),'W': (-1,0), 'N': (0,1), 'E': (1,0), 'S': (0,-1)}
-		action_dirc = {'W': (2*np.pi/2), 'N': (np.pi/2), 'E': (0), 'S': (3*np.pi/2)}
+		action_dirc = {'W': (np.pi), 'N': (np.pi/2), 'E': (0), 'S': (3*np.pi/2)}
 
 		# 2. Updating the state
 		state1 = tuple(map(operator.add, self.position, action_diff[action]))
@@ -216,7 +216,7 @@ class POAgent:
 		return new_position
 
 	def change_position_direction(self, dim_w, dim_h):
-		dx = [-1, 0, 1,  0]  # 0:W ,  6AGA_O_2:N , 2:E  3:S
+		dx = [-1, 0, 1,  0]  # 0:W ,  1:N , 2:E  3:S
 		dy = [0, 1, 0, -1]
 
 		x_diff = 0
@@ -225,7 +225,7 @@ class POAgent:
 		if self.next_action == 'W':
 			x_diff = dx[0]
 			y_diff = dy[0]
-			self.direction = 2 * np.pi / 2
+			self.direction = np.pi
 
 		if self.next_action == 'N':
 			x_diff = dx[1]
@@ -252,13 +252,13 @@ class POAgent:
 	def change_direction_with_action(self, action):
 
 		if action == 'W':  # 'W':
-			self.direction = 2 * np.pi / 2
+			self.direction = np.pi
 
 		if action == 'N':  # 'N':
 			self.direction = np.pi / 2
 
 		if action == 'E':  # 'E':
-			self.direction = 0 * np.pi / 2
+			self.direction = 0
 
 		if action == 'S':  # 'S':
 			self.direction = 3 * np.pi / 2
