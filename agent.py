@@ -27,7 +27,6 @@ class Agent:
 
         self.item_to_load = -1
 
-        self.actions = ['L','N','E','S','W']
         self.actions_probability = {'L': 0.20, 'N': 0.20, 'E': 0.20, 'S': 0.20, 'W': 0.20}
         self.visible_agents = []
         self.visible_items = []

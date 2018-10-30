@@ -6,8 +6,9 @@ PF_add_threshold , 0.9
 PF_del_threshold , 0.96
 PF_weight , 1.5
 reuseTree , False
-mcts_mode,MSPA
+mcts_mode,UCT
 iteration_max , 50
-max_depth , 50
+max_depth , 10
 sim_path,sim.csv
 do_estimation,True
+apply_adversary,False
