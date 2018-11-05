@@ -9,6 +9,6 @@ reuseTree , False
 mcts_mode,UCT
 iteration_max , 50
 max_depth , 10
-sim_path,sim.csv
+sim_path,Test Files/sim_1_agent_20.csv
 do_estimation,True
-apply_adversary,False
+apply_adversary,True

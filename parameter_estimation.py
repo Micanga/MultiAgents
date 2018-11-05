@@ -9,7 +9,9 @@ from copy import copy
 import logging
 import sys
 import train_data
-import matplotlib.pyplot as plt
+
+import agent
+from scipy import integrate
 
 logging.basicConfig(filename='parameter_estimation.log', format='%(asctime)s %(message)s', level=logging.DEBUG)
 
@@ -939,49 +941,3 @@ class ParameterEstimation:
         if agent_type == 'w':
             self.w_estimation.choose_target_state = state
 
-####################################################################################################################
-    def plot_data_set(self):
-
-         # fig = plt.figure(1)
-      #   print self.l1_estimation.type_probabilities
-      #   # plt.plot([i for i in range(len(self.l1_estimation.type_probabilities))],
-      #   #          self.l1_estimation.type_probabilities,
-      #   #          label='l1 probability',
-      #   #          linestyle='-',
-      #   #          color='cornflowerblue',
-      #   #          linewidth=1)
-      #   plt.plot( self.l2_estimation.type_probabilities )
-      #   # ax = plt.gca()
-      #   # plt.set_ylabel('Type Probability')
-      #   # ax.legend(loc="upper right", shadow=True, fontsize='x-large')
-      #   # plt.subplot(3, 1, 2)
-      #
-      #
-      # #  fig.savefig("./plots/type_probability_changes.jpg")
-      #   plt.show()
-
-        fig = plt.figure(1)
-        plt.subplot(3, 1, 1)
-
-        plt.plot(self.l1_estimation.type_probabilities)
-        ax = plt.gca()
-
-        ax.set_ylabel('L1   Probabilities')
-     #   ax.legend(loc="upper right", shadow=True, fontsize='x-large')
-        plt.subplot(3, 1, 2)
-
-        plt.plot(self.l2_estimation.type_probabilities)
-        ax = plt.gca()
-        ax.set_ylabel('L2   Probabilities')
-
-        plt.subplot(3, 1, 3)
-
-        plt.plot(self.f1_estimation.type_probabilities)
-
-        ax = plt.gca()
-        ax.set_ylabel('f1   Probabilities')
-        ax.set_xlabel('iteration')
-
-
-        #fig.savefig("./plots/dataset_history_based.jpg")
-        plt.show()
