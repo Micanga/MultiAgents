@@ -1,5 +1,6 @@
 # Types for agents are 'L1','L2','F1','F2'
 import agent
+import intelligent_agent
 import item
 import obstacle
 import position
@@ -11,7 +12,7 @@ from numpy.random import choice
 from collections import defaultdict
 
 
-dx = [-1, 0, 1,  0]  # 0: left,  6AGA_O_2:up, 2:right  3:down
+dx = [-1, 0, 1,  0]  # 0: W, 1:N, 2:E, 3:S
 dy = [0,  1, 0, -1]
 actions = ['L', 'N', 'E', 'S', 'W']
 
@@ -30,10 +31,13 @@ class Simulator:
         self.items = []
         self.agents = []
         self.obstacles = []
-        self.main_agent = None
+        self.main_agent = None  # M
+        self.enemy_agent = None  # W
+        self.suspect_agent = None
         self.dim_w = None  # Number of columns
         self.dim_h = None  # Number of rows
 
+    ################################################################################################################
     @staticmethod
     def is_comment(string):
         for pos in range(len(string)):
@@ -43,7 +47,8 @@ class Simulator:
                 return True
             else:
                 return False
-    
+
+    ################################################################################################################
     def loader(self, path):
         """
         Takes in a csv file and stores the necessary instances for the simulation object. The file path referenced
@@ -80,14 +85,20 @@ class Simulator:
             elif 'agent' in k:
                 #import ipdb; ipdb.set_trace()
                 agnt = agent.Agent(v[0][0], v[0][1], v[0][2], v[0][3], j)
-                agnt.set_parameters(self,v[0][4], v[0][5], v[0][6])
+                agnt.set_parameters(self, v[0][4], v[0][5], v[0][6])
+                agnt.choose_target_state = deepcopy(self)
                 self.agents.append(agnt)
 
                 j += 1
             elif 'main' in k:
                 # x-coord, y-coord, direction, type, index
-                self.main_agent = agent.Agent(v[0][0], v[0][1], v[0][2], 'm', -1)
+                self.main_agent = intelligent_agent.Agent(v[0][0], v[0][1], v[0][2])
                 self.main_agent.level = v[0][2]
+
+            elif 'enemy' in k:
+                self.enemy_agent = intelligent_agent.Agent(v[0][0], v[0][1], v[0][2])
+                self.enemy_agent.level = v[0][2]
+
             elif 'obstacle' in k:
                 self.obstacles.append(obstacle.Obstacle(v[0][0], v[0][1]))
                 l += 1
@@ -118,6 +129,7 @@ class Simulator:
         return -1
 
     ###############################################################################################################
+
     def create_empty_map(self):
 
         self.the_map = list()
@@ -150,7 +162,7 @@ class Simulator:
                 copy_agent.co_radius = cagent.co_radius
                 copy_agent.co_angle = cagent.co_angle
             else:
-                copy_agent = agent.copy()
+                copy_agent = cagent.copy()
             copy_agents.append(copy_agent)
 
         copy_obstacles = []
@@ -163,15 +175,26 @@ class Simulator:
         tmp_sim.dim_w = self.dim_w
         tmp_sim.agents = copy_agents
         tmp_sim.items = copy_items
+
         if self.main_agent is not None:
             copy_main_agent = self.main_agent.copy()
             tmp_sim.main_agent = copy_main_agent
+
+        if self.enemy_agent is not None:
+            copy_enemy_agent = self.enemy_agent.copy()
+            tmp_sim.enemy_agent = copy_enemy_agent
+
+        if self.suspect_agent is not None:
+            copy_suspect = self.suspect_agent.copy()
+            tmp_sim.suspect_agent = copy_suspect
 
         tmp_sim.obstacles = copy_obstacles
         tmp_sim.update_the_map()
 
         return tmp_sim
+
     ####################################################################################################################
+
     def equals(self, other_simulator):
 
         # If I reached here the maps are equal. Now let's compare the items and agents
@@ -197,20 +220,24 @@ class Simulator:
         if not self.main_agent.equals(other_simulator.main_agent):
             return False
 
+        if self.enemy_agent is not None and not self.enemy_agent.equals(other_simulator.enemy_agent):
+            return False
+
         return True
-        
 
     ####################################################################################################################
+
     def create_log_file(self,path):
         file = open(path, 'w')
         return file
 
     ####################################################################################################################
+
     def log_map(self, file):
         line =''
         for y in range(self.dim_h - 1, -1, -1):
             for x in range(self.dim_w):
-                xy = self.the_map[x][y]
+                xy = self.the_map[y][x]
                 if xy == 0:
                     line = line + '.'  # space
                 elif xy == 1:
@@ -227,17 +254,21 @@ class Simulator:
                     line = line + 'A'  # A Agent
                 elif xy == 9:
                     line = line + 'M'  # Main Agent
+                elif xy == 10:
+                    line = line + 'W'  # Enemy Agent
 
             file.write(line+ '\n')
             line = ''
         file.write('*********************\n')
 
     ####################################################################################################################
+
     def create_result_file(self, path):
         file = open(path, 'w')
         return file
 
     ####################################################################################################################
+
     def get_first_action(self,route):
         #  This function is to find the first action afte finding the path by  A Star
 
@@ -245,7 +276,7 @@ class Simulator:
 
         if dir == '0':
             return 'W'
-        if dir == '6AGA_O_2':
+        if dir == '1':
             return 'N'
         if dir == '2':
             return 'E'
@@ -253,6 +284,7 @@ class Simulator:
             return 'S'
 
     ####################################################################################################################
+
     def convert_route_to_action(self, route):
         #  This function is to find the first action afte finding the path by  A Star
         actions = []
@@ -261,13 +293,14 @@ class Simulator:
 
             if dir == '0':
                 actions.append('W')
-            if dir == '6AGA_O_2':
+            if dir == '1':
                 actions.append('N')
             if dir == '2':
                 actions.append('E')
             if dir == '3':
                 actions.append('S')
         return actions
+
     ###############################################################################################################
 
     def items_left(self):
@@ -282,70 +315,12 @@ class Simulator:
         return items_count
 
     ###############################################################################################################
-    def update_the_map(self):
 
-        self.create_empty_map()
-
-        for i in range(len(self.items)):
-            (item_x, item_y) = self.items[i].get_position()
-            if self.items[i].loaded :
-                self.the_map[item_x][item_y] = 0
-            else:
-                self.the_map[item_x][item_y] = 1
-
-        for i in range(len(self.agents)):
-            (agent_x, agent_y) = self.agents[i].get_position()
-            self.the_map[agent_x][agent_y] = 8
-
-            (memory_x, memory_y) = self.agents[i].get_memory()
-            if (memory_x, memory_y) != (-1, -1):
-                self.the_map[memory_x][memory_y] = 4
-
-        for i in range(len(self.obstacles)):
-            (obs_x, obs_y) = self.obstacles[i].get_position()
-            self.the_map[obs_x][obs_y] = 5
-
-        if self.main_agent is not None:
-            (m_agent_x, m_agent_y) = self.main_agent.get_position()
-            self.the_map[m_agent_x][m_agent_y] = 9
-
-    ###############################################################################################################
-    def find_agent_index(self,pos):
-
-        agents_num = len(self.agents)
-        for i in range(0, agents_num):
-            if self.agents[i].position == pos:
-                return i
-        return -1
-
-    ###############################################################################################################
-    def remove_old_destination_in_map(self): #todo: check to delete
+    def draw_map(self):
 
         for y in range(self.dim_h):
             for x in range(self.dim_w):
-                xy = self.the_map[x][y]
-                if xy == 4:
-                    self.the_map[x][y] = 1
-
-    ###############################################################################################################
-    def mark_route_map(self,route, xA, yA): #todo: check to  delete
-
-        x = xA
-        y = yA
-
-        if len(route) > 0:
-            for i in range(len(route)):
-                j = int(route[i])
-                x += dx[j]
-                y += dy[j]
-                self.the_map[x][y] = 3
-
-    ###############################################################################################################
-    def draw_map(self):
-
-        for y in range(self.dim_h-1,-1,-1):
-            for x in range(self.dim_w):
-                xy = self.the_map[x][y]
+                xy = self.the_map[y][x]
                 if xy == 0:
                     print '.',  # space
                 elif xy == 1:
@@ -362,9 +337,65 @@ class Simulator:
                     print 'A',  # A Agent
                 elif xy == 9:
                     print 'M',  # Main Agent
+                elif xy == 10:
+                    print 'W',  # Enemy Agent
             print
 
+    ###############################################################################################################
+
+    def update_the_map(self):
+
+        self.create_empty_map()
+
+        for i in range(len(self.items)):
+            (item_x, item_y) = self.items[i].get_position()
+            if self.items[i].loaded :
+                self.the_map[item_y][item_x] = 0
+            else:
+                self.the_map[item_y][item_x] = 1
+
+        for i in range(len(self.agents)):
+            (agent_x, agent_y) = self.agents[i].get_position()
+            self.the_map[agent_y][agent_x] = 8
+
+            (memory_x, memory_y) = self.agents[i].get_memory()
+            if (memory_x, memory_y) != (-1, -1):
+                self.the_map[memory_y][memory_x] = 4
+
+        for i in range(len(self.obstacles)):
+            (obs_x, obs_y) = self.obstacles[i].get_position()
+            self.the_map[obs_y][obs_x] = 5
+
+        if self.main_agent is not None:
+            (m_agent_x, m_agent_y) = self.main_agent.get_position()
+            self.the_map[m_agent_y][m_agent_x] = 9
+
+        if self.enemy_agent is not None:
+            (e_agent_x, e_agent_y) = self.enemy_agent.get_position()
+            self.the_map[e_agent_x][e_agent_y] = 10
+
+    ###############################################################################################################
+
+    def find_agent_index(self,pos):
+
+        agents_num = len(self.agents)
+        for i in range(0, agents_num):
+            if self.agents[i].position == pos:
+                return i
+        return -1
+
+    ###############################################################################################################
+
+    def remove_old_destination_in_map(self): #todo: check to delete
+
+        for y in range(self.dim_h):
+            for x in range(self.dim_w):
+                xy = self.the_map[y][x]
+                if xy == 4:
+                    self.the_map[y][x] = 1
+
     ################################################################################################################
+
     def draw_map_with_level(self):
 
         for y in range(self.dim_h-1,-1,-1):
@@ -373,7 +404,7 @@ class Simulator:
             for x in range(self.dim_w):
                 item_index = self.find_item_by_location(x, y)
 
-                xy = self.the_map[x][y]
+                xy = self.the_map[y][x]
 
                 if xy == 0:
                     line_str += ' . '
@@ -412,24 +443,20 @@ class Simulator:
         return -1
 
     ################################################################################################################
+
     def load_item(self, agent, destination_item_index):
 
-        # print 'loaded item information by agent:' ,agent.index
-        # print 'position:' ,self.items[destination_item_index].get_position()
-        # print 'index: ',destination_item_index
         self.items[destination_item_index].loaded = True
         (agent_x, agent_y) = agent.get_position()
         self.items[destination_item_index].remove_agent(agent_x, agent_y)
         agent.last_loaded_item = deepcopy(agent.item_to_load)
         agent.item_to_load = -1
-
-        # Empty the memory to choose new target
         agent.reset_memory()
-        # print '6AGA_O_2'
 
         return agent
 
     ################################################################################################################
+
     def run_and_update(self, a_agent):
 
         a_agent = self.move_a_agent(a_agent)
@@ -444,27 +471,18 @@ class Simulator:
         return self.agents[a_agent.index]
 
     ####################################################################################################################
-    def update_all_A_agents(self):
+    def update_all_A_agents(self, simulated):
         reward = 0
 
         for i in range(len(self.agents)):
-            # print self.agents[i].get_actions_probabilities()
-            next_action = choice(actions, p=self.agents[i].get_actions_probabilities())  # random sampling the action
+            # if not (simulated and self.agents[i].get_position() == self.suspect_agent.get_position()):
 
-            self.agents[i].next_action = next_action
-            self.agents[i].actions_history.append(next_action)
+                next_action = choice(actions,
+                                     p=self.agents[i].get_actions_probabilities())  # random sampling the action
 
-            ## DEBUG: For testing conflict cases
-            # if (i == 0):
-            #     self.agents[i].next_action = 'S'
-            # elif (i == 6AGA_O_2):
-            #     self.agents[i].next_action = 'N'
-            # elif (i == 2):
-            #     self.agents[i].next_action = 'W'
-            # else:
-            #     self.agents[i].next_action = 'E'
-            
-            reward += self.update(i)
+                self.agents[i].next_action = next_action
+
+                reward += self.update(i)
 
         return reward
 
@@ -534,6 +552,11 @@ class Simulator:
             if (m_agent_x, m_agent_y) == (x, y):
                 return False
 
+        if self.enemy_agent is not None:
+            (e_agent_x, e_agent_y) =self.enemy_agent.get_position()
+            if (e_agent_x, e_agent_y) == (x, y):
+                return False
+
         return True
 
     ################################################################################################################
@@ -555,17 +578,29 @@ class Simulator:
         self.update_the_map()
 
         return
+    ###############################################################################################################
+
+    def mark_route_map(self, route, xA, yA):  # todo: check to  delete
+
+        x = xA
+        y = yA
+
+        if len(route) > 0:
+            for i in range(len(route)):
+                j = int(route[i])
+                x += dx[j]
+                y += dy[j]
+                self.the_map[y][x] = 3
     ####################################################################################################################
 
-    def move_a_agent(self, a_agent, for_estimation=False):
+    def move_a_agent(self, a_agent):
 
-        location = a_agent.position  # Location of main agent
+        location = a_agent.position  # Location of agent
         destination = position.position(-1, -1)
         target = position.position(-1, -1)
 
         if self.destination_loaded_by_other_agents(a_agent):  # item is loaded by other agents so reset the memory to choose new target.
             a_agent.reset_memory()
-            print 4
 
         # If the target is selected before we have it in memory variable and we can use it
         if a_agent.memory.get_position() != (-1, -1) and location != a_agent.memory: #here
@@ -573,10 +608,9 @@ class Simulator:
 
         else:  # If there is no target we should choose a target based on visible items and agents.
 
-
-
             a_agent.visible_agents_items(self.items, self.agents)
             target = a_agent.choose_target(self.items, self.agents)
+            a_agent.choose_target_state = deepcopy(self)
 
             if target.get_position() != (-1, -1):
                 destination = target
@@ -585,7 +619,6 @@ class Simulator:
 
         # If there is no destination the probabilities for all of the actions are same.
         if destination.get_position() == (-1, -1):
-
             a_agent.set_actions_probability(0.2, 0.2, 0.2, 0.2, 0.2)
             a_agent.set_random_action()
             return a_agent
@@ -593,6 +626,7 @@ class Simulator:
 
             (x_destination, y_destination) = destination.get_position()  # Get the target position
             destination_index = self.find_item_by_location(x_destination, y_destination)
+            self.the_map[y_destination][x_destination] = 4  # Update map with target position
 
             load = a_agent.is_agent_near_destination(x_destination, y_destination)
 
@@ -602,14 +636,14 @@ class Simulator:
                 a_agent.set_actions_probabilities('L')
             else:
 
-                self.the_map[y_destination][x_destination] = 4  # Update map with target position
-
                 a = a_star.a_star(self, a_agent)  # Find the whole path  to reach the destination with A Star
                 (x_agent, y_agent) = a_agent.get_position()  # Get agent's current position
 
                 route = a.pathFind(x_agent, y_agent, x_destination, y_destination)
-                self.mark_route_map(route,x_agent, y_agent)
+                if len(route) > 1:
+                    self.mark_route_map(route,x_agent, y_agent)
                 a_agent.route_actions = self.convert_route_to_action(route)
+
 
                 if len(route) == 0:
                     a_agent.set_actions_probability(0.2, 0.2, 0.2, 0.2, 0.2)

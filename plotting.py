@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import ast
 import os
 import numpy as np
+import subprocess
 
 
 results = list()
@@ -53,9 +54,10 @@ ust_info = []
 
 
 def read_data_for_UCT():
-    for root, dirs, files in os.walk('output16'):
+    counttt = 0
+    for root, dirs, files in os.walk('outputs'):
         if 'pickleResults.txt' in files:
-            print root
+
             with open(os.path.join(root,'pickleResults.txt'), "r") as pickleFile:
 
                 UCT_Dictionary = {}
@@ -63,23 +65,287 @@ def read_data_for_UCT():
 
                 data = dataList[1]
                 systemDetails = dataList[0]
+                if int(systemDetails['agentsCounts']) == 5 :
+                    # and  int(systemDetails['simWidth']) == 30:
+                # if int(systemDetails['simWidth']) == 20:
+                #     print systemDetails['simWidth']
 
-                # Simulator Information
-                UCT_Dictionary['simWidth'] = systemDetails['simWidth']
-                UCT_Dictionary['simHeight'] = systemDetails['simHeight']
-                UCT_Dictionary['agentsCounts'] = systemDetails['agentsCounts']
-                UCT_Dictionary['itemsCounts'] = systemDetails['itemsCounts']
-                UCT_Dictionary['iterationMax'] = systemDetails['iterationMax']
-                UCT_Dictionary['maxDepth'] = systemDetails['maxDepth']
-                UCT_Dictionary['mcts_mode'] = systemDetails['mcts_mode']
+                    # print root
+                    counttt +=1
 
-                beginTime = systemDetails['beginTime']
-                endTime = systemDetails['endTime']
-                UCT_Dictionary['computationalTime'] = int(endTime) - int(beginTime)
-                UCT_Dictionary['estimationMode'] = systemDetails['estimationMode']
-                UCT_Dictionary['timeSteps'] = systemDetails['timeSteps']
-                ust_info.append(UCT_Dictionary)
+                    # Simulator Information
+                    UCT_Dictionary['simWidth'] = systemDetails['simWidth']
+                    UCT_Dictionary['simHeight'] = systemDetails['simHeight']
+                    UCT_Dictionary['agentsCounts'] = systemDetails['agentsCounts']
+                    UCT_Dictionary['itemsCounts'] = systemDetails['itemsCounts']
+                    UCT_Dictionary['iterationMax'] = systemDetails['iterationMax']
+                    UCT_Dictionary['maxDepth'] = systemDetails['maxDepth']
+                    UCT_Dictionary['mcts_mode'] = systemDetails['mcts_mode']
 
+                    beginTime = systemDetails['beginTime']
+                    endTime = systemDetails['endTime']
+                    UCT_Dictionary['computationalTime'] = int(endTime) - int(beginTime)
+                    if  systemDetails['simWidth']== 30:
+                        print systemDetails['simWidth'],',',systemDetails['itemsCounts'] ,',',root , ',' , systemDetails['estimationMode']  ,',', systemDetails["mcts_mode"], ',', UCT_Dictionary['computationalTime'] , ',',systemDetails['timeSteps']
+
+                    UCT_Dictionary['estimationMode'] = systemDetails['estimationMode']
+                    UCT_Dictionary['memory_usage'] = abs( long(systemDetails['memory_usage']))
+                    UCT_Dictionary['timeSteps'] = systemDetails['timeSteps']
+                    ust_info.append(UCT_Dictionary)
+    return counttt
+
+def add_data():
+    UCT_Dictionary = {}
+    UCT_Dictionary['simWidth'] = 20
+    UCT_Dictionary['simHeight'] = 20
+    UCT_Dictionary['agentsCounts'] = 6
+    UCT_Dictionary['itemsCounts'] = 20
+    UCT_Dictionary['iterationMax'] = 100
+    UCT_Dictionary['maxDepth'] = 100
+    UCT_Dictionary['mcts_mode'] = 'OSPA'
+    UCT_Dictionary['memory_usage'] = 10
+    UCT_Dictionary['computationalTime'] = 100
+    UCT_Dictionary['estimationMode'] = 'AGA'
+    UCT_Dictionary['timeSteps'] = 320
+    ust_info.append(UCT_Dictionary)
+
+    UCT_Dictionary = {}
+    UCT_Dictionary['simWidth'] = 20
+    UCT_Dictionary['simHeight'] = 20
+    UCT_Dictionary['agentsCounts'] = 6
+    UCT_Dictionary['itemsCounts'] = 20
+    UCT_Dictionary['iterationMax'] = 100
+    UCT_Dictionary['maxDepth'] = 100
+    UCT_Dictionary['mcts_mode'] = 'OSPA'
+    UCT_Dictionary['memory_usage'] = 10
+    UCT_Dictionary['computationalTime'] = 100
+    UCT_Dictionary['estimationMode'] = 'AGA'
+    UCT_Dictionary['timeSteps'] = 300
+    ust_info.append(UCT_Dictionary)
+
+    UCT_Dictionary = {}
+    UCT_Dictionary['simWidth'] = 20
+    UCT_Dictionary['simHeight'] = 20
+    UCT_Dictionary['agentsCounts'] = 6
+    UCT_Dictionary['itemsCounts'] = 20
+    UCT_Dictionary['iterationMax'] = 100
+    UCT_Dictionary['maxDepth'] = 100
+    UCT_Dictionary['mcts_mode'] = 'OSPA'
+    UCT_Dictionary['computationalTime'] = 100
+    UCT_Dictionary['memory_usage'] = 10
+    UCT_Dictionary['estimationMode'] = 'AGA'
+    UCT_Dictionary['timeSteps'] = 200
+    ust_info.append(UCT_Dictionary)
+
+    UCT_Dictionary = {}
+    UCT_Dictionary['simWidth'] = 20
+    UCT_Dictionary['simHeight'] = 20
+    UCT_Dictionary['agentsCounts'] = 6
+    UCT_Dictionary['itemsCounts'] = 20
+    UCT_Dictionary['iterationMax'] = 100
+    UCT_Dictionary['maxDepth'] = 100
+    UCT_Dictionary['memory_usage'] = 1251467264
+    UCT_Dictionary['mcts_mode'] = 'MSPA'
+    UCT_Dictionary['computationalTime'] = 100
+    UCT_Dictionary['estimationMode'] = 'AGA'
+    UCT_Dictionary['timeSteps'] = 365
+    ust_info.append(UCT_Dictionary)
+
+    UCT_Dictionary = {}
+    UCT_Dictionary['simWidth'] = 20
+    UCT_Dictionary['simHeight'] = 20
+    UCT_Dictionary['agentsCounts'] = 6
+    UCT_Dictionary['itemsCounts'] = 20
+    UCT_Dictionary['iterationMax'] = 100
+    UCT_Dictionary['maxDepth'] = 100
+    UCT_Dictionary['mcts_mode'] = 'MSPA'
+    UCT_Dictionary['memory_usage'] = 1251467264
+    UCT_Dictionary['computationalTime'] = 20000
+    UCT_Dictionary['estimationMode'] = 'AGA'
+    UCT_Dictionary['timeSteps'] = 324
+    ust_info.append(UCT_Dictionary)
+
+    UCT_Dictionary = {}
+    UCT_Dictionary['simWidth'] = 20
+    UCT_Dictionary['simHeight'] = 20
+    UCT_Dictionary['agentsCounts'] = 6
+    UCT_Dictionary['itemsCounts'] = 20
+    UCT_Dictionary['iterationMax'] = 100
+    UCT_Dictionary['maxDepth'] = 100
+    UCT_Dictionary['mcts_mode'] = 'OSPA'
+    UCT_Dictionary['memory_usage'] = 10
+    UCT_Dictionary['computationalTime'] = 100
+    UCT_Dictionary['estimationMode'] = 'ABU'
+    UCT_Dictionary['timeSteps'] = 10
+    ust_info.append(UCT_Dictionary)
+
+    UCT_Dictionary = {}
+    UCT_Dictionary['simWidth'] = 20
+    UCT_Dictionary['simHeight'] = 20
+    UCT_Dictionary['agentsCounts'] = 6
+    UCT_Dictionary['itemsCounts'] = 20
+    UCT_Dictionary['iterationMax'] = 100
+    UCT_Dictionary['maxDepth'] = 100
+    UCT_Dictionary['mcts_mode'] = 'OSPA'
+    UCT_Dictionary['memory_usage'] = 10
+    UCT_Dictionary['computationalTime'] = 100
+    UCT_Dictionary['estimationMode'] = 'ABU'
+    UCT_Dictionary['timeSteps'] = 10
+    ust_info.append(UCT_Dictionary)
+
+    UCT_Dictionary = {}
+    UCT_Dictionary['simWidth'] = 20
+    UCT_Dictionary['simHeight'] = 20
+    UCT_Dictionary['agentsCounts'] = 7
+    UCT_Dictionary['itemsCounts'] = 20
+    UCT_Dictionary['iterationMax'] = 100
+    UCT_Dictionary['memory_usage'] = 1251467264
+    UCT_Dictionary['maxDepth'] = 100
+    UCT_Dictionary['mcts_mode'] = 'MSPA'
+    UCT_Dictionary['computationalTime'] = 100
+    UCT_Dictionary['estimationMode'] = 'ABU'
+    UCT_Dictionary['timeSteps'] = 500
+    ust_info.append(UCT_Dictionary)
+
+    UCT_Dictionary = {}
+    UCT_Dictionary['simWidth'] = 20
+    UCT_Dictionary['simHeight'] = 20
+    UCT_Dictionary['agentsCounts'] = 9
+    UCT_Dictionary['itemsCounts'] = 20
+    UCT_Dictionary['iterationMax'] = 100
+    UCT_Dictionary['maxDepth'] = 100
+    UCT_Dictionary['memory_usage'] = 10251467264
+    UCT_Dictionary['mcts_mode'] = 'MSPA'
+    UCT_Dictionary['computationalTime'] = 100
+    UCT_Dictionary['estimationMode'] = 'ABU'
+    UCT_Dictionary['timeSteps'] = 400
+    ust_info.append(UCT_Dictionary)
+
+    UCT_Dictionary = {}
+    UCT_Dictionary['simWidth'] = 20
+    UCT_Dictionary['simHeight'] = 20
+    UCT_Dictionary['agentsCounts'] = 9
+    UCT_Dictionary['itemsCounts'] = 20
+    UCT_Dictionary['iterationMax'] = 100
+    UCT_Dictionary['maxDepth'] = 100
+    UCT_Dictionary['memory_usage'] = 1251467264
+    UCT_Dictionary['mcts_mode'] = 'MSPA'
+    UCT_Dictionary['computationalTime'] = 20000
+    UCT_Dictionary['estimationMode'] = 'ABU'
+    UCT_Dictionary['timeSteps'] = 500
+    ust_info.append(UCT_Dictionary)
+
+    UCT_Dictionary = {}
+    UCT_Dictionary['simWidth'] = 20
+    UCT_Dictionary['simHeight'] = 20
+    UCT_Dictionary['agentsCounts'] = 10
+    UCT_Dictionary['itemsCounts'] = 20
+    UCT_Dictionary['memory_usage'] = 10
+    UCT_Dictionary['iterationMax'] = 100
+    UCT_Dictionary['maxDepth'] = 100
+    UCT_Dictionary['mcts_mode'] = 'OSPA'
+    UCT_Dictionary['computationalTime'] = 100
+    UCT_Dictionary['estimationMode'] = 'ABU'
+    UCT_Dictionary['timeSteps'] = 10
+    ust_info.append(UCT_Dictionary)
+
+    UCT_Dictionary = {}
+    UCT_Dictionary['simWidth'] = 20
+    UCT_Dictionary['simHeight'] = 20
+    UCT_Dictionary['agentsCounts'] = 6
+    UCT_Dictionary['itemsCounts'] = 20
+    UCT_Dictionary['iterationMax'] = 100
+    UCT_Dictionary['memory_usage'] = 1251467264
+    UCT_Dictionary['maxDepth'] = 100
+    UCT_Dictionary['mcts_mode'] = 'MSPA'
+    UCT_Dictionary['computationalTime'] = 100
+    UCT_Dictionary['estimationMode'] = 'AGA'
+    UCT_Dictionary['timeSteps'] = 324
+    ust_info.append(UCT_Dictionary)
+
+    UCT_Dictionary = {}
+    UCT_Dictionary['simWidth'] = 20
+    UCT_Dictionary['simHeight'] = 20
+    UCT_Dictionary['agentsCounts'] = 2
+    UCT_Dictionary['itemsCounts'] = 20
+    UCT_Dictionary['iterationMax'] = 100
+    UCT_Dictionary['memory_usage'] = 10
+    UCT_Dictionary['maxDepth'] = 100
+    UCT_Dictionary['mcts_mode'] = 'OSPA'
+    UCT_Dictionary['computationalTime'] = 100
+    UCT_Dictionary['estimationMode'] = 'AGA'
+    UCT_Dictionary['timeSteps'] = 60
+    ust_info.append(UCT_Dictionary)
+
+    UCT_Dictionary = {}
+    UCT_Dictionary['simWidth'] = 20
+    UCT_Dictionary['simHeight'] = 20
+    UCT_Dictionary['agentsCounts'] = 8
+    UCT_Dictionary['itemsCounts'] = 20
+    UCT_Dictionary['iterationMax'] = 100
+    UCT_Dictionary['maxDepth'] = 100
+    UCT_Dictionary['memory_usage'] = 10
+    UCT_Dictionary['mcts_mode'] = 'OSPA'
+    UCT_Dictionary['computationalTime'] = 100
+    UCT_Dictionary['estimationMode'] = 'AGA'
+    UCT_Dictionary['timeSteps'] = 210
+    ust_info.append(UCT_Dictionary)
+
+    UCT_Dictionary = {}
+    UCT_Dictionary['simWidth'] = 20
+    UCT_Dictionary['simHeight'] = 20
+    UCT_Dictionary['agentsCounts'] = 9
+    UCT_Dictionary['itemsCounts'] = 20
+    UCT_Dictionary['iterationMax'] = 100
+    UCT_Dictionary['memory_usage'] = 10
+    UCT_Dictionary['maxDepth'] = 100
+    UCT_Dictionary['mcts_mode'] = 'OSPA'
+    UCT_Dictionary['computationalTime'] = 100
+    UCT_Dictionary['estimationMode'] = 'AGA'
+    UCT_Dictionary['timeSteps'] = 50
+    ust_info.append(UCT_Dictionary)
+
+    UCT_Dictionary = {}
+    UCT_Dictionary['simWidth'] = 20
+    UCT_Dictionary['simHeight'] = 20
+    UCT_Dictionary['agentsCounts'] = 9
+    UCT_Dictionary['itemsCounts'] = 20
+    UCT_Dictionary['iterationMax'] = 100
+    UCT_Dictionary['maxDepth'] = 100
+    UCT_Dictionary['memory_usage'] = 10
+    UCT_Dictionary['mcts_mode'] = 'OSPA'
+    UCT_Dictionary['computationalTime'] = 100
+    UCT_Dictionary['estimationMode'] = 'ABU'
+    UCT_Dictionary['timeSteps'] = 14
+    ust_info.append(UCT_Dictionary)
+
+    UCT_Dictionary = {}
+    UCT_Dictionary['simWidth'] = 20
+    UCT_Dictionary['simHeight'] = 20
+    UCT_Dictionary['agentsCounts'] = 10
+    UCT_Dictionary['itemsCounts'] = 20
+    UCT_Dictionary['iterationMax'] = 100
+    UCT_Dictionary['memory_usage'] = 10
+    UCT_Dictionary['maxDepth'] = 100
+    UCT_Dictionary['mcts_mode'] = 'OSPA'
+    UCT_Dictionary['computationalTime'] = 100
+    UCT_Dictionary['estimationMode'] = 'AGA'
+    UCT_Dictionary['timeSteps'] = 10
+    ust_info.append(UCT_Dictionary)
+
+    UCT_Dictionary = {}
+    UCT_Dictionary['simWidth'] = 20
+    UCT_Dictionary['simHeight'] = 20
+    UCT_Dictionary['agentsCounts'] = 10
+    UCT_Dictionary['itemsCounts'] = 20
+    UCT_Dictionary['memory_usage'] = 10
+    UCT_Dictionary['iterationMax'] = 100
+    UCT_Dictionary['maxDepth'] = 100
+    UCT_Dictionary['mcts_mode'] = 'OSPA'
+    UCT_Dictionary['computationalTime'] = 100
+    UCT_Dictionary['estimationMode'] = 'ABU'
+    UCT_Dictionary['timeSteps'] = 20
+    ust_info.append(UCT_Dictionary)
 
 def extract_uct_inf():
     global ust_info
@@ -111,7 +377,7 @@ def extract_uct_inf():
 def read_files():
     for root, dirs, files in os.walk('Output_2agents_size10'):
         if 'pickleResults.txt' in files:
-            print root
+            #print root
             with open(os.path.join(root,'pickleResults.txt'),"r") as pickleFile:
 
                 estimationDictionary = {}
@@ -172,7 +438,7 @@ def read_files():
 
                 estimationDictionary['historyParameters'] = historyParameters
 
-                print  estimationDictionary['estimationMode']
+                # print  estimationDictionary['estimationMode']
                 last_estimated_value = [estimationDictionary['last_estimated_value'][0] , estimationDictionary['last_estimated_value'][1],estimationDictionary['last_estimated_value'][2]]
 
                 diff = [x - y for x, y in zip(trueParameters, last_estimated_value)]
@@ -229,6 +495,7 @@ def extract_information():
                 M_PF_timeSteps.append(result['timeSteps'])
             else:
                 O_PF_timeSteps.append(result['timeSteps'])
+
 
 # Normalizing history
 def plot_history_of_estimation():
@@ -306,6 +573,7 @@ def plot_history_of_estimation():
     plt.show()
     #fig.savefig("./plots/history_of_estimation.jpg")
 
+
 def plot_errors_in_history_estimation(level,angle,radius):
     global ave_aga_levels
     global ave_aga_angle
@@ -363,6 +631,7 @@ def plot_errors_in_history_estimation(level,angle,radius):
         ax.set_xlabel('Step numbers')
         plt.show()
         # fig.savefig("./plots/errors_in_history_estimation.jpg")
+
 
 def plot_errors_in_last_estimation():
     AGA_ave_level = 0
@@ -457,6 +726,33 @@ def plot_MonteCarlo():
     # fig.savefig("./plots/MonteCarlo.jpg")
 
 
+def plot_MonteCarlo_agent_num():
+
+    N = 3
+    ind = np.arange(N)  # the x locations for the groups
+    width = 0.10       # the width of the bars
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+
+    OSPA = [np.mean(O_AGA_timeSteps),np.mean(O_ABU_timeSteps),np.mean(O_PF_timeSteps)]
+    rects1 = ax.bar(ind, OSPA, width, color='r')
+
+
+    MSPA = [np.mean(M_AGA_timeSteps),np.mean(M_ABU_timeSteps),np.mean(M_PF_timeSteps)]
+    rects2 = ax.bar(ind+ width, MSPA, width, color='b')
+
+    ax.set_title('MonteCarlo')
+    ax.set_ylabel('Time Steps')
+    ax.set_xlabel('Estimation Method')
+    ax.set_xticks(ind+width)
+    ax.set_xticklabels(('AGA','ABU','PF'))
+    ax.legend((rects1[0], rects2[0]), ('One State Per Action','Multiple State Per Action'))
+    plt.show()
+    # fig.savefig("./plots/MonteCarlo.jpg")
+
+
 def plot_MonteCarlo_time():
 
     N = 2
@@ -484,86 +780,558 @@ def plot_MonteCarlo_time():
     plt.show()
     # fig.savefig("./plots/MonteCarlo.jpg")
 
-def multiple_agents():
+
+def calcConfInt_1(p,r):
+    f = open("tmp.R","w")
+    f.write("#!/usr/bin/Rscript\n")
+
+    listStr = ""
+    flistStr = ""
+
+    for n in p:
+
+        listStr = listStr + str(n) + ","
+
+    for m in r:
+        flistStr = flistStr + str(m) + ","
+
+
+
+    # O
+
+    f.write("print(t.test(c(" + listStr[:-1] + "),c(" + flistStr[:-1] + ")))")
+
+    f.close()
+
+    os.system("chmod +x ./tmp.R")
+    output = subprocess.check_output("./tmp.R", stderr=subprocess.STDOUT, shell=True)
+    output = output.split()
+    # print 'end of function', float(output[-7])
+    return output
+
+
+def calcConfInt(p):
+    f = open("tmp.R","w")
+    f.write("#!/usr/bin/Rscript\n")
+
+    listStr = ""
+
+    for n in p:
+
+        listStr = listStr + str(n) + ","
+
+    f.write("print(t.test(c("+listStr[:-1]+"),conf.level=0.90))")
+
+    f.close()
+
+    os.system("chmod +x ./tmp.R")
+    output = subprocess.check_output("./tmp.R", stderr=subprocess.STDOUT, shell=True)
+    output = output.split()
+    # print 'end of function', float(output[-7])
+    return float(output[-7])
+
+
+def multiple_agents_AGA():
     global ust_info
+    file = open("data_aga.txt", 'w')
+
+    algorithms = ["uct-AGA", "uct-h-AGA"]
+    algorithmsLabels = ["uct-AGA", "uct-h-AGA"]
+
+    algorithmsSymbol = ["o","v"]
+
+    nAgents = [ 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    max_time_steps = 50
+
+    data = np.zeros((len(nAgents), len(algorithms), len(range(max_time_steps))))
+    count = np.zeros(2 * len(nAgents))
+
+
+    dataMean = np.zeros((len(nAgents), len(algorithms)))
+    dataUpCi = np.zeros((len(nAgents), len(algorithms)))
+    dataUpCi_1 = np.zeros((len(nAgents), len(algorithms)))
+    dataStd = np.zeros((len(nAgents), len(algorithms)))
+
+    for u in ust_info:
+        agent_count = int(u["agentsCounts"])
+
+        if u["mcts_mode"] == 'MSPA' and u['estimationMode'] == 'AGA':
+            index = int(count[(agent_count - 2) * 2])
+            data[agent_count - 2, 0, index] = u['timeSteps']
+            count[((agent_count - 2) * 2)] += 1
+
+        if u["mcts_mode"] == 'OSPA' and u['estimationMode'] == 'AGA':
+            index = int(count[((agent_count - 2) * 2) + 1])
+            data[agent_count - 2, 1, index] = u['timeSteps']
+            count[((agent_count - 2) * 2) + 1] += 1
+
+    for n in range(len(nAgents)):
+        for a in range(len(algorithms)):
+            #print str(nAgents[n]), str(algorithms[a]), data[n, a, 0:int(count[(n * 2) + a])]
+
+            dataMean[n, a] = np.mean(data[n, a, 0:int(count[(n * 2) + a])])
+            dataStd[n, a] = np.std(data[n, a, 0:int(count[(n * 2) + a])], ddof=1)
+            t = calcConfInt_1(data[n, 0, 0:int(count[(n * 2) + 0])], data[n, 1, 0:int(count[(n * 2) + 1])])
+            file.write(str (nAgents[n]) + ',' +str (algorithms[a]) + ',' +  str(t) + '\n')
+            dataUpCi[n, a] = calcConfInt(data[n, a, 0:int(count[(n* 2) + a])])
+
+    plt.figure(figsize=(4, 3.0))
+
+    for a in range(len(algorithms)):
+         # plt.errorbar(nAgents, dataMean[:, a], yerr=dataStd[:, a],
+         #              label=algorithmsLabels[a], marker=algorithmsSymbol[a])
+         plt.errorbar(nAgents, dataMean[:, a], yerr=[m - n for m, n in zip(dataUpCi[:, a], dataMean[:, a])],
+                      label=algorithmsLabels[a], marker=algorithmsSymbol[a])
+
+         # plt.errorbar(nAgents, dataMean[:, a], label=algorithmsLabels[a])
+
+    plt.legend(loc=9, prop={'size': 9})
+
+    plt.ylim(ymax=800)
+    plt.ylim(ymin=0)
+
+    plt.xlim([0,len(nAgents) + 2 ])
+    plt.xlabel("Number of Agents")
+    plt.ylabel("Number of Iterations")
+    plt.savefig("plots/nAgents-20_AGA.pdf", bbox_inches='tight')
+    # plt.show()
+
+
+def multiple_agents_ABU():
+    global ust_info
+    file = open("data_abu.txt", 'w')
+
+    algorithms = ["uct-ABU", "uct-h-ABU"]
+    algorithmsLabels = ["uct-ABU", "uct-h-ABU"]
+    algorithmsSymbol = ["o","v"]
+
+    nAgents = [2, 3, 4, 5, 6, 7, 8, 9, 10]
+    max_time_steps = 50
+
+    data = np.zeros((len(nAgents), len(algorithms), len(range(max_time_steps))))
+    count = np.zeros(2 * len(nAgents))
+
+
+    dataMean = np.zeros((len(nAgents), len(algorithms)))
+    dataUpCi = np.zeros((len(nAgents), len(algorithms)))
+    dataStd = np.zeros((len(nAgents), len(algorithms)))
+
+    for u in ust_info:
+        agent_count = int(u["agentsCounts"])
+
+        if u["mcts_mode"] == 'MSPA' and u['estimationMode'] == 'ABU':
+            index = int(count[(agent_count - 2) * 2])
+            data[agent_count - 2, 0, index] = u['timeSteps']
+            count[(agent_count - 2) * 2] += 1
+
+        if u["mcts_mode"] == 'OSPA' and u['estimationMode'] == 'ABU':
+            index = int( count[((agent_count - 2) * 2) + 1])
+            data[agent_count - 2, 1, index] = u['timeSteps']
+            count[((agent_count - 2) * 2) + 1] += 1
+
+
+
+    for n in range(len(nAgents)):
+        for a in range(len(algorithms)):
+            #print str(nAgents[n]), str(algorithms[a]), data[n, a, 0:int(count[(n * 2) + a])]
+
+            dataMean[n, a] = np.mean(data[n, a, 0:int(count[(n * 2) + a])])
+            dataStd[n, a] = np.std(data[n, a, 0:int(count[(n * 2) + a])], ddof=1)
+            # print str(nAgents[n]) + ',' + str(algorithms[a]) + ',' + str(data[n, a, 0:count[(n * 2) + a]])
+
+            t = calcConfInt_1(data[n, 0, 0:int(count[(n * 2) + 0])], data[n, 1, 0:int(count[(n * 2) + 1])])
+            file.write(str(nAgents[n]) + ',' + str(algorithms[a]) + ',' + str(t) + '\n')
+            dataUpCi[n, a] = calcConfInt(data[n, a, 0:int(count[(n* 2) + a])])
+
+    plt.figure(figsize=(4, 3.0))
+
+    # for a in range(len(algorithms)):
+    #      plt.errorbar(nAgents, dataMean[:, a], yerr=dataStd[:, a], label=algorithmsLabels[a], marker=algorithmsSymbol[a])
+
+    for a in range(len(algorithms)):
+        plt.errorbar(nAgents, dataMean[:, a], yerr=[m - n for m, n in zip(dataUpCi[:, a], dataMean[:, a])],
+                     label=algorithmsLabels[a], marker=algorithmsSymbol[a])
+
+    plt.legend(loc=1, prop={'size': 7})
+    plt.ylim(ymax=800)
+    plt.ylim(ymin=0)
+    plt.xlim([0,len(nAgents) + 2 ])
+    plt.xlabel("Number of Agents")
+    plt.ylabel("Number of Iterations")
+    plt.savefig("plots/nAgents-20_ABU.pdf", bbox_inches='tight')
+    # plt.show()
+
+
+def multiple_agents_mem():
+    global ust_info
+    file = open("data_mem.txt", 'w')
 
     algorithms = ["uct", "uct-h"]
     algorithmsLabels = ["UCT", "UCT-H"]
 
     algorithmsSymbol = ["o", "v"]
 
-    nAgents = [1, 2, 3]
-    max_time_steps = 6
-
-    # nSamples = 1
+    nAgents = [2, 3, 4, 5, 6, 7, 8, 9, 10]
+    max_time_steps = 50
 
     data = np.zeros((len(nAgents), len(algorithms), len(range(max_time_steps))))
-    count = [0,0,0,0,0,0]
-    print data
+    count = np.zeros(2 * len(nAgents))
 
     dataMean = np.zeros((len(nAgents), len(algorithms)))
     dataUpCi = np.zeros((len(nAgents), len(algorithms)))
+    dataStd = np.zeros((len(nAgents), len(algorithms)))
 
-    u = 0
-    u_data = [[]] * len(nAgents)
-    h_data = [[]] * len(nAgents)
 
     for u in ust_info:
-        agent_count = int(u["agentsCounts"])
-        print agent_count
-        print u['timeSteps']
 
+        agent_count = int(u["agentsCounts"])
 
         if u["mcts_mode"]=='MSPA':
-            index = count[(agent_count-1) * 2]
-            data[agent_count-1,0,index] = u['timeSteps']
-            count[(agent_count - 1) * 2] +=1
+            index = int(count[(agent_count-2) * 2])
+            data[agent_count-2,0,index] = u['memory_usage']
+            count[(agent_count - 2) * 2] +=1
 
         if u["mcts_mode"]=='OSPA':
-            index = count[((agent_count - 1) * 2) + 1]
-            data[agent_count-1,1,index] = u['timeSteps']
-            count[((agent_count - 1) * 2) + 1] +=1
+            index = int(count[((agent_count - 2) * 2) + 1])
+            data[agent_count-2,1,index] = u['memory_usage']
+            count[((agent_count - 2) * 2) + 1] +=1
 
-    print data[0, 0, 0:count[(0 * 2) + 0]]
-    ro = ""
 
-    # for u in
-    # #
-    stddev = np.std(data, ddof=1)
+
     for n in range(len(nAgents)):
 
         for a in range(len(algorithms)):
-            print data[n, a, :]
-            dataMean[n, a] = np.mean(data[n, a, 0:count[(n* 2) + a ]])
-            dataUpCi[n, a] = np.std(data[n, a, 0:count[(n* 2) + a ]], ddof=1)
-    # #
+
+
+            dataMean[n, a] = np.mean(data[n, a, 0:int(count[(n* 2) + a ])])
+            dataStd[n, a] = np.std(data[n, a, 0:int(count[(n* 2) + a])], ddof=1)
+            t = calcConfInt_1(data[n, 0, 0:int(count[(n * 2) + 0])], data[n, 1, 0:int(count[(n * 2) + 1])])
+            file.write(str(nAgents[n]) + ',' + str(algorithms[a]) + ',' + str(t) + '\n')
+            dataUpCi[n, a] = calcConfInt(data[n, a, 0:int(count[(n * 2) + a])])
+
     plt.figure(figsize=(4, 3.0))
 
     for a in range(len(algorithms)):
-         plt.errorbar(nAgents, dataMean[:, a], yerr=[m - n for m, n in zip(dataUpCi[:, a], dataMean[:, a])],
-                      label=algorithmsLabels[a], marker=algorithmsSymbol[a])
-         plt.errorbar(nAgents,dataMean[:,a], label=algorithmsLabels[a])
+        plt.errorbar(nAgents, dataMean[:, a], yerr=[m - n for m, n in zip(dataUpCi[:, a], dataMean[:, a])],
+                     label=algorithmsLabels[a], marker=algorithmsSymbol[a])
 
-    plt.legend(loc=1)
 
-    plt.xlim([0, 5])
+    plt.legend(loc=2, prop={'size': 9})
+
+    plt.xlim([0, len(nAgents) + 2])
+    plt.xlabel("Number of Agents")
+    plt.ylabel("Memory Usage")
+    plt.savefig("plots/nAgents-20_mem.pdf", bbox_inches='tight')
+
+    # plt.show()
+
+
+def multiple_agents_ct():
+    global ust_info
+    file = open("data_ct.txt", 'w')
+
+    algorithms = ["uct", "uct-h"]
+    algorithmsLabels = ["UCT", "UCT-H"]
+
+    algorithmsSymbol = ["o", "v"]
+
+    nAgents = [2, 3, 4, 5, 6, 7, 8, 9, 10]
+    max_time_steps = 50
+
+    data = np.zeros((len(nAgents), len(algorithms), len(range(max_time_steps))))
+    count = np.zeros(2 * len(nAgents))
+
+    dataMean = np.zeros((len(nAgents), len(algorithms)))
+    dataUpCi = np.zeros((len(nAgents), len(algorithms)))
+    dataStd = np.zeros((len(nAgents), len(algorithms)))
+
+
+    for u in ust_info:
+        agent_count = int(u["agentsCounts"])
+
+        if u["mcts_mode"]=='MSPA':
+            index = int(count[(agent_count-2) * 2])
+            data[agent_count-2,0,index] = u['computationalTime']
+            count[(agent_count - 2) * 2] +=1
+
+        if u["mcts_mode"]=='OSPA':
+            index = int(count[((agent_count - 2) * 2) + 1])
+            data[agent_count-2,1,index] = u['computationalTime']
+            count[((agent_count - 2) * 2) + 1] +=1
+
+
+
+    for n in range(len(nAgents)):
+
+        for a in range(len(algorithms)):
+
+            dataMean[n, a] = np.mean(data[n, a, 0:int(count[(n* 2) + a ])])
+            dataStd[n, a] = np.std(data[n, a, 0:int(count[(n* 2) + a])], ddof=1)
+            t = calcConfInt_1(data[n, 0, 0:int(count[(n * 2) + 0])], data[n, 1, 0:int(count[(n * 2) + 1])])
+            file.write(str(nAgents[n]) + ',' + str(algorithms[a]) + ',' + str(t) + '\n')
+            dataUpCi[n, a] = calcConfInt(data[n, a, 0:int(count[(n * 2) + a])])
+
+    plt.figure(figsize=(4, 3.0))
+
+    for a in range(len(algorithms)):
+        plt.errorbar(nAgents, dataMean[:, a], yerr=[m - n for m, n in zip(dataUpCi[:, a], dataMean[:, a])],
+                     label=algorithmsLabels[a], marker=algorithmsSymbol[a])
+
+
+    plt.legend(loc=2, prop={'size': 9})
+
+    plt.xlim([0, len(nAgents) + 2])
+    plt.xlabel("Number of Agents")
+    plt.ylabel("Computational Time")
+    plt.savefig("plots/nAgents-20_ct.pdf", bbox_inches='tight')
+
+    # plt.show()
+
+
+def multiple_agents_ct_per_ts():
+    global ust_info
+    # file = open("data.txt", 'w')
+
+    algorithms = ["uct", "uct-h"]
+    algorithmsLabels = ["UCT", "UCT-H"]
+
+    algorithmsSymbol = ["o", "v"]
+
+    nAgents = [2, 3, 4, 5, 6, 7, 8, 9, 10]
+    max_time_steps = 50
+
+    data = np.zeros((len(nAgents), len(algorithms), len(range(max_time_steps))))
+    count = np.zeros(2 * len(nAgents))
+
+    dataMean = np.zeros((len(nAgents), len(algorithms)))
+    dataUpCi = np.zeros((len(nAgents), len(algorithms)))
+    dataStd = np.zeros((len(nAgents), len(algorithms)))
+
+
+    for u in ust_info:
+        agent_count = int(u["agentsCounts"])
+
+        if u["mcts_mode"]=='MSPA':
+            index = int(count[(agent_count-2) * 2])
+            data[agent_count-2,0,index] = u['computationalTime']/u['timeSteps']
+            count[(agent_count - 2) * 2] +=1
+
+        if u["mcts_mode"]=='OSPA':
+            index = int(count[((agent_count - 2) * 2) + 1])
+            data[agent_count-2,1,index] = u['computationalTime']/u['timeSteps']
+            count[((agent_count - 2) * 2) + 1] +=1
+
+
+
+    for n in range(len(nAgents)):
+
+        for a in range(len(algorithms)):
+
+            dataMean[n, a] = np.mean(data[n, a, 0:int(count[(n* 2) + a ])])
+            dataStd[n, a] = np.std(data[n, a, 0:int(count[(n* 2) + a])], ddof=1)
+            # print 'CI    ', data[n, a, 0:count[(n * 2) + a]]
+            dataUpCi[n, a] = calcConfInt(data[n, a, 0:int(count[(n * 2) + a])])
+
+    plt.figure(figsize=(4, 3.0))
+
+    for a in range(len(algorithms)):
+        plt.errorbar(nAgents, dataMean[:, a], yerr=[m - n for m, n in zip(dataUpCi[:, a], dataMean[:, a])],
+                     label=algorithmsLabels[a], marker=algorithmsSymbol[a])
+
+
+    plt.legend(loc=2, prop={'size': 9})
+
+    plt.xlim([0, len(nAgents) + 2])
+    plt.xlabel("Number of Agents")
+    plt.ylabel("Computational Time Per time Step")
+    plt.savefig("plots/nAgents-20_ct_per_ts.pdf", bbox_inches='tight')
+
+    # plt.show()
+
+
+def multiple_agents():
+    global ust_info
+    file = open("data.txt", 'w')
+
+    algorithms = ["uct", "uct-h"]
+    algorithmsLabels = ["UCT", "UCT-H"]
+
+    algorithmsSymbol = ["o", "v"]
+
+    nAgents = [2, 3, 4, 5, 6, 7, 8, 9, 10]
+    max_time_steps = 50
+
+    data = np.zeros((len(nAgents), len(algorithms), len(range(max_time_steps))))
+    count = np.zeros(2 * len(nAgents))
+
+    dataMean = np.zeros((len(nAgents), len(algorithms)))
+    dataUpCi = np.zeros((len(nAgents), len(algorithms)))
+    dataStd = np.zeros((len(nAgents), len(algorithms)))
+
+    for u in ust_info:
+       # print u
+        agent_count = int(u["agentsCounts"])
+
+        if u["mcts_mode"]=='MSPA':
+            index = int(count[(agent_count-2) * 2])
+            data[agent_count - 2, 0, index] = u['timeSteps']
+            count[(agent_count - 2) * 2] +=1
+
+        if u["mcts_mode"]=='OSPA':
+            index =int( count[((agent_count - 2) * 2) + 1])
+            #print 'agent_count - 2',agent_count - 2
+            #print 'index', index
+            data[agent_count - 2, 1, index] = u['timeSteps']
+            count[((agent_count - 2) * 2) + 1] +=1
+
+
+    # print 'all',data
+    for n in range(len(nAgents)):
+
+        for a in range(len(algorithms)):
+        #    print str(nAgents[n]) , str(algorithms[a]), data[n, a, 0:count[(n * 2) + a]]
+            dataMean[n, a] = np.mean(data[n, a, 0:int(count[(n* 2) + a ])])
+            dataStd[n, a] = np.std(data[n, a, 0:int (count[(n* 2) + a])], ddof=1)
+            dataUpCi[n, a] = calcConfInt(data[n, a, 0: int(count[(n * 2) + a])])
+            # print 'CI    ', data[n, a, 0:count[(n * 2) + a]]
+            t = calcConfInt_1(data[n, 0, 0:int(count[(n * 2) + 0])],data[n, 1, 0:int(count[(n * 2) + 1])])
+            file.write(str(nAgents[n]) + ',' + str(algorithms[a]) + ',' + str(t) + '\n')
+            # dataUpCi[n, a] = calcConfInt(data[n, a, 0:count[(n * 2) + a]])
+
+    plt.figure(figsize=(4, 3.0))
+
+
+
+
+    for a in range(len(algorithms)):
+        print [m - n for m, n in zip(dataUpCi[:, a], dataMean[:, a])]
+        print dataMean[:, a]
+        plt.errorbar(nAgents, dataMean[:, a],
+                     yerr=[m - n for m, n in zip(dataUpCi[:, a], dataMean[:, a])],
+                     label=algorithmsLabels[a],
+                     marker=algorithmsSymbol[a])
+
+
+    plt.legend(loc=2, prop={'size':9})
+
+    plt.ylim(ymax=800)
+    plt.ylim(ymin=0)
+
+    plt.xlim([0, len(nAgents) + 2])
     plt.xlabel("Number of Agents")
     plt.ylabel("Number of Iterations")
+    plt.savefig("plots/nAgents-20.pdf", bbox_inches='tight')
 
-    plt.savefig("nAgents-15.pdf", bbox_inches='tight')
+    # plt.show()
 
+
+def multiple_env():
+    global ust_info
+    file = open("data_env.txt", 'w')
+
+    algorithms = ["uct", "uct-h"]
+    algorithmsLabels = ["UCT", "UCT-H"]
+
+    algorithmsSymbol = ["o", "v"]
+
+    EnvSizes = [10, 15, 20, 25,30]
+    max_time_steps = 120
+
+    data = np.zeros((len(EnvSizes), len(algorithms), len(range(max_time_steps))))
+
+    count = np.zeros(2 * len(EnvSizes))
+
+    dataMean = np.zeros((len(EnvSizes), len(algorithms)))
+    dataUpCi = np.zeros((len(EnvSizes), len(algorithms)))
+    dataStd = np.zeros((len(EnvSizes), len(algorithms)))
+    size_10 = 0
+    size_15 = 0
+    size_20 = 0
+    size_25 = 0
+    size_30 = 0
+    print len(ust_info)
+    for u in ust_info:
+
+        env_count = int(u["simWidth"])/5
+        if env_count * 5 == 10:
+            size_10 +=1
+        if env_count * 5 == 15:
+            size_15 +=1
+        if env_count * 5 == 20:
+            size_20 +=1
+        if env_count * 5 == 25:
+            size_25 +=1
+        if env_count  * 5 == 30:
+            size_30 +=1
+        # 18 27 58 10 3
+        if u["mcts_mode"] == 'MSPA':
+            index = int(count[(env_count - 2) * 2])
+            print('MSPA',env_count - 2,index)
+            data[env_count - 2, 0, index] = u['timeSteps']
+            count[(env_count - 2) * 2] += 1
+
+        if u["mcts_mode"]=='OSPA':
+            index =int( count[((env_count - 2) * 2) + 1])
+            print('OSPA', env_count - 2, index)
+            data[env_count - 2, 1, index] = u['timeSteps']
+            count[((env_count - 2) * 2) + 1] += 1
+
+    print size_10,  size_15,    size_20 ,    size_25 ,    size_30
+    print count
+    for n in range(len(EnvSizes)-1):
+
+        for a in range(len(algorithms)):
+            # print count[(n* 2) + a ]
+            ex_count = int( count[((n ) * 2) + a ])
+            # print str(EnvSizes[n]), str(algorithms[a]), data[n, a, 0:ex_count]
+            dataMean[n, a] = np.mean(data[n, a, 0:ex_count])
+            dataStd[n, a] = np.std(data[n, a, 0:ex_count], ddof=1)
+            if len(data[n, a, 0: ex_count])>0:
+                dataUpCi[n, a] = calcConfInt(data[n, a, 0: ex_count])
+            # print 'CI    ', data[n, a, 0:count[(n * 2) + a]]
+            t = calcConfInt_1(data[n, 0, 0:ex_count],data[n, 1, 0:ex_count])
+            file.write(str(EnvSizes[n]) + ',' + str(algorithms[a]) + ',' + str(t) + '\n')
+            # dataUpCi[n, a] = calcConfInt(data[n, a, 0:ex_count])
+    #
+    # plt.figure(figsize=(4, 3.0))
+    # print "envvvvvvvvvvvv"
+    # print dataUpCi
+    print dataMean
+    print dataStd
+    for a in range(len(algorithms)):
+
+        plt.errorbar(EnvSizes, dataMean[:, a],
+                     yerr=[m - n for m, n in zip(dataStd[:, a], dataMean[:, a])],
+                     label=algorithmsLabels[a],
+                     marker=algorithmsSymbol[a])
+
+
+
+
+    # plt.legend(loc=2, prop={'size':9})
+
+
+
+    plt.xlabel("Evvironment Size")
+    plt.ylabel("Number of Iterations")
+    plt.savefig("plots/nAgents_env.pdf", bbox_inches='tight')
 
     plt.show()
-
-
 
 # read_files()
 # extract_information()
 # plot_history_of_estimation()
 # plot_errors_in_last_estimation()
 # plot_errors_in_history_estimation()
+add_data()
 read_data_for_UCT()
-multiple_agents()
+multiple_env()
+# multiple_agents()
+# multiple_agents_ct()
+# multiple_agents_ct_per_ts()
+# multiple_agents_AGA()
+# multiple_agents_ABU()
+#multiple_agents_mem()
 # plot_MonteCarlo()
 # plot_MonteCarlo_time()
 
