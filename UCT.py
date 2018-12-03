@@ -1,5 +1,4 @@
 from math import *
-from copy import deepcopy
 import agent
 from numpy.random import choice
 
@@ -57,8 +56,8 @@ class Node:
         Qt.append(Q_table_row('E', 0, 0, 0))
         Qt.append(Q_table_row('S', 0, 0, 0))
         Qt.append(Q_table_row('W', 0, 0, 0))
-        if self.enemy:
-            Qt.append(Q_table_row('V', 0, 0, 0))
+        # if self.enemy:
+        #     Qt.append(Q_table_row('V', 0, 0, 0))
         return Qt
 
     ####################################################################################################################
@@ -83,35 +82,37 @@ class Node:
         return s
 
     ####################################################################################################################
+
     def uct_select_action(self):
 
         maxUCB = -1
         maxA = None
+        if self.enemy:
+            maxUCB = 10000000000
 
         for a in range(len(self.Q_table)):
             if self.valid(self.Q_table[a].action):
 
+                # currentUCB = self.Q_table[a].QValue + sqrt(2.0 * log(float(self.visits)) / float(self.Q_table[a].trials))
+
                 # TODO: The exploration constant could be set up in the configuration file
-                if self.Q_table[a].trials <= 0:
-                    currentUCB = 0
+                if (self.Q_table[a].trials > 0 and not self.enemy):
+                    currentUCB = self.Q_table[a].QValue + 0.5 * sqrt(
+                        log(float(self.visits)) / float(self.Q_table[a].trials))
+                elif (self.Q_table[a].trials > 0 and self.enemy):
+                    currentUCB = self.Q_table[a].QValue - 0.5 * sqrt(
+                        log(float(self.visits)) / float(self.Q_table[a].trials))
                 else:
+                    currentUCB = 0
 
-                    if self.enemy:
-                        currentUCB = self.Q_table[a].QValue - 0.5 * sqrt(
-                            log(float(self.visits)) / float(self.Q_table[a].trials))
-
-                    else:
-                        currentUCB = self.Q_table[a].QValue + 0.5 * sqrt(
-                            log(float(self.visits)) / float(self.Q_table[a].trials))
-
-                    if (currentUCB < maxUCB and self.enemy) or currentUCB > maxUCB:
-                        maxUCB = currentUCB
-                        maxA = self.Q_table[a].action
-
-
+                if not self.enemy and currentUCB > maxUCB:
+                    maxUCB = currentUCB
+                    maxA = self.Q_table[a].action
+                if self.enemy and currentUCB < maxUCB:
+                    maxUCB = currentUCB
+                    maxA = self.Q_table[a].action
 
         return maxA
-
     ####################################################################################################################
     def add_child(self, state, enemy):
 
@@ -221,7 +222,7 @@ class UCT:
                     get_reward += float(1.0)
                 else:
                     sim.items[destination_item_index].agents_load_item.append(tmp_m_agent)
-        elif move != 'V':
+        else:
             (x_new, y_new) = tmp_m_agent.new_position_with_given_action(sim.dim_w, sim.dim_h, move)
 
             # If there new position is empty
@@ -270,11 +271,43 @@ class UCT:
         # maxA=node.uct_select_action()
         return maxA
 
+    ########################################################################################
+
+    def best_enemy_action(self, node, action):
+        nodes = node.childNodes
+        node = None
+
+        for n in range(len(nodes)):
+            if nodes[n].action == action:
+                node = nodes[n]
+
+        Q_table = node.Q_table
+        sumQ = 0
+        probabilities = []
+        for i in range(len(Q_table)):
+            sumQ += Q_table[i].QValue
+
+        for i in range(len(Q_table)):
+            if (Q_table[i].trials > 0):
+                probabilities.append(sumQ - Q_table[i].QValue)
+            else:
+                probabilities.append(0)
+        sumQ = sum(probabilities)
+        if (sumQ > 0):
+            sumQ = 1 / sumQ
+        else:
+            sumQ = 0
+        for i in range(len(probabilities)):
+            probabilities[i] *= sumQ
+        print "Total after belief is ", sum(probabilities)
+        print "Probabilities: ", probabilities
+        self.print_Q_table(node)
+
+        return max(probabilities)
     ################################################################################################################
     def terminal(self, state):
         if state.simulator.items_left() == 0:
             return True
-
         return False
 
     ################################################################################################################
@@ -387,7 +420,7 @@ class UCT:
                 if self.apply_adversary:
                     next_node = node.add_child_one_state(action, next_state, not self.enemy)
                 else:
-                    next_node = node.add_child_one_state(action, next_state, not self.enemy)
+                    next_node = node.add_child_one_state(action, next_state,  self.enemy)
 
 
         discount_factor = 0.95
@@ -424,9 +457,13 @@ class UCT:
             time_step += 1
 
         best_selected_action = self.best_action(node)
+        enemy_probabilities = None
+        if self.apply_adversary and not self.enemy:
 
-        return best_selected_action, node
+            enemy_probabilities = self.best_enemy_action(node, best_selected_action)
 
+
+        return best_selected_action, enemy_probabilities, node
     ####################################################################################################################
     def agent_planning(self, time_step, search_tree, sim,  enemy):
         global totalItems
@@ -438,10 +475,10 @@ class UCT:
         if search_tree is None:
             totalItems = tmp_sim.items_left()
 
-        next_move, search_tree = self.monte_carlo_planning(time_step, search_tree, tmp_sim,
+        next_move, enemy_prediction, search_tree = self.monte_carlo_planning(time_step, search_tree, tmp_sim,
                                                             enemy)
 
-        return next_move, search_tree
+        return next_move, enemy_prediction, search_tree
 
     ####################################################################################################################
     def print_search_tree(self, main_time_step):

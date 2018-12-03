@@ -1,7 +1,7 @@
 import POUCT
 import posimulator
 import simulatorCommonMethods
-from copy import deepcopy
+from copy import copy
 from math import sqrt, log
 from numpy.random import choice
 from random import sample
@@ -18,7 +18,7 @@ class POMCP:
 		self.k = 500
 
 	def m_poagent_planning(self,posim,param_est):
-		print 'starting main po-agent planning'
+		# print 'starting main po-agent planning'
 		# 1. Copying the current simulation
 		posimulation = posim.copy()
 
@@ -53,10 +53,10 @@ class POMCP:
 
 			del new_sim
 		del cur_belief
-		print self.sample_belief
+		# print self.sample_belief
 
 	def search(self,history,posim,param_est):
-		print 'history:',history
+		# print 'history:',history
 		it = 0	
 		while it < self.max_iteration:
 			if it % 5 == 0:
@@ -77,7 +77,7 @@ class POMCP:
 		cur_node = None
 		best_node, best_action = POUCT.Node(1,-99999,0,dict(),[],0,None),'L'
 		for a in posim.possible_actions_given_state(state):
-			hb = deepcopy(self.poagent.history)
+			hb = copy(self.poagent.history)
 			hb.append(a)
 			cur_node = self.pouct.search_history(hb)
 			if cur_node.value > best_node.value and cur_node != self.pouct.search_tree.root:
@@ -88,12 +88,12 @@ class POMCP:
 
   	def evaluate_simulate_actions(self,state,found_node,posim):
   		for a in posim.possible_actions_given_state(state):
-  			new_h = deepcopy(found_node.history)
+  			new_h = copy(found_node.history)
   			new_h.append(a)
   			found_node.add_child(1,0,0,dict(),new_h)
 
   	def evaluate_simulate_observation(self,observation,choosen_child):
-  		new_h = deepcopy(choosen_child.history)
+  		new_h = copy(choosen_child.history)
   		new_h.append(observation)
   		choosen_child.add_child(1,0,0,dict(),new_h)
 
@@ -134,7 +134,8 @@ class POMCP:
 
 		# c. calculating the reward
 		# R <- r + gamma*SIMULATE(s',hao,depth+1)
-  		new_history = deepcopy(choosen_child.history)
+  		new_history = d
+		copy(choosen_child.history)
   		new_history.append(observation)
   		found_node = self.pouct.search_history(new_history)
 		if(new_history != found_node.history):
@@ -169,7 +170,7 @@ class POMCP:
 		new_state, observation, reward = new_sim.run(state,action,param_est)
 
 		# 3. Building the new history
-		new_history = deepcopy(history)
+		new_history = copy(history)
 		new_history.append(action)
 		new_history.append(observation)
 

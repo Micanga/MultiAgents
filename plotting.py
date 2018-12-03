@@ -5,7 +5,6 @@ import os
 import numpy as np
 import subprocess
 
-
 results = list()
 max_len_hist = 0
 max_time_steps = 0
@@ -52,7 +51,7 @@ ave_pf_radius = []
 
 ust_info = []
 
-
+########################################################################################################################
 def read_data_for_UCT():
     counttt = 0
     for root, dirs, files in os.walk('outputs'):
@@ -93,260 +92,7 @@ def read_data_for_UCT():
                     UCT_Dictionary['timeSteps'] = systemDetails['timeSteps']
                     ust_info.append(UCT_Dictionary)
     return counttt
-
-def add_data():
-    UCT_Dictionary = {}
-    UCT_Dictionary['simWidth'] = 20
-    UCT_Dictionary['simHeight'] = 20
-    UCT_Dictionary['agentsCounts'] = 6
-    UCT_Dictionary['itemsCounts'] = 20
-    UCT_Dictionary['iterationMax'] = 100
-    UCT_Dictionary['maxDepth'] = 100
-    UCT_Dictionary['mcts_mode'] = 'OSPA'
-    UCT_Dictionary['memory_usage'] = 10
-    UCT_Dictionary['computationalTime'] = 100
-    UCT_Dictionary['estimationMode'] = 'AGA'
-    UCT_Dictionary['timeSteps'] = 320
-    ust_info.append(UCT_Dictionary)
-
-    UCT_Dictionary = {}
-    UCT_Dictionary['simWidth'] = 20
-    UCT_Dictionary['simHeight'] = 20
-    UCT_Dictionary['agentsCounts'] = 6
-    UCT_Dictionary['itemsCounts'] = 20
-    UCT_Dictionary['iterationMax'] = 100
-    UCT_Dictionary['maxDepth'] = 100
-    UCT_Dictionary['mcts_mode'] = 'OSPA'
-    UCT_Dictionary['memory_usage'] = 10
-    UCT_Dictionary['computationalTime'] = 100
-    UCT_Dictionary['estimationMode'] = 'AGA'
-    UCT_Dictionary['timeSteps'] = 300
-    ust_info.append(UCT_Dictionary)
-
-    UCT_Dictionary = {}
-    UCT_Dictionary['simWidth'] = 20
-    UCT_Dictionary['simHeight'] = 20
-    UCT_Dictionary['agentsCounts'] = 6
-    UCT_Dictionary['itemsCounts'] = 20
-    UCT_Dictionary['iterationMax'] = 100
-    UCT_Dictionary['maxDepth'] = 100
-    UCT_Dictionary['mcts_mode'] = 'OSPA'
-    UCT_Dictionary['computationalTime'] = 100
-    UCT_Dictionary['memory_usage'] = 10
-    UCT_Dictionary['estimationMode'] = 'AGA'
-    UCT_Dictionary['timeSteps'] = 200
-    ust_info.append(UCT_Dictionary)
-
-    UCT_Dictionary = {}
-    UCT_Dictionary['simWidth'] = 20
-    UCT_Dictionary['simHeight'] = 20
-    UCT_Dictionary['agentsCounts'] = 6
-    UCT_Dictionary['itemsCounts'] = 20
-    UCT_Dictionary['iterationMax'] = 100
-    UCT_Dictionary['maxDepth'] = 100
-    UCT_Dictionary['memory_usage'] = 1251467264
-    UCT_Dictionary['mcts_mode'] = 'MSPA'
-    UCT_Dictionary['computationalTime'] = 100
-    UCT_Dictionary['estimationMode'] = 'AGA'
-    UCT_Dictionary['timeSteps'] = 365
-    ust_info.append(UCT_Dictionary)
-
-    UCT_Dictionary = {}
-    UCT_Dictionary['simWidth'] = 20
-    UCT_Dictionary['simHeight'] = 20
-    UCT_Dictionary['agentsCounts'] = 6
-    UCT_Dictionary['itemsCounts'] = 20
-    UCT_Dictionary['iterationMax'] = 100
-    UCT_Dictionary['maxDepth'] = 100
-    UCT_Dictionary['mcts_mode'] = 'MSPA'
-    UCT_Dictionary['memory_usage'] = 1251467264
-    UCT_Dictionary['computationalTime'] = 20000
-    UCT_Dictionary['estimationMode'] = 'AGA'
-    UCT_Dictionary['timeSteps'] = 324
-    ust_info.append(UCT_Dictionary)
-
-    UCT_Dictionary = {}
-    UCT_Dictionary['simWidth'] = 20
-    UCT_Dictionary['simHeight'] = 20
-    UCT_Dictionary['agentsCounts'] = 6
-    UCT_Dictionary['itemsCounts'] = 20
-    UCT_Dictionary['iterationMax'] = 100
-    UCT_Dictionary['maxDepth'] = 100
-    UCT_Dictionary['mcts_mode'] = 'OSPA'
-    UCT_Dictionary['memory_usage'] = 10
-    UCT_Dictionary['computationalTime'] = 100
-    UCT_Dictionary['estimationMode'] = 'ABU'
-    UCT_Dictionary['timeSteps'] = 10
-    ust_info.append(UCT_Dictionary)
-
-    UCT_Dictionary = {}
-    UCT_Dictionary['simWidth'] = 20
-    UCT_Dictionary['simHeight'] = 20
-    UCT_Dictionary['agentsCounts'] = 6
-    UCT_Dictionary['itemsCounts'] = 20
-    UCT_Dictionary['iterationMax'] = 100
-    UCT_Dictionary['maxDepth'] = 100
-    UCT_Dictionary['mcts_mode'] = 'OSPA'
-    UCT_Dictionary['memory_usage'] = 10
-    UCT_Dictionary['computationalTime'] = 100
-    UCT_Dictionary['estimationMode'] = 'ABU'
-    UCT_Dictionary['timeSteps'] = 10
-    ust_info.append(UCT_Dictionary)
-
-    UCT_Dictionary = {}
-    UCT_Dictionary['simWidth'] = 20
-    UCT_Dictionary['simHeight'] = 20
-    UCT_Dictionary['agentsCounts'] = 7
-    UCT_Dictionary['itemsCounts'] = 20
-    UCT_Dictionary['iterationMax'] = 100
-    UCT_Dictionary['memory_usage'] = 1251467264
-    UCT_Dictionary['maxDepth'] = 100
-    UCT_Dictionary['mcts_mode'] = 'MSPA'
-    UCT_Dictionary['computationalTime'] = 100
-    UCT_Dictionary['estimationMode'] = 'ABU'
-    UCT_Dictionary['timeSteps'] = 500
-    ust_info.append(UCT_Dictionary)
-
-    UCT_Dictionary = {}
-    UCT_Dictionary['simWidth'] = 20
-    UCT_Dictionary['simHeight'] = 20
-    UCT_Dictionary['agentsCounts'] = 9
-    UCT_Dictionary['itemsCounts'] = 20
-    UCT_Dictionary['iterationMax'] = 100
-    UCT_Dictionary['maxDepth'] = 100
-    UCT_Dictionary['memory_usage'] = 10251467264
-    UCT_Dictionary['mcts_mode'] = 'MSPA'
-    UCT_Dictionary['computationalTime'] = 100
-    UCT_Dictionary['estimationMode'] = 'ABU'
-    UCT_Dictionary['timeSteps'] = 400
-    ust_info.append(UCT_Dictionary)
-
-    UCT_Dictionary = {}
-    UCT_Dictionary['simWidth'] = 20
-    UCT_Dictionary['simHeight'] = 20
-    UCT_Dictionary['agentsCounts'] = 9
-    UCT_Dictionary['itemsCounts'] = 20
-    UCT_Dictionary['iterationMax'] = 100
-    UCT_Dictionary['maxDepth'] = 100
-    UCT_Dictionary['memory_usage'] = 1251467264
-    UCT_Dictionary['mcts_mode'] = 'MSPA'
-    UCT_Dictionary['computationalTime'] = 20000
-    UCT_Dictionary['estimationMode'] = 'ABU'
-    UCT_Dictionary['timeSteps'] = 500
-    ust_info.append(UCT_Dictionary)
-
-    UCT_Dictionary = {}
-    UCT_Dictionary['simWidth'] = 20
-    UCT_Dictionary['simHeight'] = 20
-    UCT_Dictionary['agentsCounts'] = 10
-    UCT_Dictionary['itemsCounts'] = 20
-    UCT_Dictionary['memory_usage'] = 10
-    UCT_Dictionary['iterationMax'] = 100
-    UCT_Dictionary['maxDepth'] = 100
-    UCT_Dictionary['mcts_mode'] = 'OSPA'
-    UCT_Dictionary['computationalTime'] = 100
-    UCT_Dictionary['estimationMode'] = 'ABU'
-    UCT_Dictionary['timeSteps'] = 10
-    ust_info.append(UCT_Dictionary)
-
-    UCT_Dictionary = {}
-    UCT_Dictionary['simWidth'] = 20
-    UCT_Dictionary['simHeight'] = 20
-    UCT_Dictionary['agentsCounts'] = 6
-    UCT_Dictionary['itemsCounts'] = 20
-    UCT_Dictionary['iterationMax'] = 100
-    UCT_Dictionary['memory_usage'] = 1251467264
-    UCT_Dictionary['maxDepth'] = 100
-    UCT_Dictionary['mcts_mode'] = 'MSPA'
-    UCT_Dictionary['computationalTime'] = 100
-    UCT_Dictionary['estimationMode'] = 'AGA'
-    UCT_Dictionary['timeSteps'] = 324
-    ust_info.append(UCT_Dictionary)
-
-    UCT_Dictionary = {}
-    UCT_Dictionary['simWidth'] = 20
-    UCT_Dictionary['simHeight'] = 20
-    UCT_Dictionary['agentsCounts'] = 2
-    UCT_Dictionary['itemsCounts'] = 20
-    UCT_Dictionary['iterationMax'] = 100
-    UCT_Dictionary['memory_usage'] = 10
-    UCT_Dictionary['maxDepth'] = 100
-    UCT_Dictionary['mcts_mode'] = 'OSPA'
-    UCT_Dictionary['computationalTime'] = 100
-    UCT_Dictionary['estimationMode'] = 'AGA'
-    UCT_Dictionary['timeSteps'] = 60
-    ust_info.append(UCT_Dictionary)
-
-    UCT_Dictionary = {}
-    UCT_Dictionary['simWidth'] = 20
-    UCT_Dictionary['simHeight'] = 20
-    UCT_Dictionary['agentsCounts'] = 8
-    UCT_Dictionary['itemsCounts'] = 20
-    UCT_Dictionary['iterationMax'] = 100
-    UCT_Dictionary['maxDepth'] = 100
-    UCT_Dictionary['memory_usage'] = 10
-    UCT_Dictionary['mcts_mode'] = 'OSPA'
-    UCT_Dictionary['computationalTime'] = 100
-    UCT_Dictionary['estimationMode'] = 'AGA'
-    UCT_Dictionary['timeSteps'] = 210
-    ust_info.append(UCT_Dictionary)
-
-    UCT_Dictionary = {}
-    UCT_Dictionary['simWidth'] = 20
-    UCT_Dictionary['simHeight'] = 20
-    UCT_Dictionary['agentsCounts'] = 9
-    UCT_Dictionary['itemsCounts'] = 20
-    UCT_Dictionary['iterationMax'] = 100
-    UCT_Dictionary['memory_usage'] = 10
-    UCT_Dictionary['maxDepth'] = 100
-    UCT_Dictionary['mcts_mode'] = 'OSPA'
-    UCT_Dictionary['computationalTime'] = 100
-    UCT_Dictionary['estimationMode'] = 'AGA'
-    UCT_Dictionary['timeSteps'] = 50
-    ust_info.append(UCT_Dictionary)
-
-    UCT_Dictionary = {}
-    UCT_Dictionary['simWidth'] = 20
-    UCT_Dictionary['simHeight'] = 20
-    UCT_Dictionary['agentsCounts'] = 9
-    UCT_Dictionary['itemsCounts'] = 20
-    UCT_Dictionary['iterationMax'] = 100
-    UCT_Dictionary['maxDepth'] = 100
-    UCT_Dictionary['memory_usage'] = 10
-    UCT_Dictionary['mcts_mode'] = 'OSPA'
-    UCT_Dictionary['computationalTime'] = 100
-    UCT_Dictionary['estimationMode'] = 'ABU'
-    UCT_Dictionary['timeSteps'] = 14
-    ust_info.append(UCT_Dictionary)
-
-    UCT_Dictionary = {}
-    UCT_Dictionary['simWidth'] = 20
-    UCT_Dictionary['simHeight'] = 20
-    UCT_Dictionary['agentsCounts'] = 10
-    UCT_Dictionary['itemsCounts'] = 20
-    UCT_Dictionary['iterationMax'] = 100
-    UCT_Dictionary['memory_usage'] = 10
-    UCT_Dictionary['maxDepth'] = 100
-    UCT_Dictionary['mcts_mode'] = 'OSPA'
-    UCT_Dictionary['computationalTime'] = 100
-    UCT_Dictionary['estimationMode'] = 'AGA'
-    UCT_Dictionary['timeSteps'] = 10
-    ust_info.append(UCT_Dictionary)
-
-    UCT_Dictionary = {}
-    UCT_Dictionary['simWidth'] = 20
-    UCT_Dictionary['simHeight'] = 20
-    UCT_Dictionary['agentsCounts'] = 10
-    UCT_Dictionary['itemsCounts'] = 20
-    UCT_Dictionary['memory_usage'] = 10
-    UCT_Dictionary['iterationMax'] = 100
-    UCT_Dictionary['maxDepth'] = 100
-    UCT_Dictionary['mcts_mode'] = 'OSPA'
-    UCT_Dictionary['computationalTime'] = 100
-    UCT_Dictionary['estimationMode'] = 'ABU'
-    UCT_Dictionary['timeSteps'] = 20
-    ust_info.append(UCT_Dictionary)
-
+########################################################################################################################
 def extract_uct_inf():
     global ust_info
     global max_time_steps
@@ -372,10 +118,10 @@ def extract_uct_inf():
             else:
                 O_ABU_timeSteps.append(result['timeSteps'])
                 O_ABU_comp_time.append(result['computationalTime'])
-
+########################################################################################################################
 
 def read_files():
-    for root, dirs, files in os.walk('Output_2agents_size10'):
+    for root, dirs, files in os.walk('outputs'):
         if 'pickleResults.txt' in files:
             #print root
             with open(os.path.join(root,'pickleResults.txt'),"r") as pickleFile:
@@ -384,6 +130,7 @@ def read_files():
                 dataList = pickle.load(pickleFile)
 
                 data = dataList[1]
+                print data
                 systemDetails = dataList[0]
 
                 # Simulator Information
@@ -404,7 +151,7 @@ def read_files():
 
                 estimationDictionary['computationalTime'] = int(endTime) - int(beginTime)
                 estimationDictionary['estimationMode'] = systemDetails['estimationMode']
-                estimationDictionary['timeSteps'] = systemDetails['timeSteps']
+                # estimationDictionary['timeSteps'] = systemDetails['timeSteps']
                 estimationDictionary['mcts_mode'] = systemDetails['mcts_mode']
 
                 agentDictionary = data[0]
@@ -447,7 +194,7 @@ def read_files():
 
                 results.append(estimationDictionary)
     return results
-
+########################################################################################################################
 def extract_information():
     global results
     global max_len_hist
@@ -495,7 +242,7 @@ def extract_information():
                 M_PF_timeSteps.append(result['timeSteps'])
             else:
                 O_PF_timeSteps.append(result['timeSteps'])
-
+########################################################################################################################
 
 # Normalizing history
 def plot_history_of_estimation():
@@ -795,9 +542,6 @@ def calcConfInt_1(p,r):
     for m in r:
         flistStr = flistStr + str(m) + ","
 
-
-
-    # O
 
     f.write("print(t.test(c(" + listStr[:-1] + "),c(" + flistStr[:-1] + ")))")
 
@@ -1318,14 +1062,14 @@ def multiple_env():
 
     plt.show()
 
-# read_files()
+read_files()
 # extract_information()
 # plot_history_of_estimation()
 # plot_errors_in_last_estimation()
 # plot_errors_in_history_estimation()
-add_data()
-read_data_for_UCT()
-multiple_env()
+
+#read_data_for_UCT()
+#multiple_env()
 # multiple_agents()
 # multiple_agents_ct()
 # multiple_agents_ct_per_ts()

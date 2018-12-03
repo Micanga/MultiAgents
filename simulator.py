@@ -6,7 +6,7 @@ import obstacle
 import position
 import a_star
 
-from copy import deepcopy
+from copy import copy
 
 from numpy.random import choice
 from collections import defaultdict
@@ -86,18 +86,18 @@ class Simulator:
                 #import ipdb; ipdb.set_trace()
                 agnt = agent.Agent(v[0][0], v[0][1], v[0][2], v[0][3], j)
                 agnt.set_parameters(self, v[0][4], v[0][5], v[0][6])
-                agnt.choose_target_state = deepcopy(self)
+                agnt.choose_target_state = copy(self)
                 self.agents.append(agnt)
 
                 j += 1
             elif 'main' in k:
                 # x-coord, y-coord, direction, type, index
                 self.main_agent = intelligent_agent.Agent(v[0][0], v[0][1], v[0][2])
-                self.main_agent.level = v[0][2]
+                self.main_agent.level = v[0][4]
 
             elif 'enemy' in k:
                 self.enemy_agent = intelligent_agent.Agent(v[0][0], v[0][1], v[0][2])
-                self.enemy_agent.level = v[0][2]
+                self.enemy_agent.level = v[0][4]
 
             elif 'obstacle' in k:
                 self.obstacles.append(obstacle.Obstacle(v[0][0], v[0][1]))
@@ -117,7 +117,25 @@ class Simulator:
         self.update_the_map()
 
     ################################################################################################################
+    def get_agents_and_enemy(self):
+        agents = []
+        for i in range(len(self.agents)):
+            agents.append(self.agents[i])
+        agents.append(self.enemy_agent)
+        return agents
 
+    ################################################################################################################
+    def get_highest_enemy(self):
+        agents = self.get_agents_and_enemy()
+        highest = None
+        belief = -1
+        for i in range(len(agents)):
+            if agents[i].get_w_percentage() > belief:
+                belief = agents[i].get_w_percentage()
+                highest = agents[i]
+        return highest
+
+    ################################################################################################################
     def is_there_item_in_position(self, x, y):
 
         for i in range(len(self.items)):
@@ -328,7 +346,7 @@ class Simulator:
                 elif xy == 2:
                     print 'S',  # start
                 elif xy == 3:
-                    print 'R',  # route
+                    print '.',  # route
                 elif xy == 4:
                     print 'D',  # finish
                 elif xy == 5:
@@ -449,7 +467,7 @@ class Simulator:
         self.items[destination_item_index].loaded = True
         (agent_x, agent_y) = agent.get_position()
         self.items[destination_item_index].remove_agent(agent_x, agent_y)
-        agent.last_loaded_item = deepcopy(agent.item_to_load)
+        agent.last_loaded_item = copy(agent.item_to_load)
         agent.item_to_load = -1
         agent.reset_memory()
 
@@ -610,7 +628,7 @@ class Simulator:
 
             a_agent.visible_agents_items(self.items, self.agents)
             target = a_agent.choose_target(self.items, self.agents)
-            a_agent.choose_target_state = deepcopy(self)
+            a_agent.choose_target_state = copy(self)
 
             if target.get_position() != (-1, -1):
                 destination = target

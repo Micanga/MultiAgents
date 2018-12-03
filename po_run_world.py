@@ -1,8 +1,8 @@
-import simulator
-import UCT
+import posimulator
+import POUCT
 import time
 from collections import defaultdict
-from copy import deepcopy
+from copy import copy
 import os
 import datetime
 import pickle
@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 import parameter_estimation
 import psutil
 import train_data
-
+import gc
 
 x_train_set = []
 level_set = []
@@ -22,7 +22,6 @@ radius_set = []
 
 dataMean = np.zeros((100, 3))
 dataStd = np.zeros((100, 3))
-
 
 memory_usage = 0
 iMaxStackSize = 2000
@@ -46,8 +45,9 @@ train_mode = None
 # ============= Set Input/Output ============
 now = datetime.datetime.now()
 # sub_dir = now.strftime("%Y-%m-%d %H:%M")
-sub_dir = str(now.day) + "_"+ str(now.hour)+ "_" + str(now.minute)
-current_folder = "outputs/" + sub_dir + '/'
+from random import randint
+sub_dir = str(now.day) + "_"+ str(now.hour)+ "_" + str(now.minute) + "_k" + str(randint(0,now.day+now.hour+now.minute))
+current_folder = "po_outputs/" + sub_dir + '/'
 if not os.path.exists(current_folder):
     os.mkdir(current_folder, 0755)
 
@@ -55,19 +55,15 @@ dir = ""
 if len(sys.argv) > 1 :
     dir = str(sys.argv[1])
 
-dir = "inputs/history/"
-#dir = "inputs/adversary/"
-
-# path = 'config.csv'
-path = dir + 'config.csv'
+path = dir + 'po_config.csv'
 print 'path: ',path
+
 info = defaultdict(list)
 with open(path) as info_read:
     for line in info_read:
         data = line.strip().split(',')
         key, val = data[0], data[1:]
         info[key].append(val)
-
 
 # ============= Read configuration ============
 for k, v in info.items():
@@ -115,13 +111,16 @@ for k, v in info.items():
             apply_adversary = True
 
     if 'sim_path' in k:
-        sim_path = dir + str(v[0][0]).strip()
+        if len(sys.argv) > 1:
+            sim_path = dir + str(v[0][0]).strip()
+        else:
+            sim_path = str(v[0][0]).strip()
 
     if 'mcts_mode' in k:
         mcts_mode = str(v[0][0]).strip()
 
-
-main_sim = simulator.Simulator()
+print 'max it:',iteration_max,'/max depth:',max_depth
+main_sim = posimulator.POSimulator()
 
 main_sim.loader(sim_path)
 logfile = main_sim.create_log_file(current_folder + "log.txt")
@@ -152,7 +151,7 @@ if main_sim.main_agent is not None:
 
     main_sim.main_agent.initialise_visible_agents(main_sim,generated_data_number, PF_add_threshold, train_mode,
                                               type_selection_mode, parameter_estimation_mode, polynomial_degree,apply_adversary)
-    uct = UCT.UCT(iteration_max, max_depth, do_estimation, mcts_mode, apply_adversary,enemy=False)
+    uct = POUCT.POUCT(iteration_max, max_depth, do_estimation, mcts_mode, apply_adversary,enemy=False)
     main_sim.main_agent.initialise_uct(uct)
 
 if apply_adversary:
@@ -161,13 +160,15 @@ if apply_adversary:
     if main_sim.enemy_agent is not None:
         main_sim.enemy_agent.initialise_visible_agents(main_sim,generated_data_number, PF_add_threshold, train_mode,
                                                   type_selection_mode, parameter_estimation_mode, polynomial_degree,apply_adversary)
-        enemy_uct = UCT.UCT(iteration_max, max_depth, do_estimation, mcts_mode,apply_adversary, enemy=True )
+        enemy_uct = POUCT.POUCT(iteration_max, max_depth, do_estimation, mcts_mode,apply_adversary, enemy=True )
         main_sim.enemy_agent.initialise_uct(enemy_uct)
 
 
 for v_a in main_sim.main_agent.visible_agents:
-    v_a.choose_target_state = deepcopy(main_sim)
+    v_a.choose_target_state = copy(main_sim)
     # print v_a.agents_parameter_estimation.get_highest_type_probability()
+for i_a in main_sim.main_agent.invisible_agents:
+    i_a.choose_target_state = copy(main_sim)
 
 while main_sim.items_left() > 0:
 
@@ -180,27 +181,28 @@ while main_sim.items_left() > 0:
 
     print('****** MOVE AGENT **********')
     for i in range(len(main_sim.agents)):
-
         main_sim.agents[i] = main_sim.move_a_agent(main_sim.agents[i])
 
-        print 'target: ', main_sim.agents[i].get_memory()
+        print('main_sim.agents[i].next_action=', main_sim.agents[i].next_action)
+        # print 'agent ',main_sim.agents[i].index,' target: ', main_sim.agents[i].get_memory()
 
+    print('****** Movement of Intelligent agent based on MCTS ****************************************************')
     if main_sim.main_agent is not None:
-        print('****** Movement of Intelligent agent based on MCTS ****************************************************')
         r,enemy_action_prob,search_tree = main_sim.main_agent.move(reuse_tree, main_sim, search_tree, time_step)
 
     if main_sim.enemy_agent is not None:
         # print('****** Movement of Enemy agent based on MCTS ****************************************************')
         r, main_action_prob,enemy_search_tree = main_sim.enemy_agent.move(reuse_tree, main_sim, enemy_search_tree, time_step)
 
-    main_sim.update_all_A_agents(False)
+    actions = main_sim.update_all_A_agents(False)
     main_sim.do_collaboration()
     main_sim.main_agent.update_unknown_agents_status(main_sim)
     main_sim.draw_map()
 
+
     print '********* Estimation for selfish agents ******'
     if do_estimation:
-        main_sim.main_agent.estimation(time_step,main_sim,enemy_action_prob)
+        main_sim.main_agent.estimation(time_step,main_sim,enemy_action_prob,actions )
 
     time_step += 1
     # print '---x_train_set in time step ', time_step ,' is :  '
@@ -212,7 +214,12 @@ while main_sim.items_left() > 0:
     if main_sim.items_left() == 0:
         break
 
+    search_tree = uct.update_belief_state(main_sim,search_tree)
+    print "main agent left items", main_sim.main_agent.items_left()
+
     print "left items", main_sim.items_left()
+    gc.collect()
+
     print('***********************************************************************************************************')
 
 # plot_data_set(main_sim.agents[0],agents_parameter_estimation[0])
@@ -220,11 +227,7 @@ while main_sim.items_left() > 0:
 
 for v_a in main_sim.main_agent.visible_agents:
     print v_a.agents_parameter_estimation.get_highest_type_probability()
-    print v_a.agents_parameter_estimation.l1_estimation.type_probabilities
-    print v_a.agents_parameter_estimation.l2_estimation.type_probabilities
-    print v_a.agents_parameter_estimation.f1_estimation.type_probabilities
-    print v_a.agents_parameter_estimation.f2_estimation.type_probabilities
-#main_sim.main_agent.visible_agents[0].agents_parameter_estimation.plot_data_set()
+# main_sim.main_agent.visible_agents[0].agents_parameter_estimation.plot_data_set()
 
 end_time = time.time()
 used_mem_after = psutil.virtual_memory().used
@@ -243,6 +246,8 @@ def print_result(main_sim,  time_steps, begin_time, end_time,mcts_mode):
 
     file.write('sim width:' + str(main_sim.dim_w) + '\n')
     file.write('sim height:' + str(main_sim.dim_h) + '\n')
+    file.write('main agent radius:' + str(main_sim.main_agent.vision.radius) + '\n')
+    file.write('main agent angle:' + str(main_sim.main_agent.vision.angle) + '\n')
     file.write('agents counts:' + str(len(main_sim.agents)) + '\n')
     file.write('items counts:' + str(len(main_sim.items)) + '\n')
     file.write('time steps:' + str(time_steps) + '\n')
@@ -257,9 +262,11 @@ def print_result(main_sim,  time_steps, begin_time, end_time,mcts_mode):
 
     systemDetails['simWidth'] = main_sim.dim_w
     systemDetails['simHeight'] = main_sim.dim_h
+    systemDetails['mainAgentRadius'] = main_sim.main_agent.vision.radius
+    systemDetails['mainAgentAngle'] =main_sim.main_agent.vision.angle
     systemDetails['agentsCounts'] = len(main_sim.agents)
     systemDetails['itemsCounts'] = len(main_sim.items)
-    systemDetails['timeSteps'] = time_steps
+#    systemDetails['timeSteps'] = end_cpu_time - begin_cpu_time
     systemDetails['beginTime'] = begin_time
     systemDetails['endTime'] = end_time
     systemDetails['CPU_Time'] = end_time
@@ -279,7 +286,7 @@ def print_result(main_sim,  time_steps, begin_time, end_time,mcts_mode):
     agentDictionary = {}
 
     for i in range(len(main_sim.agents)):
-        u_a = main_sim.main_agent.visible_agents[i]
+        u_a = main_sim.main_agent.agent_memory[i]
         agentData = {}
         file.write('#level,radius,angle\n')
         file.write('true type:' + str(main_sim.agents[i].agent_type) + '\n')

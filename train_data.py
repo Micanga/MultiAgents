@@ -1,5 +1,6 @@
 import random
 import agent
+from copy import deepcopy
 
 radius_max = 1
 radius_min = 0.1
@@ -29,15 +30,38 @@ class TrainData:
         self.train_mode = train_mode
         self.PF_add_threshold = PF_add_threshold
 
-
-
     ####################################################################################################################
+    def update_internal_state(self, radius,angle,level, selected_type, unknown_agent , po =False):
+
+        if po:
+            u_agent = unknown_agent.choose_target_state.main_agent.agent_memory[unknown_agent.index]
+        else:
+            u_agent = unknown_agent.choose_target_state.main_agent.visible_agents[unknown_agent.index]
+
+
+        tmp_sim = unknown_agent.choose_target_state
+        (x, y) = u_agent.get_position()
+
+        tmp_agent = agent.Agent(x, y, u_agent.direction, selected_type, -1)
+
+        tmp_agent.set_parameters(unknown_agent.choose_target_state, level, radius, angle)
+
+        # find the target with
+        tmp_agent.visible_agents_items(tmp_sim.items, tmp_sim.agents)
+        target = tmp_agent.choose_target(tmp_sim.items, tmp_sim.agents)
+
+        return target
+
+    #################################################################################################################
+
     # =================Generating  D = (p,f(p)) , f(p) = P(a|H_t_1,teta,p)==============================================
 
-    def generate_data_for_update_parameter(self,previous_state, previous_agent,  action, selected_type):
+    def generate_data_for_update_parameter(self, previous_state, unknown_agent, selected_type,po = False):
 
+        previous_agent = unknown_agent.previous_agent_status
+        action = unknown_agent.next_action
         # D= (p,f(p)) , f(p) = P(a|H_t_1,teta,p)
-
+        print('------------------------------------------------------------')
         for i in range(0, self.generated_data_number):
 
             # Generating random values for parameters
@@ -45,13 +69,16 @@ class TrainData:
             tmp_radius = radius_min + (1.0 * (radius_max - radius_min) / self.generated_data_number) * i
             tmp_angle = angle_min + (1.0 * (angle_max - angle_min) / self.generated_data_number) * i
             tmp_level = level_min + (1.0 * (level_max - level_min) / self.generated_data_number) * i
+            x, y = previous_agent.get_position()
+            tmpAgent = agent.Agent(x, y, previous_agent.direction, selected_type)
+            tmpAgent.agent_type = selected_type
+            tmpAgent.memory = self.update_internal_state(tmp_radius,tmp_angle,tmp_level, selected_type, unknown_agent,po)
 
-            previous_agent.agent_type = selected_type
-            previous_agent.set_parameters(previous_state, tmp_level, tmp_radius, tmp_angle)
+            tmpAgent.set_parameters(previous_state, tmp_level, tmp_radius, tmp_angle)
 
-            previous_agent = previous_state.move_a_agent(previous_agent)  # f(p)
-            p_action = previous_agent.get_action_probability(action)
-
+            tmpAgent = previous_state.move_a_agent(tmpAgent)  # f(p)
+            p_action = tmpAgent.get_action_probability(action)
+            # print p_action,action,tmp_radius,tmp_angle,tmp_level
             if p_action is not None:
                 self.data_set.append([tmp_level, tmp_radius, tmp_angle, p_action])
     # ##################################################################################################################
@@ -65,7 +92,10 @@ class TrainData:
         for i in range(len(actions_to_reach_target)):
             if len(ds_actions) < j + 1:
                 return False
-            if ds_actions[j] == actions_to_reach_target[i]:
+            if actions_to_reach_target[i] is None:
+                same_actions.append(actions_to_reach_target[i])
+            #
+            elif ds_actions[j] == actions_to_reach_target[i]:
                 same_actions.append(actions_to_reach_target[i])
                 j += 1
             else:
@@ -76,8 +106,14 @@ class TrainData:
             return False
 
     # ##################################################################################################################
-    def update_data_set(self, choose_target_state, actions_to_reach_target,selected_type):
-        cts_agent = choose_target_state.agents[0]
+
+    def update_data_set(self, unknown_agent, actions_to_reach_target, selected_type, po=False):
+
+        if po:
+            cts_agent = unknown_agent.choose_target_state.main_agent.agent_memory[unknown_agent.index]
+        else:
+            cts_agent = unknown_agent.choose_target_state.main_agent.visible_agents[unknown_agent.index]
+
         remove_pf = []
 
         self.load_count += 1
@@ -87,25 +123,28 @@ class TrainData:
             max_succeeded_steps = max(seq)
         else:
             max_succeeded_steps = 0
+
         # for ds in self.data_set:
         #     print ds
-
-        if choose_target_state.items_left()!=0:
+        print '--------------------------------------------'
+        print actions_to_reach_target
+        if unknown_agent.choose_target_state.items_left() != 0:
             for ds in self.data_set:
-                # print ds
+
+                print ds
                 tmp_agent = agent.Agent(cts_agent.position[0], cts_agent.position[1], cts_agent.direction,
                                         selected_type, -1)
 
                 [tmp_level, tmp_radius, tmp_angle] = ds['parameter']
 
-                tmp_agent.set_parameters(choose_target_state, tmp_level, tmp_radius, tmp_angle)
+                tmp_agent.set_parameters(unknown_agent.choose_target_state, tmp_level, tmp_radius, tmp_angle)
                 if self.compare_actions(ds['route'], actions_to_reach_target) or ds['succeeded_steps'] > (2/3) * self.load_count:
                         # and                     ds['succeeded_steps'] == max_succeeded_steps:
 
                     self.level_pool.append(tmp_level)
                     self.angle_pool.append(tmp_angle)
                     self.radius_pool.append(tmp_radius)
-                    tmp_agent = choose_target_state.move_a_agent(tmp_agent)  # f(p)
+                    tmp_agent = unknown_agent.choose_target_state.move_a_agent(tmp_agent)  # f(p)
                     target = tmp_agent.get_memory()
 
                     if tmp_agent.route_actions is not None:
@@ -138,15 +177,25 @@ class TrainData:
 
         # for ds in self.data_set:
         #      print ds
+        print '--------------------------------------------'
 
         return float(max_succeeded_steps)/ float(self.load_count)
     # ##################################################################################################################
 
-    def generate_data(self, choose_target_state, action_history, actions_to_reach_target, selected_type):
+    def generate_data(self, unknown_agent, action_history,
+                      actions_to_reach_target, selected_type):
 
         last_action = action_history[-1]
 
-        cts_agent = choose_target_state.agents[0]
+        cts_agent = None
+        vis_agents = unknown_agent.choose_target_state.main_agent.visible_agents
+        
+        for v_a in vis_agents:
+            if v_a.index == unknown_agent.index: 
+                cts_agent = v_a
+        
+        if cts_agent == None:
+            return 0 
 
        # print self.generated_data_number - len(self.data_set)
         i=0
@@ -171,9 +220,9 @@ class TrainData:
 
                 tmp_agent = agent.Agent(cts_agent.position[0], cts_agent.position[1],
                                         cts_agent.direction, selected_type, -1)
-                tmp_agent.set_parameters(choose_target_state, tmp_level, tmp_radius, tmp_angle)
+                tmp_agent.set_parameters(unknown_agent.choose_target_state, tmp_level, tmp_radius, tmp_angle)
 
-                tmp_agent = choose_target_state.move_a_agent(tmp_agent)  # f(p)
+                tmp_agent = unknown_agent.choose_target_state.move_a_agent(tmp_agent)  # f(p)
                 target = tmp_agent.get_memory()
                 p_action = tmp_agent.get_action_probability(last_action)
                 route_actions = tmp_agent.route_actions
@@ -187,12 +236,14 @@ class TrainData:
                         particle_filter['route'] = tmp_agent.route_actions
                         particle_filter['succeeded_steps'] = 0
                         self.data_set.append(particle_filter)
-                        i+=1
+                        i += 1
 
 
         seq = [x['succeeded_steps'] for x in self.data_set]
 
-       # print selected_type,' len(self.data_set)=',len(self.data_set)
+        # print selected_type,' len(self.data_set)=',len(self.data_set)
+        # for ds in self.data_set:
+        #      print ds
 
         if seq != []:
             max_succeeded_steps = max(seq)

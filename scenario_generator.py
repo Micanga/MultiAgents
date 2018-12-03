@@ -8,9 +8,9 @@ agentValueUpperLimit = 2 # set as default, use this variable to set the range in
 gridSize = [10,15,20,25]
 gridValueUpperLimit = 25 # default value set, use this variable to set range of grid
 directions = ['N','S','E','W']
-types = ['l1'] #['l1','l2','f1','f2']
+types = ['l1','l2'] #['l1','l2','f1','f2']
 
-def create_config(current_folder,parameter_estimation_mode,mcts_mode):
+def create_config(current_folder,parameter_estimation_mode,mcts_mode,train_mode):
 
 	print(current_folder)
 	filename = current_folder + 'config.csv'
@@ -19,6 +19,7 @@ def create_config(current_folder,parameter_estimation_mode,mcts_mode):
 		GRID = ['type_selection_mode', 'AS']
 		writer.writerows([['type_selection_mode', 'AS']])
 		writer.writerows([['parameter_estimation_mode', parameter_estimation_mode]])
+		writer.writerows([['train_mode', train_mode]])
 		writer.writerows([['generated_data_number', '100']])
 		writer.writerows([['reuseTree','False']])
 		writer.writerows([['mcts_mode', mcts_mode]])
@@ -27,6 +28,7 @@ def create_config(current_folder,parameter_estimation_mode,mcts_mode):
 		writer.writerows([['iteration_max', '100']])
 		writer.writerows([['max_depth', '100']])
 		writer.writerows([['sim_path', 'sim.csv']])
+
 
 
 def generateRandomNumber (grid,gridValue):
@@ -44,25 +46,28 @@ def generateRandomNumber (grid,gridValue):
 		#else:
 		#	generateRandomNumber(grid,gridValue)
 
-parameter_estimation_modes = ['ABU','AGA']
+parameter_estimation_modes = ['ABU','AGA','MIN']
 
-mcts_modes =['MSPA','OSPA']
+mcts_modes =['UCT','UCTH']
 dataFilesNumber = 1
 count=0
 while count < 5:
 	for parameter_estimation_mode in parameter_estimation_modes:
+		if parameter_estimation_mode == 'MIN':
+			train_mode= 'history_based'
+		else:
+			train_mode= 'none_history_based'
 		for mcts_mode in mcts_modes:
-			print mcts_mode
-			print(parameter_estimation_mode)
+			 
 			for i in range(0,dataFilesNumber):
-				agent = 5
+				agent = 2
 				gridValue = 20
-				if mcts_mode == 'MSPA' :
+				if mcts_mode == 'UCT' :
 					MC_type = 'M'
 				else:
 					MC_type = 'O'
 				sub_dir = str(gridValue) + 'S_'+ str(agent) + 'A_'+ MC_type + '_' +parameter_estimation_mode+ str(count)
-				current_folder = "inputs/" + sub_dir + '/'
+				current_folder = "input/" + sub_dir + '/'
 				if not os.path.exists(current_folder):
 					os.mkdir(current_folder, 0755)
 
@@ -111,5 +116,5 @@ while count < 5:
 						ITEM = ['item'+ str(i),itemx,itemy,itemLevel]
 						writer.writerows([ITEM])
 
-				create_config(current_folder, parameter_estimation_mode, mcts_mode)
+				create_config(current_folder, parameter_estimation_mode, mcts_mode,train_mode)
 	count +=1

@@ -1,14 +1,14 @@
 type_selection_mode , AS
-parameter_estimation_mode , MIN
-train_mode ,history_based
+parameter_estimation_mode , AGA
+train_mode ,non_history_based
 generated_data_number, 100
 PF_add_threshold , 0.9
 PF_del_threshold , 0.96
 PF_weight , 1.5
 reuseTree , False
-mcts_mode,UCT
+mcts_mode,UCTH
 iteration_max , 50
 max_depth , 10
-sim_path,Test Files/sim_1_agent_20.csv
+sim_path,sim.csv
 do_estimation,True
-apply_adversary,True
+apply_adversary,False

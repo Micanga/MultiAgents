@@ -12,6 +12,7 @@ class Agent:
     def __init__(self, x, y, direction ):
         self.position = (int(x), int(y))
         self.level = None
+        self.apply_adversary = None
 
         if isinstance(direction, basestring):
             self.direction = self.convert_direction(direction)
@@ -21,6 +22,7 @@ class Agent:
         self.visible_agents = []
 
         self.next_action = None
+        self.previous_state = None
 
     ####################################################################################################################
     def initialise_uct(self, uct):
@@ -30,90 +32,81 @@ class Agent:
     ####################################################################################################################
     def initialise_visible_agents(self, sim, generated_data_number, PF_add_threshold, train_mode , type_selection_mode,
                                   parameter_estimation_mode, polynomial_degree,apply_adversary):
-
+        agent_index = 0
+        self.apply_adversary = apply_adversary
         for agent in sim.agents:
             x, y = agent.get_position()
-            a = unknown_agent.Agent(x, y, agent.direction)
+            a = unknown_agent.Agent(x, y, agent.direction,agent_index)
+
             self.visible_agents.append(a)
+            agent_index +=1
 
         if sim.enemy_agent is not None:
             x, y = sim.enemy_agent.get_position()
-            a = unknown_agent.Agent(x, y, sim.enemy_agent.direction)
+            a = unknown_agent.Agent(x, y, sim.enemy_agent.direction,agent_index)
+
             self.visible_agents.append(a)
 
         for unknown_a in self.visible_agents:
-            param_estim = parameter_estimation.ParameterEstimation(generated_data_number, PF_add_threshold, train_mode,apply_adversary)
+            param_estim = parameter_estimation.ParameterEstimation(generated_data_number, PF_add_threshold, train_mode,
+                                                                   apply_adversary)
             param_estim.estimation_initialisation()
             param_estim.estimation_configuration(type_selection_mode, parameter_estimation_mode, polynomial_degree)
-            param_estim.choose_target_state = deepcopy(sim)
+
             unknown_a.agents_parameter_estimation = param_estim
             # Initial values for parameters and types
 
     ####################################################################################################################
 
     def update_unknown_agents(self, sim):
+
+        enemy_index = 0
         for i in range(len(sim.agents)):
-            self.visible_agents[i].agents_parameter_estimation.previous_state = sim
-            self.visible_agents[i].agents_parameter_estimation.previous_agent_status = sim.agents[i]
+            
+            self.visible_agents[i].previous_agent_status = sim.agents[i]
+
+        enemy_index = i + 1
+
+        if self.apply_adversary:          
+            self.visible_agents[enemy_index].previous_agent_status = sim.enemy_agent
 
     ####################################################################################################################
-    def update_unknown_agents_actions(self, sim):
+    def update_unknown_agents_status(self, sim):
+        enemy_index = 0
         for i in range(len(sim.agents)):
             self.visible_agents[i].next_action = sim.agents[i].next_action
+            self.visible_agents[i].direction  =sim.agents[i].direction
+            self.visible_agents[i].position = sim.agents[i].position
+
+        enemy_index = i + 1
+
+        if self.apply_adversary:
+            self.visible_agents[enemy_index].next_action = sim.enemy_agent.next_action
+            self.visible_agents[enemy_index].direction = sim.enemy_agent.direction
+            self.visible_agents[enemy_index].position = sim.enemy_agent.position
+
 
     ####################################################################################################################
-    def estimation(self,time_step,main_sim):
-        for u_a in self.visible_agents:
-            new_estimated_parameter, x_train = u_a.agents_parameter_estimation.process_parameter_estimations(time_step,
-                                                                                                            u_a.next_action,
-                                                                                                            main_sim)
-            #
-            # # print 'x_train in step ',time_step,' is ', x_train
-            # # print 'x_train_set is ', x_train_set
-            #
-            # a_data_set = np.transpose(np.array(x_train))
-            # n = time_step
-            # if a_data_set != []:
-            #     # print ' Calculatinggggggggg mean '
-            #     levels = a_data_set[0, :]
-            #     angle = a_data_set[1, :]
-            #     radius = a_data_set[2, :]
-            #
-            #     dataMean[n, 0] = np.mean(levels)
-            #     dataStd[n, 0] = np.std(levels, ddof=1)
-            #     dataMean[n, 1] = np.mean(angle)
-            #     dataStd[n, 1] = np.std(angle, ddof=1)
-            #     dataMean[n, 2] = np.mean(radius)
-            #     dataStd[n, 2] = np.std(radius, ddof=1)
-            # else:
-            #     dataMean[n, 0] = 0
-            #     dataStd[n, 0] = 0
-            #     dataMean[n, 1] = 0
-            #     dataStd[n, 1] = 0
-            #
-            #     dataMean[n, 2] = 0
-            #     dataStd[n, 2] = 0
-            # # print dataMean
-            # # print dataStd
-            # x_train_set.append(x_train)
+    def estimation(self,time_step,main_sim,enemy_action_prob):
 
-            # print 'true parameters:', str(main_sim.agents[i].level),  str(main_sim.agents[i].radius), str(main_sim.agents[i].angle)
-            # print 'estimated parameters:', str(new_estimated_parameter.level), str(new_estimated_parameter.radius), str(new_estimated_parameter.angle)
+        for u_a in self.visible_agents:
+            u_a.agents_parameter_estimation.process_parameter_estimations(time_step, u_a,self.previous_state, main_sim,
+                                                                                               enemy_action_prob)
 
     ####################################################################################################################
     def move(self,reuse_tree,main_sim,search_tree, time_step):
-        next_action, search_tree = self.uct_planning(reuse_tree,main_sim,search_tree, time_step)
+        next_action,guess_move, search_tree = self.uct_planning(reuse_tree,main_sim,search_tree, time_step)
         reward = self.uct.do_move(main_sim, next_action,  real=True)
-        return reward , search_tree
+        return reward , guess_move,search_tree
 
     ####################################################################################################################
 
     def uct_planning(self, reuse_tree,main_sim, search_tree, time_step):
         if not reuse_tree:
-            next_action, search_tree = self.uct.agent_planning(0, None, main_sim, False)
+            next_action,guess_move, search_tree = self.uct.agent_planning(0, None, main_sim, False)
         else:
-            next_action, search_tree = self.uct.agent_planning(time_step, search_tree, main_sim, False)
-        return next_action, search_tree
+            next_action,guess_move, search_tree = self.uct.agent_planning(time_step, search_tree, main_sim, False)
+        return next_action,guess_move, search_tree
     ####################################################################################################################
 
     def set_direction(self, direction):

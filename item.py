@@ -10,6 +10,8 @@ class item:
         self.index = index
         self.agents_load_item = list()
 
+        self.already_seen = False
+
     def is_agent_in_loaded_list(self, new_agent):
         for agent in self.agents_load_item:
             if agent.equals(new_agent):
@@ -32,6 +34,8 @@ class item:
         copy_item = item(x, y, self.level, self.index)
 
         copy_item.loaded = self.loaded
+
+        copy_item.already_seen = self.already_seen
 
         return copy_item
         

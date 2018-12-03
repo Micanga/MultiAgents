@@ -5,7 +5,7 @@ from math import sqrt
 
 
 class Agent:
-    def __init__(self, x, y, direction):
+    def __init__(self, x, y, direction, index='0'):
         self.position = (int(x), int(y))
 
         if isinstance(direction, basestring):
@@ -14,8 +14,17 @@ class Agent:
             self.direction = float(direction)
 
         self.agents_parameter_estimation = None
+        self.index = index
+
         self.next_action = None
         self.agent_type = None
+        self.previous_agent_status = None
+        self.choose_target_state = None
+
+    ####################################################################################################################
+
+    def get_position(self):
+        return self.position[0], self.position[1]
 
     ####################################################################################################################
     def get_estimated_type(self):
