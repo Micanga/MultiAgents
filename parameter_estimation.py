@@ -821,7 +821,7 @@ class ParameterEstimation:
         if self.apply_adversary:
             selected_types = ['l1', 'l2','w']
         else:
-            selected_types = ['l1']
+            selected_types = ['l1', 'l2']
 
         if unknown_agent.next_action is None:
             return
@@ -873,33 +873,32 @@ class ParameterEstimation:
 
                 if selected_type == 'l1':
 
-                    # print 'Last type probability', self.l1_estimation.get_last_type_probability()
+
                     if self.train_mode == 'history_based':
+                        # type_probability = self.l1_estimation.get_last_type_probability()
                         self.l1_estimation.type_probability = action_prob * type_probability
-                        # self.l1_estimation.get_last_type_probability()
 
                     else:
-                        # print self.l1_estimation.get_last_type_probability()
-                        # print action_prob
+
                         self.l1_estimation.type_probability = action_prob * self.l1_estimation.get_last_type_probability()
 
-                    # print 'type prob:', self.l1_estimation.type_probability
+
                     self.l1_estimation.update_estimation(new_parameters_estimation, action_prob)
-                    # print 'New type probability', self.l1_estimation.type_probability
+
 
                 if selected_type == 'l2':
-                    # print 'Last type probability', self.l2_estimation.get_last_type_probability()
+
                     if self.train_mode == 'history_based':
+                        # type_probability = self.l2_estimation.get_last_type_probability()
                         self.l2_estimation.type_probability = action_prob * type_probability
-                        # type_probability *
+
                     else:
-                        print self.l2_estimation.get_last_type_probability()
-                        print action_prob
+
                         self.l2_estimation.type_probability = action_prob * self.l2_estimation.get_last_type_probability()
 
-                    # print 'type prob:', self.l2_estimation.type_probability
+
                     self.l2_estimation.update_estimation(new_parameters_estimation, action_prob)
-                    # print 'New type probability', self.l2_estimation.type_probability
+
 
                 if selected_type == 'f1':
 
