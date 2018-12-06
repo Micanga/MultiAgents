@@ -1,3 +1,11 @@
+*.pyc
+./outputs/*
+*~
+[#]*[#]
+.\#*
+*.aux
+*.log
+__pycache__/
 *.xml
 .idea/*
 __pycache__/
