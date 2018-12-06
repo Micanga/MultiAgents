@@ -7,7 +7,6 @@ import subprocess
 from math import sqrt
 
 import aamas_plot_init as init
-import aamas_plot_graphs as graph
 from aamas_plot_statistics import is_constant, calcConfInt
 
 # 0. Variables
@@ -16,8 +15,8 @@ results 	 = list()
 informations = list()
 
 # 1. Defining the Graph Generation Parameters
-ROOT_DIRS 	= ['AAMAS_Outputs_MCTS']#['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
-NAMES 		= ['MCTS']#['POMCP','POMCP','POMCP']#,'POMCP_FO']
+ROOT_DIRS 	= ['outputs']#['AAMAS_Outputs_MCTS']#['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
+NAMES 		= ['MCTS']#['MCTS']#['POMCP','POMCP','POMCP']#,'POMCP_FO']
 RADIUS 		= ['3.0','5.0','7.0']
 
 ############################################################################################
@@ -46,7 +45,7 @@ def plot_errors(levels,lerr,lci,angles,aerr,aci,radius,rerr,rci,plot_type):
 
 	# + Confiance Interval
 	x = [i for i in range(len(levels))]
-	plt.fill_between(x, levels+lci/2, levels-lci/2,
+	plt.fill_between(x, levels+(lci/2), levels-(lci/2),
 					 color='b', alpha=.25)
 
 	plt.plot(levels,
@@ -72,7 +71,7 @@ def plot_errors(levels,lerr,lci,angles,aerr,aci,radius,rerr,rci,plot_type):
 
 	# + Confiance Interval
 	x = [i for i in range(len(angles))]
-	plt.fill_between(x, angles+aci/2, angles-aci/2,
+	plt.fill_between(x, angles+(aci/2), angles-(aci/2),
 					 color='b', alpha=.25)
 
 	plt.plot(angles, 
@@ -98,7 +97,7 @@ def plot_errors(levels,lerr,lci,angles,aerr,aci,radius,rerr,rci,plot_type):
 
 	# + Confiance Interval
 	x = [i for i in range(len(radius))]
-	plt.fill_between(x, radius+rci/2, radius-rci/2,
+	plt.fill_between(x, radius+(rci/2), radius-(rci/2),
 					 color='b', alpha=.25)
 
 	plt.plot(radius, 
@@ -125,6 +124,10 @@ def plot_errors(levels,lerr,lci,angles,aerr,aci,radius,rerr,rci,plot_type):
 	plt.close(fig)
 
 def plot_type_probability(aga_tp, abu_tp, pf_tp, threshold, plotname):
+	aga_tp = np.array(aga_tp)
+	abu_tp = np.array(abu_tp)
+	pf_tp = np.array(pf_tp)
+
 	# 1. Setting the figure
 	global fig_count
 	fig = plt.figure(fig_count,figsize=(6.4,2.4))
@@ -132,85 +135,94 @@ def plot_type_probability(aga_tp, abu_tp, pf_tp, threshold, plotname):
 
 	# 2. Normalizing TP
 	# AGA
-	aga_error=np.zeros(len(aga_tp))
-	for i in range(len(aga_tp)):
-		aga_error[i]=np.array(aga_tp[i]).mean()
+	aga_error= list()
+	for t in range(threshold):
+		er =[]
+		for i in range(len(aga_tp)):
+			if t < len(aga_tp[i]):
+				er.append(aga_tp[i][t])
+		aga_error.append(np.array(er).mean())
+	aga_error = np.array(aga_error)
 
-	max_depth = 1
-	for i in range(len(aga_tp)):
-		if(len(aga_tp[i]) > max_depth):
-			max_depth = len(aga_tp[i])
-
-	aga_ci = np.zeros(len(aga_tp))
-	for i in range(max_depth):
-		iteration_list = list()
-		for j in range(len(aga_tp)):
-			if(i < len(aga_tp[j])):
-				iteration_list.append(aga_tp[j][i])
-		print iteration_list
-		if not is_constant(iteration_list):
-			aga_ci[i] = calcConfInt(iteration_list)
-
-	import ipdb; ipdb.set_trace()
+	ci_list = []
+	for e_l in aga_tp:
+		ci_list.append(len(e_l))
+		if not is_constant(ci_list):
+			aga_ci = calcConfInt(ci_list)
+		else:
+			aga_ci = 0
 
 	# ABU
-	abu_error=np.zeros(len(abu_tp))
-	for i in range(len(abu_tp)):
-		abu_error[i]=np.array(abu_tp[i]).mean()
+	abu_error= list()
+	for t in range(threshold):
+		er =[]
+		for i in range(len(abu_tp)):
+			if t < len(abu_tp[i]):
+				er.append(abu_tp[i][t])
+		abu_error.append(np.array(er).mean())
+	abu_error = np.array(abu_error)
 
-	abu_ci = np.zeros(len(abu_error))
-	for i in range(len(abu_tp)):
-		if not is_constant(abu_tp[:][i]):
-			abu_ci[i] = calcConfInt(abu_tp[:][i])
+	ci_list = []
+	for e_l in abu_tp:
+		ci_list.append(len(e_l))
+		if not is_constant(ci_list):
+			abu_ci = calcConfInt(ci_list)
+		else:
+			abu_ci = 0
 
 	# PF
-	pf_error=np.zeros(len(pf_tp))
-	for i in range(len(pf_tp)):
-		pf_error[i]=np.array(pf_tp[i]).mean()
+	pf_error= list()
+	for t in range(threshold):
+		er =[]
+		for i in range(len(pf_tp)):
+			if t < len(pf_tp[i]):
+				er.append(pf_tp[i][t])
+		pf_error.append(np.array(er).mean())
+	pf_error = np.array(pf_error)
 
-	pf_ci = np.zeros(len(pf_error))
-	for i in range(len(pf_tp)):
-		if not is_constant(pf_tp[:,i]):
-			pf_ci[i] = calcConfInt(pf_tp[:,i])
+	ci_list = []
+	for e_l in pf_tp:
+		ci_list.append(len(e_l))
+		if not is_constant(ci_list):
+			pf_ci = calcConfInt(ci_list)
+		else:
+			pf_ci = 0
+
 
 	# 3. Plotting
-	x = [t for t in range(threshold)]
+	#x = [t for t in range(threshold)]
+	#print aga_error
+	#plt.fill_between(x, aga_error-(aga_ci/2), 
+	#					aga_error+(aga_ci/2),
+	#				 color='b', alpha=.25)
 
-	delta = (aga_ci-aga_tp)
-	plt.fill_between(x, aga_tp-delta, 
-						aga_tp+delta,
-					 color='b', alpha=.15)
-   	delta = (abu_ci-abu_tp)
-	plt.fill_between(x, abu_tp-delta,
-					 abu_tp+delta, 
-					 color='g', alpha=.15)
-	delta = (pf_ci-pf_m)
-	plt.fill_between(x, pf_tp-delta,
-					 pf_tp+delta, 
-					 color='r', alpha=.15)
+	#plt.fill_between(x, abu_error-(abu_ci/2), 
+	#					abu_error+(abu_ci/2),
+	#				 color='g', alpha=.15)
+
+	#plt.fill_between(x, pf_error-(pf_ci/2), 
+	#					pf_error+(pf_ci/2),
+	#				 color='r', alpha=.15)
 
 
 	# b. Len Mean
-	plt.plot(aga_tp,
+	plt.plot(aga_error,
 			 label='AGA',
 			 color='b',
 			 linestyle=':',			 
-			 linewidth=2,
-			 clip_on=False)
+			 linewidth=2)
 
-	plt.plot(abu_tp,
+	plt.plot(abu_error,
 			 label='ABU',
 			 color='g',
 			 linestyle='-.',   
-			 linewidth=2,
-			 clip_on=False)
+			 linewidth=2)
 
-	plt.plot(pf_tp,
+	plt.plot(pf_error,
 			 label='PF',
 			 color='r',
 			 linestyle='-',   
-			 linewidth=2,
-			 clip_on=False)
+			 linewidth=2)
 
 	# 4. Showing Results
 	axis = plt.gca()
@@ -558,11 +570,12 @@ for info in informations:
 	plot_run_length_bar(info.AGA_mean_len_hist,info.AGA_ci_len_hist,\
 						info.ABU_mean_len_hist,info.ABU_ci_len_hist,\
 						info.PF_mean_len_hist,info.PF_ci_len_hist,'Perform')
-plot_run_length(aga_m,aga_ci,abu_m,abu_ci,pf_m,pf_ci,'Visibility')
+#plot_run_length(aga_m,aga_ci,abu_m,abu_ci,pf_m,pf_ci,'Visibility')
 
 # 5. Plotting the type probability
-#print '***** type probability performance *****'
-#for info in informations:
-	#plot_type_probability(info.AGA_typeProbHistory,\
-					#info.ABU_typeProbHistory,\
-					#info.PF_typeProbHistory , info.threshold, info.name+'TypePerformance')
+print '***** type probability performance *****'
+for info in informations:
+	plot_type_probability(info.AGA_typeProbHistory,\
+					info.ABU_typeProbHistory,\
+					info.PF_typeProbHistory ,\
+					info.threshold, info.name+'TypePerformance')

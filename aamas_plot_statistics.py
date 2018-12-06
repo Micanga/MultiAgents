@@ -1,4 +1,10 @@
+import ast
+import matplotlib.pyplot as plt
+import numpy as np
+import os
+import pickle
 import subprocess
+from math import sqrt
 
 def is_constant(array):
 	for i in range(0,len(array)-2):
