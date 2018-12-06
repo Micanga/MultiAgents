@@ -1,6 +1,8 @@
 *.pyc
 ./outputs/*
 *~
+*Pickle
+*.R
 [#]*[#]
 .\#*
 *.aux
