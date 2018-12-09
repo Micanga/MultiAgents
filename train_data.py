@@ -61,7 +61,7 @@ class TrainData:
         previous_agent = unknown_agent.previous_agent_status
         action = unknown_agent.next_action
         # D= (p,f(p)) , f(p) = P(a|H_t_1,teta,p)
-        print('------------------------------------------------------------')
+        #print('------------------------------------------------------------')
         for i in range(0, self.generated_data_number):
 
             # Generating random values for parameters
