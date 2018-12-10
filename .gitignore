@@ -1,6 +1,10 @@
 *.pyc
 *.pdf
 ./outputs/*
+./input/*
+./outputs/*
+./pf_inputs/*
+./plots/*
 *~
 *Pickle
 *.R
