@@ -21,7 +21,7 @@ selected_types 		= [False,False]
 def random_pick(set_):
 	return set_[randint(0,len(set_)-1)]
 
-def write_config_file(current_folder,parameter_estimation_mode,mcts_mode,train_mode):
+def create_config_file(current_folder,parameter_estimation_mode,mcts_mode,train_mode):
 
 	filename = current_folder + 'config.csv'
 	with open(filename, 'wb+') as file:
@@ -59,24 +59,16 @@ def selectType():
 	# 2. Verifing if is able to generate this type
 	# follower 1 needs lider 1
 	if agentType == 'f1' and selected_types[0] == False:
-		while agentType != 'l1' or agentType != 'l2':
-			agentType = choice(possible_directions)
-		if agentType == 'l1':
-			selected_types[0] = True
-		else:
-			selected_types[1] = True
+		agentType = 'l1'
+		selected_types[0] = True
 	# follower 2 needs lider 2
 	if agentType == 'f2' and selected_types[1] == False:
-		while agentType != 'l1' or agentType != 'l2':
-			agentType = choice(possible_directions)
-		if agentType == 'l1':
-			selected_types[0] = True
-		else:
-			selected_types[1] = True
+		agentType = 'l2'
+		selected_types[1] = True
 	# lider 1 and 2 as Selected Type
 	if agentType == 'l1':
 		selected_types[0] = True
-	else:
+	elif agentType == 'l2':
 		selected_types[1] = True
 
 	return agentType
@@ -85,10 +77,11 @@ def main():
 	# 0. Checking the terminal input
 	if len(sys.argv) != 5:
 		print 'usage: python scenario_generator.py [experiment] [size] [nagents] [nitems]'
+		print 'your input: ',sys.argv
 		exit(0)
 
 	# 1. Taking the information
-	experiment = argv[1]
+	experiment = sys.argv[1]
 	size = int(sys.argv[2])
 	nagents = int(sys.argv[3])
 	nitems = int(sys.argv[4])
@@ -115,8 +108,8 @@ def main():
 
 	# 2. Creating the files
 	# a. setting the file name
-	filename = current_folder + '/' + 'sim.csv'
-	print filename
+	filename = current_folder + 'sim.csv'
+	print '| created file: ',filename
 
 	# b. creating the a csv file
 	with open(filename,'wb+') as file:
@@ -128,19 +121,19 @@ def main():
 
 		GRID = ['grid',grid_size,grid_size]
 		writer.writerows([GRID])
+		#print 'Grid [OK]'
 
 		# d. defining the main agent parameters
 		mainx,mainy,grid = generateRandomNumber(grid,grid_size)
 		mainDirection    = choice(possible_directions)
 		mainType  = 'm'
 		mainLevel = 1
-		mainRadius, mainAngle = radius, angle
 
-		MAIN = ['main',mainx,mainy,mainDirection,mainType,mainLevel,mainRadius,mainAngle]
+		MAIN = ['main',mainx,mainy,mainDirection,mainType,mainLevel]
 		writer.writerows([MAIN])
+		#print 'Main Agent [OK]'
 
 		# e. defining the commum agents
-		nagents = nagents
 		for agent_idx in range(nagents):
 			agentx,agenty,grid = generateRandomNumber(grid,grid_size)
 			agentDirection = choice(possible_directions)
@@ -151,14 +144,15 @@ def main():
 
 			AGENT = ['agent'+ str(agent_idx),agentx,agenty,agentDirection,agentType,agentLevel,agentRadius,agentAngle]
 			writer.writerows([AGENT])
+			#print 'Agent ',agent_idx,' [OK]'
 
-		nitems = nitems
 		for item_idx in range(nitems):
 			itemx,itemy,grid = generateRandomNumber(grid,grid_size)
 			itemLevel = round(random.uniform(0,1), 3)
 
 			ITEM = ['item'+ str(item_idx),itemx,itemy,itemLevel]
 			writer.writerows([ITEM])
+			#print 'Item ',item_idx,' [OK]'
 
 	return current_folder
 if __name__ == '__main__':

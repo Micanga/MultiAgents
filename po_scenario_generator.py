@@ -21,7 +21,7 @@ selected_types 		= [False,False]
 def random_pick(set_):
 	return set_[randint(0,len(set_)-1)]
 
-def write_config_file(current_folder,parameter_estimation_mode,mcts_mode,train_mode):
+def create_config_file(current_folder,parameter_estimation_mode,mcts_mode,train_mode):
 
 	filename = current_folder + 'poconfig.csv'
 	with open(filename, 'wb+') as file:

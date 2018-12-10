@@ -1,8 +1,0 @@
-type_selection_mode , AS
-parameter_estimation_mode , ABU
-generated_data_number, 100
-reuseTree , False
-mcts_mode,OSPA
-iteration_max , 200
-max_depth , 200
-sim_path,simulator.csv

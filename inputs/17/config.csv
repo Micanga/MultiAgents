@@ -1,8 +1,0 @@
-type_selection_mode , AS
-parameter_estimation_mode , AGA
-generated_data_number, 10
-reuseTree , False
-mcts_mode,MSPA
-iteration_max , 100
-max_depth , 100
-sim_path,sim1.csv

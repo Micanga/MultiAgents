@@ -59,7 +59,7 @@ class Simulator:
         """
         # Load and store csv file
         info = defaultdict(list)
-        print path
+        print 'path:',path
         with open(path) as info_read:
             for line in info_read:
                 if not self.is_comment(line):

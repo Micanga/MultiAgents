@@ -46,7 +46,10 @@ apply_adversary = False
 
 
 # ============= Set Input/Output ============
-input_folder = log.get_input_folder()
+if len(sys.argv) > 1:
+    input_folder = sys.argv[1]
+else:
+    input_folder = log.get_input_folder()
 output_folder = log.create_output_folder()
 
 # ============= Read Configuration ============

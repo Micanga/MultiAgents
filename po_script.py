@@ -47,6 +47,8 @@ while test_number < number_of_tests:
 
                             # b. openning the target dir
                             print '- Starting the process'
+                            sub_dir = 'PO_O_' + experiment
+                            experiment_dir = "po_inputs/" + sub_dir + '/'
                             filename = 'posim.csv'
                             experiment = 'python po_run_world.py '+ experiment_dir + ' ' + filename
 
