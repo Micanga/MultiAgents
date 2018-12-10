@@ -299,8 +299,8 @@ class UCT:
             sumQ = 0
         for i in range(len(probabilities)):
             probabilities[i] *= sumQ
-        print "Total after belief is ", sum(probabilities)
-        print "Probabilities: ", probabilities
+        #print "Total after belief is ", sum(probabilities)
+        #print "Probabilities: ", probabilities
         self.print_Q_table(node)
 
         return max(probabilities)
@@ -486,8 +486,8 @@ class UCT:
         node = root
 
         for i in range(self.max_depth + main_time_step):
-            print "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
-            print node.depth
+            #print "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
+            #print node.depth
             self.print_nodes(node.childNodes)
             if len(node.childNodes) > 0:
                 node = node.childNodes[0]
@@ -496,14 +496,15 @@ class UCT:
 
     ####################################################################################################################
     def print_nodes(self, childNodes):
-        print('Total number of children:', len(childNodes))
+        #print('Total number of children:', len(childNodes))
         for i in range(len(childNodes)):
-            print 'Node: ', i
+            #print 'Node: ', i
             self.print_Q_table(childNodes[i])
             # print childNodes[i].state.simulator.draw_map()
 
     ####################################################################################################################
     def print_Q_table(self, node):
-        for a in range(len(node.Q_table)):
-            print "Action: ", node.Q_table[a].action, "QValue:", node.Q_table[a].QValue, "sumValue:", node.Q_table[
-                a].sumValue, "trials:", node.Q_table[a].trials
+        #for a in range(len(node.Q_table)):
+        #    print "Action: ", node.Q_table[a].action, "QValue:", node.Q_table[a].QValue, "sumValue:", node.Q_table[
+        #        a].sumValue, "trials:", node.Q_table[a].trials
+        return

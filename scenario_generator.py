@@ -18,6 +18,8 @@ possible_directions = ['N','S','E','W']
 agent_types 		= ['l1','l2','f1','f2']
 selected_types 		= [False,False]
 
+experiment_type_set = ['ABU', 'AGA', 'MIN']
+
 def random_pick(set_):
 	return set_[randint(0,len(set_)-1)]
 
@@ -75,85 +77,87 @@ def selectType():
 
 def main():
 	# 0. Checking the terminal input
-	if len(sys.argv) != 5:
-		print 'usage: python scenario_generator.py [experiment] [size] [nagents] [nitems]'
-		print 'your input: ',sys.argv
+	if len(sys.argv) != 4:
+		print 'usage: python scenario_generator.py [size] [nagents] [nitems]'
 		exit(0)
 
 	# 1. Taking the information
-	experiment = sys.argv[1]
-	size = int(sys.argv[2])
-	nagents = int(sys.argv[3])
-	nitems = int(sys.argv[4])
+	size = int(sys.argv[1])
+	nagents = int(sys.argv[2])
+	nitems = int(sys.argv[3])
 
-	# 1. Creating the possible configuration files
+	# 2. Defining the simulation
+	grid_size = size
+	grid = [[0 for col in range(grid_size)] for row in range(grid_size)]
+	GRID = ['grid',grid_size,grid_size]
+
+	# d. defining the main agent parameters
+	mainx,mainy,grid = generateRandomNumber(grid,grid_size)
+	mainDirection    = choice(possible_directions)
+	mainType  = 'm'
+	mainLevel = 1
+	MAIN = ['main',mainx,mainy,mainDirection,mainType,mainLevel]
+
+	# e. defining the commum agents
+	AGENTS = []
+	for agent_idx in range(nagents):
+		agentx,agenty,grid = generateRandomNumber(grid,grid_size)
+		agentDirection = choice(possible_directions)
+		agentType = selectType()
+		agentLevel = round(random.uniform(0,1), 3)
+		agentRadius = round(random.uniform(0.1,1), 3)
+		agentAngle = round(random.uniform(0.1,1), 3)
+		AGENTS.append(['agent'+ str(agent_idx),agentx,agenty,agentDirection,agentType,agentLevel,agentRadius,agentAngle])
+
+	ITEMS = []
+	for item_idx in range(nitems):
+		itemx,itemy,grid = generateRandomNumber(grid,grid_size)
+		itemLevel = round(random.uniform(0,1), 3)
+		ITEMS.append(['item'+ str(item_idx),itemx,itemy,itemLevel])
+
+	# 3. Creating the possible configuration files
 	# a. choosing the parameter estimation mode
-	if experiment == 'MIN':
-		train_mode = 'history_based'
-	else:
-		train_mode = 'none_history_based'
+	for experiment in experiment_type_set:
+		if experiment == 'MIN':
+			train_mode = 'history_based'
+		else:
+			train_mode = 'none_history_based'
 
-	# b. choosing the mcts mode
-	mcts_mode = 'UCTH'
-	MC_type = 'O'
+		# b. choosing the mcts mode
+		mcts_mode = 'UCTH'
+		MC_type = 'O'
 
-	# c. creating the necessary folder
-	sub_dir = 'FO_'+ MC_type + '_' + experiment
-	current_folder = "inputs/" + sub_dir + '/'
-	if not os.path.exists(current_folder):
-		os.mkdir(current_folder, 0755)
+		# c. creating the necessary folder
+		sub_dir = 'FO_'+ MC_type + '_' + experiment
+		current_folder = "inputs/" + sub_dir + '/'
+		if not os.path.exists(current_folder):
+			os.mkdir(current_folder, 0755)
 
-	# d. creating the config files
-	create_config_file(current_folder, experiment, mcts_mode,train_mode)
+		# d. creating the config files
+		create_config_file(current_folder, experiment, mcts_mode,train_mode)
 
-	# 2. Creating the files
-	# a. setting the file name
-	filename = current_folder + 'sim.csv'
-	print '| created file: ',filename
+		# 4. Creating the files
+		# a. setting the file name
+		filename = current_folder + 'sim.csv'
+		print filename
 
-	# b. creating the a csv file
-	with open(filename,'wb+') as file:
-		writer = csv.writer(file,delimiter = ',')
+		# b. creating the a csv file
+		with open(filename,'wb+') as file:
+			writer = csv.writer(file,delimiter = ',')
 
-		# c. choosing the grid size
-		grid_size = size
-		grid = [[0 for col in range(grid_size)] for row in range(grid_size)]
+			# i. grid
+			writer.writerows([GRID])
 
-		GRID = ['grid',grid_size,grid_size]
-		writer.writerows([GRID])
-		#print 'Grid [OK]'
+			# ii. main agent
+			writer.writerows([MAIN])
 
-		# d. defining the main agent parameters
-		mainx,mainy,grid = generateRandomNumber(grid,grid_size)
-		mainDirection    = choice(possible_directions)
-		mainType  = 'm'
-		mainLevel = 1
+			# iii. commum agents
+			for agent_idx in range(nagents):
+				writer.writerows([AGENTS[agent_idx]])
 
-		MAIN = ['main',mainx,mainy,mainDirection,mainType,mainLevel]
-		writer.writerows([MAIN])
-		#print 'Main Agent [OK]'
+			# iv. items
+			for item_idx in range(nitems):
+				writer.writerows([ITEMS[item_idx]])
 
-		# e. defining the commum agents
-		for agent_idx in range(nagents):
-			agentx,agenty,grid = generateRandomNumber(grid,grid_size)
-			agentDirection = choice(possible_directions)
-			agentType = selectType()
-			agentLevel = round(random.uniform(0,1), 3)
-			agentRadius = round(random.uniform(0.1,1), 3)
-			agentAngle = round(random.uniform(0.1,1), 3)
-
-			AGENT = ['agent'+ str(agent_idx),agentx,agenty,agentDirection,agentType,agentLevel,agentRadius,agentAngle]
-			writer.writerows([AGENT])
-			#print 'Agent ',agent_idx,' [OK]'
-
-		for item_idx in range(nitems):
-			itemx,itemy,grid = generateRandomNumber(grid,grid_size)
-			itemLevel = round(random.uniform(0,1), 3)
-
-			ITEM = ['item'+ str(item_idx),itemx,itemy,itemLevel]
-			writer.writerows([ITEM])
-			#print 'Item ',item_idx,' [OK]'
-
-	return current_folder
 if __name__ == '__main__':
     main()

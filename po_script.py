@@ -22,12 +22,20 @@ experiment_type_set = ['ABU', 'AGA', 'MIN']
 # 2. Starting the experiment
 test_number = 0
 while test_number < number_of_tests:
-    for experiment in experiment_type_set:
-        for size in square_grid_size:
-            for nagents in number_of_agents:
-                for nitems in number_of_items:
-                    for radius in radius_set:
-                        for angle in angle_set:
+    for size in square_grid_size:
+        for nagents in number_of_agents:
+            for nitems in number_of_items:
+                for radius in radius_set:
+                    for angle in angle_set:
+                        # a. generating random scenarios
+                        print '- Generating Scenario'
+                        scenario_generator = 'python po_scenario_generator.py ' +\
+                            ' ' + size + ' ' + nagents + ' ' +\
+                            nitems + ' ' + radius
+                        experiment_dir = os.system(scenario_generator)
+                        time.sleep(1)
+
+                        for experiment in experiment_type_set:
                             print '----- STARTING TEST ',test_number,' -----'
                             print '| Experiment: ',experiment
                             print '| Size: ',size
@@ -36,14 +44,6 @@ while test_number < number_of_tests:
                             print '| Radius: ',radius
                             print '| Angle: ', angle
                             print '---------'
-
-                            # a. generating random scenarios
-                            print '- Generating Scenario'
-                            scenario_generator = 'python po_scenario_generator.py ' +\
-                                experiment + ' ' + size + ' ' + nagents + ' ' +\
-                                nitems + ' ' + radius
-                            experiment_dir = os.system(scenario_generator)
-                            time.sleep(1)
 
                             # b. openning the target dir
                             print '- Starting the process'
