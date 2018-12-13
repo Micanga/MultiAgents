@@ -59,7 +59,7 @@ class Simulator:
         """
         # Load and store csv file
         info = defaultdict(list)
-        print 'path:',path
+        print path
         with open(path) as info_read:
             for line in info_read:
                 if not self.is_comment(line):
@@ -242,6 +242,42 @@ class Simulator:
             return False
 
         return True
+
+    ####################################################################################################################
+
+    def create_log_file(self,path):
+        file = open(path, 'w')
+        return file
+
+    ####################################################################################################################
+
+    def log_map(self, file):
+        line =''
+        for y in range(self.dim_h - 1, -1, -1):
+            for x in range(self.dim_w):
+                xy = self.the_map[y][x]
+                if xy == 0:
+                    line = line + '.'  # space
+                elif xy == 1:
+                    line = line + 'I'  # Items
+                elif xy == 2:
+                    line = line + 'S'  # start
+                elif xy == 3:
+                    line = line + 'R'  # route
+                elif xy == 4:
+                    line = line + 'D'  # finish
+                elif xy == 5:
+                    line = line + '+'  # Obstacle
+                elif xy == 8:
+                    line = line + 'A'  # A Agent
+                elif xy == 9:
+                    line = line + 'M'  # Main Agent
+                elif xy == 10:
+                    line = line + 'W'  # Enemy Agent
+
+            file.write(line+ '\n')
+            line = ''
+        file.write('*********************\n')
 
     ####################################################################################################################
 
@@ -522,6 +558,11 @@ class Simulator:
         for i in range(len(self.items)):
             (item_x, item_y) = self.items[i].get_position()
             if (item_x, item_y) == (x,y) and not self.items[i].loaded:
+                return False
+
+        for i in range(len(self.obstacles)):
+            (obs_x, obs_y) = self.obstacles[i].get_position()
+            if (obs_x, obs_y) == (x,y) :
                 return False
 
         for i in range(len(self.agents)):

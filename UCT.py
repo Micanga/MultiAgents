@@ -140,7 +140,10 @@ class Node:
 
         m = self.state.simulator.dim_w
         n = self.state.simulator.dim_h
-
+        for obstacle in self.state.simulator.obstacles:
+            (x_o , y_o) = obstacle.get_position()
+            if x == x_o and y==y_o:
+                return False
         if x == 0:
             if action == 'W':
                 return False
@@ -276,10 +279,12 @@ class UCT:
     def best_enemy_action(self, node, action):
         nodes = node.childNodes
         node = None
-
+        print 'best_enemy_action:',action ,node
         for n in range(len(nodes)):
             if nodes[n].action == action:
                 node = nodes[n]
+        if node is None:
+            return 0
 
         Q_table = node.Q_table
         sumQ = 0
@@ -299,12 +304,13 @@ class UCT:
             sumQ = 0
         for i in range(len(probabilities)):
             probabilities[i] *= sumQ
-        #print "Total after belief is ", sum(probabilities)
-        #print "Probabilities: ", probabilities
+        print "Total after belief is ", sum(probabilities)
+        print "Probabilities: ", probabilities
         self.print_Q_table(node)
 
         return max(probabilities)
     ################################################################################################################
+
     def terminal(self, state):
         if state.simulator.items_left() == 0:
             return True
@@ -422,7 +428,6 @@ class UCT:
                 else:
                     next_node = node.add_child_one_state(action, next_state,  self.enemy)
 
-
         discount_factor = 0.95
         q = reward + discount_factor * self.search(main_time_step, next_node)
 
@@ -459,7 +464,6 @@ class UCT:
         best_selected_action = self.best_action(node)
         enemy_probabilities = None
         if self.apply_adversary and not self.enemy:
-
             enemy_probabilities = self.best_enemy_action(node, best_selected_action)
 
 
@@ -486,8 +490,8 @@ class UCT:
         node = root
 
         for i in range(self.max_depth + main_time_step):
-            #print "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
-            #print node.depth
+            print "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
+            print node.depth
             self.print_nodes(node.childNodes)
             if len(node.childNodes) > 0:
                 node = node.childNodes[0]
@@ -496,15 +500,14 @@ class UCT:
 
     ####################################################################################################################
     def print_nodes(self, childNodes):
-        #print('Total number of children:', len(childNodes))
+        print('Total number of children:', len(childNodes))
         for i in range(len(childNodes)):
-            #print 'Node: ', i
+            print 'Node: ', i
             self.print_Q_table(childNodes[i])
             # print childNodes[i].state.simulator.draw_map()
 
     ####################################################################################################################
     def print_Q_table(self, node):
-        #for a in range(len(node.Q_table)):
-        #    print "Action: ", node.Q_table[a].action, "QValue:", node.Q_table[a].QValue, "sumValue:", node.Q_table[
-        #        a].sumValue, "trials:", node.Q_table[a].trials
-        return
+        for a in range(len(node.Q_table)):
+            print "Action: ", node.Q_table[a].action, "QValue:", node.Q_table[a].QValue, "sumValue:", node.Q_table[
+                a].sumValue, "trials:", node.Q_table[a].trials
