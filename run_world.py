@@ -10,8 +10,6 @@ import sys
 import numpy as np
 import psutil
 
-
-
 x_train_set = []
 level_set = []
 angle_set = []
@@ -54,7 +52,7 @@ if len(sys.argv) > 1 :
     dir = str(sys.argv[1])
 
 # dir = "inputs/history2/"
-dir = "inputs/adversary3/"
+dir = "inputs/adversary2/"
 
 # path = 'config.csv'
 path = dir + 'config.csv'

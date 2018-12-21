@@ -101,7 +101,7 @@ class Agent:
             print 'action for enemy : ', next_action
         else:
             print 'action for main : ', next_action
-        reward = self.uct.do_move(main_sim, next_action,  real=True)
+        reward = self.uct.do_move(main_sim, next_action, self.is_enemy, real=True)
         return reward , guess_move,search_tree
 
     ####################################################################################################################
