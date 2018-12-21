@@ -2,19 +2,23 @@ import ast
 import matplotlib.pyplot as plt
 import numpy as np
 import os
+import sys
 import pickle
 import subprocess
 
 from math import sqrt
 from information import Information
 
-def read_files(root_dir,radius=None):
+def read_files(root_dir,size,nagents,nitems,radius=None):
     print '***** reading the files *****'
     results = list()
+    count = 0
     for root, dirs, files in os.walk(root_dir):
         if 'pickleResults.txt' in files:
             with open(os.path.join(root,'pickleResults.txt'),"r") as pickleFile:
-                print root
+                progress = 100 * float(count/2632.0)
+                sys.stdout.write("Progress: %.1f%% | file #%d   \r" % (progress,count) )
+                sys.stdout.flush()
                 estimationDictionary = {}
                 dataList = pickle.load(pickleFile)
 
@@ -62,24 +66,25 @@ def read_files(root_dir,radius=None):
                 estimationDictionary['trueParameters'] = trueParameters
                 estimationDictionary['historyParameters'] = historyParameters
                 estimationDictionary['path'] = root
-                #if simWidth == 25 and agentsCounts == 1:
-                if root_dir == 'AAMAS_Outputs_POMCP':
-                    if radius == str(systemDetails['mainAgentRadius']):
-                        estimationDictionary['mainAgentRadius'] = str(systemDetails['mainAgentRadius'])
-                        results.append(estimationDictionary)
-                else:
-                    results.append(estimationDictionary)
-
+                if size == str(simWidth):
+                    if nagents == str(agentsCounts):
+                        if nitems == str(itemsCounts):
+                            if root_dir == 'Outputs_POMCP':
+                                if radius == str(systemDetails['mainAgentRadius']):
+                                    estimationDictionary['mainAgentRadius'] = str(systemDetails['mainAgentRadius'])
+                                    results.append(estimationDictionary)
+                            else:
+                                results.append(estimationDictionary)
+            count += 1
     #import ipdb; ipdb.set_trace()
+    progress = 100 * float(count/2632.0)
+    sys.stdout.write("Progress: %.1f%% | file #%d      \n" % (progress,count) )
     return results
 
 ########################################################################################################################
 def extract_information(results,name,radius=None):
     print '***** extracting the information *****'
-    if radius == None:
-        info = Information(name)
-    else:
-        info = Information(name+'_r'+radius)
+    info = Information(name)
 
     for result in results:
         if result['estimationMode'] == 'AGA':

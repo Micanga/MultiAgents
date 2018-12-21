@@ -226,9 +226,8 @@ class UCT:
                 else:
                     sim.items[destination_item_index].agents_load_item.append(tmp_m_agent)
         else:
-            if real and self.planning_for_enemy:
-
-                print 'x'
+            #if real and self.planning_for_enemy:
+                #print 'x'
             (x_new, y_new) = tmp_m_agent.new_position_with_given_action(sim.dim_w, sim.dim_h, move)
 
             # If there new position is empty
@@ -282,7 +281,7 @@ class UCT:
     def best_enemy_action(self, node, action):
         nodes = node.childNodes
         node = None
-        print 'best_enemy_action:',action,node
+        #print 'best_enemy_action:',action,node
         for n in range(len(nodes)):
             if nodes[n].action == action:
                 node = nodes[n]
@@ -447,7 +446,7 @@ class UCT:
     # @TODO: make the enemy agent not estimate the main agents actions or not guess who the enemy agent is
     def monte_carlo_planning(self, main_time_step, search_tree, simulator,  enemy):
         global root
-        print 'Is it enemy ? ',self.planning_for_enemy
+        #print 'Is it enemy ? ',self.planning_for_enemy
         current_state = State(simulator)
 
         if search_tree is None:

@@ -551,7 +551,7 @@ class ParameterEstimation:
                 x_vals = np.linspace(p_min, p_max, granularity)
                 for j in range(len(x_vals)):
                     proposal = new_belief(x_vals[j])
-                    print('Proposal: {}'.format(proposal))
+                    #print('Proposal: {}'.format(proposal))
                     if proposal > polynomial_max:
                         polynomial_max = proposal
 
@@ -564,7 +564,7 @@ class ParameterEstimation:
             # Increment iterator
 
         new_parameter = Parameter(parameter_estimate[0], parameter_estimate[1], parameter_estimate[2])
-        print('Parameter Estimate: {}'.format(parameter_estimate))
+        #print('Parameter Estimate: {}'.format(parameter_estimate))
         self.iteration += 1
 
         return new_parameter
@@ -603,11 +603,11 @@ class ParameterEstimation:
         if self.train_mode == 'history_based':
 
             if unknown_agent.next_action == 'L':
-                print '      ******* Update data set _ deep copy *******'
+                #print '      ******* Update data set _ deep copy *******'
                 unknown_agent.choose_target_state =copy( current_state)
-                print '      ******* train data *******'
+                #print '      ******* train data *******'
                 max_succeeded_steps = tmp_train_data.update_data_set(unknown_agent, self.actions_to_reach_target, selected_type , po)
-                print '      ******* after  train data *******'
+                #print '      ******* after  train data *******'
             else:
                 max_succeeded_steps = tmp_train_data.generate_data(unknown_agent,
                                              self.action_history,
@@ -757,7 +757,7 @@ class ParameterEstimation:
             print('An error has occured in UCB, resorting to l1')
             return_agent = ['f1']
 
-        print('UCB Algorithm returned agent of type: {}'.format(return_agent[0]))
+        #print('UCB Algorithm returned agent of type: {}'.format(return_agent[0]))
 
         if final:
             return return_agent
@@ -811,13 +811,13 @@ class ParameterEstimation:
 
         if actions == 1:
             unknown_agent.next_action = 'L'
-        print ('unknown_agent.next_action=',unknown_agent.next_action)
+        #print ('unknown_agent.next_action=',unknown_agent.next_action)
         if self.train_mode == 'history_based':
             self.action_history.append(unknown_agent.next_action)
             if unknown_agent.next_action != 'L':
                 self.actions_to_reach_target.append(unknown_agent.next_action)
 
-        print self.actions_to_reach_target
+        #print self.actions_to_reach_target
         if self.apply_adversary:
             selected_types = ['l1', 'l2','w']
         else:
@@ -847,10 +847,10 @@ class ParameterEstimation:
             # print 'Estimating parameters for agent', unknown_agent.index
             new_parameters_estimation = self.parameter_estimation(x_train, y_train, selected_type)
             
-            print 'new estimated parameters:'\
-                , str(new_parameters_estimation.level)\
-                , str(new_parameters_estimation.radius)\
-                , str(new_parameters_estimation.angle)
+            #print 'new estimated parameters:'\
+            #    , str(new_parameters_estimation.level)\
+            #    , str(new_parameters_estimation.radius)\
+            #    , str(new_parameters_estimation.angle)
 
             # ==========================================================================================================
 

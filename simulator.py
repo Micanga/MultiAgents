@@ -594,7 +594,7 @@ class Simulator:
                 item.loaded = True
                 for agent in item.agents_load_item:
                     self.agents[agent.index].reset_memory()
-                    print '2'
+                    #print '2'
                 item.agents_load_item = list()
                 c_reward += 1
 

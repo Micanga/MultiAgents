@@ -97,10 +97,10 @@ class Agent:
     ####################################################################################################################
     def move(self,reuse_tree,main_sim,search_tree, time_step):
         next_action,guess_move, search_tree = self.uct_planning(reuse_tree,main_sim,search_tree, time_step)
-        if self.uct.planning_for_enemy:
-            print 'action for enemy : ', next_action
-        else:
-            print 'action for main : ', next_action
+        #if self.uct.planning_for_enemy:
+            #print 'action for enemy : ', next_action
+        #else:
+            #print 'action for main : ', next_action
         reward = self.uct.do_move(main_sim, next_action,  real=True)
         return reward , guess_move,search_tree
 

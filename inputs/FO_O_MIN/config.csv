@@ -1,0 +1,12 @@
+type_selection_mode,AS
+parameter_estimation_mode,MIN
+train_mode,history_based
+generated_data_number,100
+reuseTree,False
+mcts_mode,UCTH
+PF_add_threshold,0.9
+PF_del_threshold,0.9
+PF_weight,1.2
+iteration_max,50
+max_depth,50
+sim_path,sim.csv

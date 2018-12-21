@@ -1,81 +1,93 @@
+# Python Imports
+from collections import defaultdict
+from copy import deepcopy
+import datetime
+import gc
+import matplotlib.pyplot as plt
+import numpy as np
+import os
+import pickle
+import psutil
+import sys
+import time
+
+# My Python Imports
+import log
+import parameter_estimation
+import train_data
 import posimulator
 import POUCT
-import time
-from collections import defaultdict
-from copy import copy
-import os
-import datetime
-import pickle
-import sys
-import numpy as np
-import matplotlib.pyplot as plt
-import parameter_estimation
-import psutil
-import train_data
-import gc
 
-x_train_set = []
-level_set = []
-angle_set = []
-radius_set = []
-
-
-dataMean = np.zeros((100, 3))
-dataStd = np.zeros((100, 3))
-
+# ============= Set Configurations ============
+# System Configuration
+sys.setrecursionlimit(2000)
 memory_usage = 0
-iMaxStackSize = 2000
-sys.setrecursionlimit(iMaxStackSize)
+
+# Simulation Configuration
+sim_path = None
+
 types = ['l1', 'l2', 'f1', 'f2']
+type_selection_mode = None
 
 iteration_max = None
-type_selection_mode = None
+max_depth = None
+
+do_estimation = True
+train_mode = None
 parameter_estimation_mode = None
+
 generated_data_number = None
 reuse_tree = None
-max_depth = None
-sim_path = None
-do_estimation = True
+
 mcts_mode = None
 PF_add_threshold = None
+PF_del_threshold = None
+PF_weight = 0.0
 apply_adversary = False
-train_mode = None
 
 
 # ============= Set Input/Output ============
-now = datetime.datetime.now()
-# sub_dir = now.strftime("%Y-%m-%d %H:%M")
-from random import randint
-sub_dir = str(now.day) + "_"+ str(now.hour)+ "_" + str(now.minute) + "_k" + str(randint(0,now.day+now.hour+now.minute))
-current_folder = "po_outputs/" + sub_dir + '/'
-if not os.path.exists(current_folder):
-    os.mkdir(current_folder, 0755)
+if len(sys.argv) > 1:
+    input_folder = sys.argv[1]
+else:
+    input_folder = log.get_input_folder()
+output_folder = log.create_output_folder()
 
-dir = ""
-if len(sys.argv) > 1 :
-    dir = str(sys.argv[1])
-
-path = dir + 'po_config.csv'
-print 'path: ',path
-
+# ============= Read Configuration ============
+# 1. Reading the sim configuration file
 info = defaultdict(list)
-with open(path) as info_read:
+with open(input_folder+'poconfig.csv') as info_read:
     for line in info_read:
         data = line.strip().split(',')
         key, val = data[0], data[1:]
         info[key].append(val)
 
-# ============= Read configuration ============
+# 2. Getting the parameters
 for k, v in info.items():
+
+    if 'sim_path' in k:
+        sim_path = input_folder + str(v[0][0]).strip()
 
     if 'type_selection_mode' in k:
         type_selection_mode = str(v[0][0]).strip()
 
-    if 'parameter_estimation_mode' in k:
-        parameter_estimation_mode = str(v[0][0]).strip()
+    if 'iteration_max' in k:
+        iteration_max = int(v[0][0])
+
+    if 'max_depth' in k:
+        max_depth = int(v[0][0])
+
+    if 'do_estimation' in k:
+        if v[0][0] == 'False':
+            do_estimation = False
+        else:
+            do_estimation = True
 
     if 'train_mode' in k:
         train_mode = str(v[0][0]).strip()
+
+    if 'parameter_estimation_mode' in k:
+        parameter_estimation_mode = str(v[0][0]).strip()
 
     if 'generated_data_number' in k:
         generated_data_number = int(v[0][0])
@@ -83,11 +95,8 @@ for k, v in info.items():
     if 'reuseTree' in k:
         reuse_tree = v[0][0]
 
-    if 'iteration_max' in k:
-        iteration_max = int(v[0][0])
-
-    if 'max_depth' in k:
-        max_depth = int(v[0][0])
+    if 'mcts_mode' in k:
+        mcts_mode = str(v[0][0]).strip()
 
     if 'PF_add_threshold' in k:
         PF_add_threshold = float(v[0][0])
@@ -98,53 +107,46 @@ for k, v in info.items():
     if 'PF_weight' in k:
         PF_weight = float(v[0][0])
 
-    if 'do_estimation' in k:
-        if v[0][0] == 'False':
-            do_estimation = False
-        else:
-            do_estimation = True
-
     if 'apply_adversary' in k:
         if v[0][0] == 'False':
             apply_adversary = False
         else:
             apply_adversary = True
 
-    if 'sim_path' in k:
-        if len(sys.argv) > 1:
-            sim_path = dir + str(v[0][0]).strip()
-        else:
-            sim_path = str(v[0][0]).strip()
+sim_configuration = {'sim_path':sim_path,\
+    'types':types,'type_selection_mode':type_selection_mode,\
+    'iteration_max':iteration_max,'max_depth':max_depth,\
+    'do_estimation':do_estimation,'train_mode':train_mode,\
+    'parameter_estimation_mode':parameter_estimation_mode,\
+    'generated_data_number':generated_data_number,\
+    'reuse_tree':reuse_tree,'mcts_mode':mcts_mode,\
+    'PF_add_threshold':PF_add_threshold,\
+    'PF_del_threshold':PF_del_threshold,\
+    'PF_weight':PF_weight,'apply_adversary':apply_adversary}
 
-    if 'mcts_mode' in k:
-        mcts_mode = str(v[0][0]).strip()
-
-print 'max it:',iteration_max,'/max depth:',max_depth
+# ============= Set Simulation and Log File ============
 main_sim = posimulator.POSimulator()
-
 main_sim.loader(sim_path)
-logfile = main_sim.create_log_file(current_folder + "log.txt")
 
-# ======================================================================================================================
-for i in range(len(main_sim.agents)):
-    print 'true values : level :', main_sim.agents[i].level, ' radius: ', main_sim.agents[i].radius, ' angle: '\
-        , main_sim.agents[i].angle
+log_file = log.create_log_file(output_folder + "log.txt")
+log_file.write('Grid Size: {} - {} Items - {} Agents - {} Obstacles\n'.\
+        format(main_sim.dim_w,len(main_sim.items),len(main_sim.agents),len(main_sim.obstacles)))
+log.write_configurations(log_file,sim_configuration)
+log_file.write('***** Initial map *****\n')
+log.write_map(log_file,main_sim)
 
-main_sim.draw_map()
-main_sim.log_map(logfile)
-
-# ============= Initialization =========================================================================================
-
-time_step = 0
+# ============= Simulation Initialization ==================
+# 1. Log Variables Init
 begin_time = time.time()
 begin_cpu_time = psutil.cpu_times()
 used_mem_before = psutil.virtual_memory().used
-polynomial_degree = 4
 
+# 2. Sim estimation Init
+polynomial_degree = 4
 agents_parameter_estimation = []
 agents_previous_step_info = []
 
-
+# 3. Ad hoc Agents
 if main_sim.main_agent is not None:
     main_agent = main_sim.main_agent
     search_tree = None
@@ -165,12 +167,16 @@ if apply_adversary:
 
 
 for v_a in main_sim.main_agent.visible_agents:
-    v_a.choose_target_state = copy(main_sim)
-    # print v_a.agents_parameter_estimation.get_highest_type_probability()
-for i_a in main_sim.main_agent.invisible_agents:
-    i_a.choose_target_state = copy(main_sim)
+    v_a.choose_target_state = deepcopy(main_sim)
 
+# ============= Start Simulation ==================
+time_step = 0
 while main_sim.items_left() > 0:
+    progress = 100 * (len(main_sim.items) - main_sim.items_left())/len(main_sim.items)
+    sys.stdout.write("Experiment progress: %d%% | step: %d   \r" % (progress,time_step) )
+    sys.stdout.flush()
+
+    log_file.write('***** Iteration #'+str(time_step)+' *****\n')
 
     print '-------------------------------Iteration number ', time_step, '--------------------------------------'
 
@@ -209,8 +215,6 @@ while main_sim.items_left() > 0:
     # for xts in x_train_set:
     #     print xts
 
-    main_sim.log_map(logfile)
-
     if main_sim.items_left() == 0:
         break
 
@@ -221,90 +225,17 @@ while main_sim.items_left() > 0:
     gc.collect()
 
     print('***********************************************************************************************************')
-
-# plot_data_set(main_sim.agents[0],agents_parameter_estimation[0])
-# plot_errors(time_step,x_train_set)
-
-for v_a in main_sim.main_agent.visible_agents:
-    print v_a.agents_parameter_estimation.get_highest_type_probability()
-# main_sim.main_agent.visible_agents[0].agents_parameter_estimation.plot_data_set()
-
+progress = 100 * (len(main_sim.items) - main_sim.items_left())/len(main_sim.items)
+sys.stdout.write("Experiment progress: %d%% | step: %d   \n" % (progress,time_step) )
+    
+# ============= Finish Simulation ==================
 end_time = time.time()
 used_mem_after = psutil.virtual_memory().used
 end_cpu_time = psutil.cpu_times()
 memory_usage = used_mem_after - used_mem_before
 
-
-def print_result(main_sim,  time_steps, begin_time, end_time,mcts_mode):
-
-    pickleFile = open(current_folder + "/pickleResults.txt", 'wb')
-
-    dataList = []
-
-    systemDetails = {}
-
-
-    systemDetails['simWidth'] = main_sim.dim_w
-    systemDetails['simHeight'] = main_sim.dim_h
-    systemDetails['mainAgentRadius'] = main_sim.main_agent.vision.radius
-    systemDetails['mainAgentAngle'] =main_sim.main_agent.vision.angle
-    systemDetails['agentsCounts'] = len(main_sim.agents)
-    systemDetails['itemsCounts'] = len(main_sim.items)
-    systemDetails['timeSteps'] = time_steps
-    systemDetails['beginTime'] = begin_time
-    systemDetails['endTime'] = end_time
-    systemDetails['CPU_Time'] = end_time
-    systemDetails['memory_usage'] = memory_usage
-
-    systemDetails['estimationMode'] = parameter_estimation_mode
-    systemDetails['typeSelectionMode'] = type_selection_mode
-    systemDetails['iterationMax'] = iteration_max
-    systemDetails['maxDepth'] = max_depth
-    systemDetails['generatedDataNumber'] = generated_data_number
-    systemDetails['reuseTree'] = reuse_tree
-    systemDetails['mcts_mode'] = mcts_mode
-
-    systemDetails['PF_add_threshold'] = PF_add_threshold
-    systemDetails['PF_weight'] = PF_weight
-
-    agentDictionary = {}
-
-    for i in range(len(main_sim.agents)):
-        u_a = main_sim.main_agent.agent_memory[i]
-        agentData = {}
-
-        agentData['trueType'] = main_sim.agents[i].agent_type
-        trueParameters = [main_sim.agents[i].level,main_sim.agents[i].radius,main_sim.agents[i].angle]
-        agentData['trueParameters'] = trueParameters
-
-        agentData['maxProbability'] = u_a.agents_parameter_estimation.get_highest_type_probability()
-
-        l1EstimationHistory = u_a.agents_parameter_estimation.l1_estimation.get_estimation_history()
-        agentData['l1EstimationHistory'] = l1EstimationHistory
-        agentData['l1TypeProbHistory'] = u_a.agents_parameter_estimation.l1_estimation.type_probabilities
-        print u_a.agents_parameter_estimation.l1_estimation.type_probabilities
-
-        l2EstimationHistory = u_a.agents_parameter_estimation.l2_estimation.get_estimation_history()
-        agentData['l2EstimationHistory'] = l2EstimationHistory
-        agentData['l2TypeProbHistory'] = u_a.agents_parameter_estimation.l2_estimation.type_probabilities
-        print u_a.agents_parameter_estimation.l2_estimation.type_probabilities
-
-        f1EstimationHistory = u_a.agents_parameter_estimation.f1_estimation.get_estimation_history()
-        agentData['f1EstimationHistory'] = f1EstimationHistory
-        agentData['f1TypeProbHistory'] = u_a.agents_parameter_estimation.f1_estimation.type_probabilities
-
-        f2EstimationHistory = u_a.agents_parameter_estimation.f2_estimation.get_estimation_history()
-        agentData['f2EstimationHistory'] = f2EstimationHistory
-        agentData['f2TypeProbHistory'] = u_a.agents_parameter_estimation.f2_estimation.type_probabilities
-
-        agentDictionary[i]=agentData
-
-    dataList.append(systemDetails)
-    dataList.append(agentDictionary)
-    print "writing to pickle file."
-    pickle.dump(dataList,pickleFile)
-    print "writing over "
-print '============================================================================================================================================='
-print_result(main_sim,  time_step, begin_time, end_time,mcts_mode)
-
-
+log.print_result(main_sim,  time_step, begin_time, end_time,\
+    mcts_mode, parameter_estimation_mode, type_selection_mode,\
+    iteration_max,max_depth, generated_data_number,reuse_tree,\
+    PF_add_threshold, PF_weight,\
+    end_cpu_time, memory_usage,log_file,output_folder)
