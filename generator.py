@@ -12,7 +12,7 @@ types = ['l1','l2','f1','f2']
 def generateRandomNumber (grid,gridValue):
 	testXValue = randint(0,gridValue -1)
 	testYValue = randint(0,gridValue -1)
-	#print testXValue , testYValue
+	print testXValue , testYValue
 	if(grid[testXValue][testYValue] != 1):
 		grid[testXValue][testYValue] = 1
 		return testXValue,testYValue,grid

@@ -175,7 +175,7 @@ class Agent:
     ################################################################################################################
     # The agent is "near" if it is next to the destination, and the heading is correct
     def is_agent_near_destination(self, item_x, item_y):
-        dx = [-1, 0, 1, 0]  # 0:W ,  1:N , 2:E  3:S
+        dx = [-1, 0, 1,  0]  # 0:W ,  1:N , 2:E  3:S
         dy = [ 0, 1, 0, -1]
 
         x_diff = 0

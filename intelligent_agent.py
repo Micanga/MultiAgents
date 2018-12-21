@@ -9,7 +9,7 @@ from copy import deepcopy
 
 
 class Agent:
-    def __init__(self, x, y, direction ):
+    def __init__(self, x, y, direction ,is_enemy =False):
         self.position = (int(x), int(y))
         self.level = None
         self.apply_adversary = None
@@ -20,6 +20,7 @@ class Agent:
             self.direction = float(direction)
 
         self.visible_agents = []
+        self.is_enemy =  is_enemy
 
         self.next_action = None
         self.previous_state = None
@@ -96,6 +97,10 @@ class Agent:
     ####################################################################################################################
     def move(self,reuse_tree,main_sim,search_tree, time_step):
         next_action,guess_move, search_tree = self.uct_planning(reuse_tree,main_sim,search_tree, time_step)
+        if self.uct.planning_for_enemy:
+            print 'action for enemy : ', next_action
+        else:
+            print 'action for main : ', next_action
         reward = self.uct.do_move(main_sim, next_action,  real=True)
         return reward , guess_move,search_tree
 
@@ -103,9 +108,9 @@ class Agent:
 
     def uct_planning(self, reuse_tree,main_sim, search_tree, time_step):
         if not reuse_tree:
-            next_action,guess_move, search_tree = self.uct.agent_planning(0, None, main_sim, False)
+            next_action,guess_move, search_tree = self.uct.agent_planning(0, None, main_sim, self.is_enemy)
         else:
-            next_action,guess_move, search_tree = self.uct.agent_planning(time_step, search_tree, main_sim, False)
+            next_action,guess_move, search_tree = self.uct.agent_planning(time_step, search_tree, main_sim, self.is_enemy)
         return next_action,guess_move, search_tree
     ####################################################################################################################
 

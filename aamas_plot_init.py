@@ -62,13 +62,13 @@ def read_files(root_dir,radius=None):
                 estimationDictionary['trueParameters'] = trueParameters
                 estimationDictionary['historyParameters'] = historyParameters
                 estimationDictionary['path'] = root
-                if simWidth == 10 and agentsCounts == 1:
-                    if root_dir == 'AAMAS_Outputs_POMCP':
-                        if radius == str(systemDetails['mainAgentRadius']):
-                            estimationDictionary['mainAgentRadius'] = str(systemDetails['mainAgentRadius'])
-                            results.append(estimationDictionary)
-                    else:
+                #if simWidth == 25 and agentsCounts == 1:
+                if root_dir == 'AAMAS_Outputs_POMCP':
+                    if radius == str(systemDetails['mainAgentRadius']):
+                        estimationDictionary['mainAgentRadius'] = str(systemDetails['mainAgentRadius'])
                         results.append(estimationDictionary)
+                else:
+                    results.append(estimationDictionary)
 
     #import ipdb; ipdb.set_trace()
     return results

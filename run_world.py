@@ -53,8 +53,8 @@ dir = ""
 if len(sys.argv) > 1 :
     dir = str(sys.argv[1])
 
-# dir = "inputs/history/"
-dir = "inputs/adversary2/"
+# dir = "inputs/history2/"
+dir = "inputs/adversary3/"
 
 # path = 'config.csv'
 path = dir + 'config.csv'
@@ -188,7 +188,7 @@ while main_sim.items_left() > 0:
         r,enemy_action_prob,search_tree = main_sim.main_agent.move(reuse_tree, main_sim, search_tree, time_step)
 
     if main_sim.enemy_agent is not None:
-        print('****** Movement of Enemy agent based on MCTS ****************************************************')
+    #     print('****** Movement of Enemy agent based on MCTS ****************************************************')
         r, main_action_prob,enemy_search_tree = main_sim.enemy_agent.move(reuse_tree, main_sim, enemy_search_tree, time_step)
 
     main_sim.update_all_A_agents(False)

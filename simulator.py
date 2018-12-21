@@ -96,7 +96,7 @@ class Simulator:
                 self.main_agent.level = v[0][4]
 
             elif 'enemy' in k:
-                self.enemy_agent = intelligent_agent.Agent(v[0][0], v[0][1], v[0][2])
+                self.enemy_agent = intelligent_agent.Agent(v[0][0], v[0][1], v[0][2],True)
                 self.enemy_agent.level = v[0][4]
 
             elif 'obstacle' in k:
@@ -390,7 +390,7 @@ class Simulator:
 
         if self.enemy_agent is not None:
             (e_agent_x, e_agent_y) = self.enemy_agent.get_position()
-            self.the_map[e_agent_x][e_agent_y] = 10
+            self.the_map[e_agent_y][e_agent_x] = 10
 
     ###############################################################################################################
 

@@ -15,7 +15,7 @@ results 	 = list()
 informations = list()
 
 # 1. Defining the Graph Generation Parameters
-ROOT_DIRS 	= ['outputs']#['AAMAS_Outputs_MCTS']#['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
+ROOT_DIRS 	= ['MCTS_Outputs']#['AAMAS_Outputs_MCTS']#['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
 NAMES 		= ['MCTS']#['MCTS']#['POMCP','POMCP','POMCP']#,'POMCP_FO']
 RADIUS 		= ['3.0','5.0','7.0']
 
@@ -266,7 +266,7 @@ def plot_run_length_bar(aga_m,aga_s,abu_m,abu_s,pf_m,pf_s,plotname):
     axis.set_xticklabels(['AGA','ABU','PF'])
 
     # 5. Showing the result
-    plt.savefig(plotname+'.pdf', bbox_inches = 'tight',pad_inches = 0)
+    plt.savefig('./plots/' + plotname+'.pdf', bbox_inches = 'tight',pad_inches = 0)
     #plt.show()
     plt.close(fig)
 
@@ -336,7 +336,7 @@ def plot_run_length(aga_m,aga_ci,abu_m,abu_ci,pf_m,pf_ci,plotname):
 				fancybox=True,framealpha=0.8,ncol=3)
 
 	# 5. Showing the result
-	plt.savefig(plotname+'.pdf', bbox_inches = 'tight',pad_inches = 0)
+	plt.savefig('./plots/' +plotname+'.pdf', bbox_inches = 'tight',pad_inches = 0)
 	#plt.show()
 	plt.close(fig)
 
@@ -439,7 +439,7 @@ def plot_summarised(aga,aga_std,aga_ci,
 				fancybox=True,framealpha=0.8,ncol=3)
 
 	# 3. Showing the result
-	plt.savefig(plotname+'.pdf', bbox_inches = 'tight',pad_inches = 0)
+	plt.savefig('./plots/' +plotname+'.pdf', bbox_inches = 'tight',pad_inches = 0)
 	#plt.show()
 	plt.close(fig)
 

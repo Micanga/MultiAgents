@@ -1,5 +1,5 @@
 type_selection_mode,AS
-parameter_estimation_mode,ABU
+parameter_estimation_mode,AGA
 train_mode,none_history_based
 generated_data_number,100
 reuseTree,False

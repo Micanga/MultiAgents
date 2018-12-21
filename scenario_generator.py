@@ -1,30 +1,18 @@
 from random import randint
-from random import choice
 import random
 import csv
 import os
-import sys
 
-from numpy import pi
+agentValues = [1,2,3,4]
+agentValueUpperLimit = 2 # set as default, use this variable to set the range in which agentValues can lie!
+gridSize = [10,15,20,25]
+gridValueUpperLimit = 25 # default value set, use this variable to set range of grid
+directions = ['N','S','E','W']
+types = ['l1','l2'] #['l1','l2','f1','f2']
 
-# (1) CONFIG.CSV - INFORMATION
-# Defining the parameter estimation modes and
-max_depth_set = ['50']
-iteration_max_set = ['50']
+def create_config(current_folder,parameter_estimation_mode,mcts_mode,train_mode):
 
-# (2) SIM.CSV - INFORMATION
-# Defining the parameter of simulation file
-possible_directions = ['N','S','E','W']
-agent_types 		= ['l1','l2','f1','f2']
-selected_types 		= [False,False]
-
-experiment_type_set = ['ABU', 'AGA', 'MIN']
-
-def random_pick(set_):
-	return set_[randint(0,len(set_)-1)]
-
-def create_config_file(current_folder,parameter_estimation_mode,mcts_mode,train_mode):
-
+	print(current_folder)
 	filename = current_folder + 'config.csv'
 	with open(filename, 'wb+') as file:
 		writer = csv.writer(file, delimiter=',')
@@ -36,128 +24,97 @@ def create_config_file(current_folder,parameter_estimation_mode,mcts_mode,train_
 		writer.writerows([['reuseTree','False']])
 		writer.writerows([['mcts_mode', mcts_mode]])
 		writer.writerows([['PF_add_threshold', '0.9']])
-		writer.writerows([['PF_del_threshold', '0.9']])
 		writer.writerows([['PF_weight', '1.2']])
-		writer.writerows([['iteration_max', iteration_max_set[0]]])
-		writer.writerows([['max_depth', max_depth_set[0]]])
+		writer.writerows([['iteration_max', '100']])
+		writer.writerows([['max_depth', '100']])
 		writer.writerows([['sim_path', 'sim.csv']])
 
 
+
 def generateRandomNumber (grid,gridValue):
-	while True:
+	print gridValue
+
+	while 1==1:
 		testXValue = randint(0, gridValue - 1)
 		testYValue = randint(0, gridValue - 1)
-
+		print testXValue,testYValue
 		if(grid[testXValue][testYValue] != 1):
+			
+			print grid
 			grid[testXValue][testYValue] = 1
 			return testXValue,testYValue,grid
+		#else:
+		#	generateRandomNumber(grid,gridValue)
 
-def selectType():
-	global agent_types, selected_types
+parameter_estimation_modes = ['ABU','AGA','MIN']
 
-	# 1. Selecting a ramdom type
-	agentType = choice(agent_types)
-
-	# 2. Verifing if is able to generate this type
-	# follower 1 needs lider 1
-	if agentType == 'f1' and selected_types[0] == False:
-		agentType = 'l1'
-		selected_types[0] = True
-	# follower 2 needs lider 2
-	if agentType == 'f2' and selected_types[1] == False:
-		agentType = 'l2'
-		selected_types[1] = True
-	# lider 1 and 2 as Selected Type
-	if agentType == 'l1':
-		selected_types[0] = True
-	elif agentType == 'l2':
-		selected_types[1] = True
-
-	return agentType
-
-def main():
-	# 0. Checking the terminal input
-	if len(sys.argv) != 4:
-		print 'usage: python scenario_generator.py [size] [nagents] [nitems]'
-		exit(0)
-
-	# 1. Taking the information
-	size = int(sys.argv[1])
-	nagents = int(sys.argv[2])
-	nitems = int(sys.argv[3])
-
-	# 2. Defining the simulation
-	grid_size = size
-	grid = [[0 for col in range(grid_size)] for row in range(grid_size)]
-	GRID = ['grid',grid_size,grid_size]
-
-	# d. defining the main agent parameters
-	mainx,mainy,grid = generateRandomNumber(grid,grid_size)
-	mainDirection    = choice(possible_directions)
-	mainType  = 'm'
-	mainLevel = 1
-	MAIN = ['main',mainx,mainy,mainDirection,mainType,mainLevel]
-
-	# e. defining the commum agents
-	AGENTS = []
-	for agent_idx in range(nagents):
-		agentx,agenty,grid = generateRandomNumber(grid,grid_size)
-		agentDirection = choice(possible_directions)
-		agentType = selectType()
-		agentLevel = round(random.uniform(0,1), 3)
-		agentRadius = round(random.uniform(0.1,1), 3)
-		agentAngle = round(random.uniform(0.1,1), 3)
-		AGENTS.append(['agent'+ str(agent_idx),agentx,agenty,agentDirection,agentType,agentLevel,agentRadius,agentAngle])
-
-	ITEMS = []
-	for item_idx in range(nitems):
-		itemx,itemy,grid = generateRandomNumber(grid,grid_size)
-		itemLevel = round(random.uniform(0,1), 3)
-		ITEMS.append(['item'+ str(item_idx),itemx,itemy,itemLevel])
-
-	# 3. Creating the possible configuration files
-	# a. choosing the parameter estimation mode
-	for experiment in experiment_type_set:
-		if experiment == 'MIN':
-			train_mode = 'history_based'
+mcts_modes =['UCTH']
+dataFilesNumber = 1
+count=0
+while count < 5:
+	for parameter_estimation_mode in parameter_estimation_modes:
+		if parameter_estimation_mode == 'MIN':
+			train_mode= 'history_based'
 		else:
-			train_mode = 'none_history_based'
+			train_mode= 'none_history_based'
+		for mcts_mode in mcts_modes:
+			 
+			for i in range(0,dataFilesNumber):
+				agent = 2
+				gridValue = 20
+				if mcts_mode == 'UCT' :
+					MC_type = 'M'
+				else:
+					MC_type = 'O'
+				sub_dir = str(gridValue) + 'S_'+ str(agent) + 'A_'+ MC_type + '_' +parameter_estimation_mode+ str(count)
+				current_folder = "input/" + sub_dir + '/'
+				if not os.path.exists(current_folder):
+					os.mkdir(current_folder, 0755)
 
-		# b. choosing the mcts mode
-		mcts_mode = 'UCTH'
-		MC_type = 'O'
+				filename = current_folder + 'sim.csv'
+				with open(filename,'wb+') as file:
+					writer = csv.writer(file,delimiter = ',')
+					angleValue = round(random.uniform(0.1,1), 3) # rounds the value upto 3 places
+					index = randint(0,3)
+					GRID = ['grid',gridValue,gridValue]
+					writer.writerows([GRID])
+					print gridValue
 
-		# c. creating the necessary folder
-		sub_dir = 'FO_'+ MC_type + '_' + experiment
-		current_folder = "inputs/" + sub_dir + '/'
-		if not os.path.exists(current_folder):
-			os.mkdir(current_folder, 0755)
+					grid = [[0 for col in range(gridValue)] for row in range(gridValue)]
 
-		# d. creating the config files
-		create_config_file(current_folder, experiment, mcts_mode,train_mode)
 
-		# 4. Creating the files
-		# a. setting the file name
-		filename = current_folder + 'sim.csv'
-		print filename
 
-		# b. creating the a csv file
-		with open(filename,'wb+') as file:
-			writer = csv.writer(file,delimiter = ',')
+					mainx,mainy,grid = generateRandomNumber(grid,gridValue)
+					mainDirection = directions[randint(0,3)]
+					mainType ='m'# types[randint(0,3)]
+					mainLevel = 1#round(random.uniform(0,1), 3)
+					MAIN = ['main',mainx,mainy,mainDirection,mainType,mainLevel]
+					writer.writerows([MAIN])
 
-			# i. grid
-			writer.writerows([GRID])
+					agentXValues = []
+					agentYValues = []
+					agentValuesDict = {}
+					for i in range(0,agent):
+						agentx,agenty,grid = generateRandomNumber(grid,gridValue)
+						agentDirection = directions[randint(0,3)]
+						agentType = 'l1' #types[randint(0,3)]
+						agentLevel = round(random.uniform(0,1), 3)
+						agentLevel = 1
+						agentRadius = round(random.uniform(0.1,1), 3)
+						agentAngle = angleValue
 
-			# ii. main agent
-			writer.writerows([MAIN])
+						AGENT = ['agent'+ str(i),agentx,agenty,agentDirection,agentType,agentLevel,agentRadius,agentAngle]
+						agentXValues.append(agentx)
 
-			# iii. commum agents
-			for agent_idx in range(nagents):
-				writer.writerows([AGENTS[agent_idx]])
+						agentYValues.append(agenty)
+						writer.writerows([AGENT])
 
-			# iv. items
-			for item_idx in range(nitems):
-				writer.writerows([ITEMS[item_idx]])
+					for i in range(0,gridValue):
+						itemx,itemy,grid = generateRandomNumber(grid,gridValue)
+						itemLevel = round(random.uniform(0,1), 3)
+						itemLevel = 0
+						ITEM = ['item'+ str(i),itemx,itemy,itemLevel]
+						writer.writerows([ITEM])
 
-if __name__ == '__main__':
-    main()
+				create_config(current_folder, parameter_estimation_mode, mcts_mode,train_mode)
+	count +=1

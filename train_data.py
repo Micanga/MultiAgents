@@ -61,7 +61,7 @@ class TrainData:
         previous_agent = unknown_agent.previous_agent_status
         action = unknown_agent.next_action
         # D= (p,f(p)) , f(p) = P(a|H_t_1,teta,p)
-        #print('------------------------------------------------------------')
+        print('------------------------------------------------------------')
         for i in range(0, self.generated_data_number):
 
             # Generating random values for parameters
@@ -126,12 +126,12 @@ class TrainData:
 
         # for ds in self.data_set:
         #     print ds
-        #print '--------------------------------------------'
-        #print actions_to_reach_target
+        print '--------------------------------------------'
+        print actions_to_reach_target
         if unknown_agent.choose_target_state.items_left() != 0:
             for ds in self.data_set:
 
-                #print ds
+                print ds
                 tmp_agent = agent.Agent(cts_agent.position[0], cts_agent.position[1], cts_agent.direction,
                                         selected_type, -1)
 
@@ -177,7 +177,7 @@ class TrainData:
 
         # for ds in self.data_set:
         #      print ds
-        #print '--------------------------------------------'
+        print '--------------------------------------------'
 
         return float(max_succeeded_steps)/ float(self.load_count)
     # ##################################################################################################################
