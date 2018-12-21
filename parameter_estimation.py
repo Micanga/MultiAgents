@@ -875,8 +875,8 @@ class ParameterEstimation:
 
 
                     if self.train_mode == 'history_based':
-                        # type_probability = self.l1_estimation.get_last_type_probability()
-                        self.l1_estimation.type_probability = action_prob * type_probability
+                        type_probability = self.l1_estimation.get_last_type_probability()
+                        #self.l1_estimation.type_probability = action_prob * type_probability
 
                     else:
 
@@ -889,8 +889,8 @@ class ParameterEstimation:
                 if selected_type == 'l2':
 
                     if self.train_mode == 'history_based':
-                        # type_probability = self.l2_estimation.get_last_type_probability()
-                        self.l2_estimation.type_probability = action_prob * type_probability
+                        type_probability = self.l2_estimation.get_last_type_probability()
+                        #self.l2_estimation.type_probability = action_prob * type_probability
 
                     else:
 
