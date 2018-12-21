@@ -1,21 +1,29 @@
+# Result and Test Files
 *.pyc
 *.pdf
-./outputs/*
-./input/*
-./outputs/*
-./pf_inputs/*
-./plots/*
-*~
 *Pickle
 *.R
+__pycache__/
+*.xml
+.idea/*
+*~
 [#]*[#]
 .\#*
 *.aux
 *.log
-__pycache__/
-*.xml
-.idea/*
-__pycache__/
+
+# IO Files
+outputs/*
+input/*
+inputs/*
+outputs/*
+outputs/*/*
+po_inputs/*
+po_outputs/*
+po_outputs/*/*
+pf_inputs/*
+plots/*
+
 # User-specific stuff
 .idea/**/workspace.xml
 .idea/**/tasks.xml
