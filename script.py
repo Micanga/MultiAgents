@@ -7,7 +7,7 @@ import time
 from numpy import pi
 
 # 0. General Settings
-number_of_tests = 100
+number_of_tests = 10
 
 square_grid_size    = ['10']#,'15','20','25']
 number_of_agents    = ['1']#,'2','3','4','5']
