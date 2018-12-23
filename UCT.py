@@ -85,28 +85,21 @@ class Node:
     ####################################################################################################################
 
     def uct_select_action(self):
-
-        maxUCB = -1
-        maxA = None
-        if self.enemy:
-            maxUCB = 10000000000
+        maxUCB = -9999999
+        maxA   = None
 
         for a in range(len(self.Q_table)):
             if self.valid(self.Q_table[a].action):
-
-                # currentUCB = self.Q_table[a].QValue + sqrt(2.0 * log(float(self.visits)) / float(self.Q_table[a].trials))
-
-                # TODO: The exploration constant could be set up in the configuration file
-                if (self.Q_table[a].trials > 0 and not self.enemy):
-                    currentUCB = self.Q_table[a].QValue + 0.5 * sqrt(
-                        log(float(self.visits)) / float(self.Q_table[a].trials))
-                elif (self.Q_table[a].trials > 0 and self.enemy):
+                if (self.Q_table[a].trials > 0):
                     currentUCB = self.Q_table[a].QValue + 0.5 * sqrt(
                         log(float(self.visits)) / float(self.Q_table[a].trials))
                 else:
                     currentUCB = 0
 
-                if  currentUCB > maxUCB:
+                if self.enemy and maxUCB < (-currentUCB):
+                    maxUCB = (-currentUCB)
+                    maxA = self.Q_table[a].action
+                elif maxUCB < currentUCB:
                     maxUCB = currentUCB
                     maxA = self.Q_table[a].action
 
@@ -207,8 +200,6 @@ class UCT:
 
         if enemy:
             tmp_m_agent = sim.enemy_agent
-        # elif enemy and not real:
-        #     tmp_m_agent = sim.suspect_agent
         else:
             tmp_m_agent = sim.main_agent
 
@@ -226,9 +217,6 @@ class UCT:
                 else:
                     sim.items[destination_item_index].agents_load_item.append(tmp_m_agent)
         else:
-            if real and self.planning_for_enemy:
-
-                print 'x'
             (x_new, y_new) = tmp_m_agent.new_position_with_given_action(sim.dim_w, sim.dim_h, move)
 
             # If there new position is empty
@@ -282,7 +270,7 @@ class UCT:
     def best_enemy_action(self, node, action):
         nodes = node.childNodes
         node = None
-        print 'best_enemy_action:',action,node
+        #print 'best_enemy_action:',action,node
         for n in range(len(nodes)):
             if nodes[n].action == action:
                 node = nodes[n]
@@ -345,11 +333,11 @@ class UCT:
     ################################################################################################################
 
     def simulate_action(self, state, action,enemy = False):
-
+        # 1. Copying yhe current state for the simulation
         sim = state.simulator.copy()
         next_state = State(sim)
 
-        # Run the A agent to get the actions probabilities
+        # 2. Run the A agent to get the actions probabilities
         tmp_main_agent = sim.main_agent
         for u_a in tmp_main_agent.visible_agents:
             selected_type = u_a.get_sampled_probability()
@@ -363,6 +351,7 @@ class UCT:
 
                 sim.move_a_agent(tmp_agent)
 
+        # 3. Moving the MCTS Agent
         m_reward = self.do_move(sim, action,enemy)
 
         a_reward = sim.update_all_A_agents(True)
@@ -394,21 +383,17 @@ class UCT:
 
     ################################################################################################################
     def search(self, main_time_step, node):
-
         state = node.state
-
-        if self.terminal(state):
+        # 1. Checking the stop condition
+        if self.terminal(state)\
+        or self.leaf(main_time_step,node):
             return 0
 
-        if self.leaf(main_time_step, node):
-            return 0
-
+        # 2. Selecting and simulating an action
         action = self.select_action(node)
-
-        (next_state, reward) = self.simulate_action(node.state, action,node.enemy)
-        # print 'Is it enemy : ',node.enemy
-        # print 'Selected Action for ',action
-        # next_state.simulator.draw_map()
+        (next_state, reward) = self.simulate_action(node.state, action, node.enemy)
+    
+        # 3. Walking on the tree
         next_node = None
         if self.mcts_mode == 'UCT':
             for child in node.childNodes:
@@ -417,12 +402,12 @@ class UCT:
                     break
 
             if next_node is None:
-                if self.apply_adversary:
-                    next_node = node.add_child(next_state, not node.enemy)
+                if node.enemy:
+                    next_node = node.add_child(next_state, False)
                 else:
-                    next_node = node.add_child(next_state, node.enemy)
+                    next_node = node.add_child(next_state, True)
 
-        if self.mcts_mode == 'UCTH':
+        elif self.mcts_mode == 'UCTH':
             for child in node.childNodes:
                 if child.action == action:
                     next_node = child
@@ -430,14 +415,14 @@ class UCT:
                     break
 
             if next_node is None:
-                if self.apply_adversary:
-                    next_node = node.add_child_one_state(action, next_state, not node.enemy, -1 * node.delta)
+                if node.enemy:
+                    next_node = node.add_child_one_state(action, next_state, False, +1)
                 else:
-                    next_node = node.add_child_one_state(action, next_state,  node.enemy,1)
+                    next_node = node.add_child_one_state(action, next_state, True , -1)
 
+        # 4. Updating the Q-Value
         discount_factor = 0.95
-        q = node.delta * reward + discount_factor *  self.search(main_time_step, next_node)
-
+        q = reward + discount_factor * self.search(main_time_step, next_node)
         node.update(action, q)
         node.visits += 1
 
@@ -447,34 +432,32 @@ class UCT:
     # @TODO: make the enemy agent not estimate the main agents actions or not guess who the enemy agent is
     def monte_carlo_planning(self, main_time_step, search_tree, simulator,  enemy):
         global root
-        print 'Is it enemy ? ',self.planning_for_enemy
         current_state = State(simulator)
 
+        # 1. Updating the tree root
         if search_tree is None:
             root_node = Node(depth=0, state=current_state, enemy=enemy,delta = 1)
         else:
             root_node = self.find_new_root(search_tree, current_state, enemy)
 
-        time_step = 0
-
         node = root_node
         root = node
 
+        # 2. Starting the Tree Search
+        time_step = 0
         while time_step < self.iteration_max:
             tmp_sim = simulator.copy()
             node.state.simulator = tmp_sim
-
             self.search(main_time_step, node)
-            # self.print_search_tree(time_step)
-            # self.print_Q_table(node)
             time_step += 1
 
+        # 3. Selecting the best action
         best_selected_action = self.best_action(node)
         enemy_probabilities = None
         if self.apply_adversary and not self.planning_for_enemy:
             enemy_probabilities = self.best_enemy_action(node, best_selected_action)
 
-
+        # 4. Returning
         return best_selected_action, enemy_probabilities, node
     ####################################################################################################################
     def agent_planning(self, time_step, search_tree, sim,  enemy):
@@ -487,8 +470,7 @@ class UCT:
         if search_tree is None:
             totalItems = tmp_sim.items_left()
 
-        next_move, enemy_prediction, search_tree = self.monte_carlo_planning(time_step, search_tree, tmp_sim,
-                                                            enemy)
+        next_move, enemy_prediction, search_tree = self.monte_carlo_planning(time_step, search_tree, tmp_sim,enemy)
 
         return next_move, enemy_prediction, search_tree
 
