@@ -3,6 +3,7 @@
 ./outputs/*
 ./input/*
 ./outputs/*
+outputs/*
 ./pf_inputs/*
 ./plots/*
 *~
