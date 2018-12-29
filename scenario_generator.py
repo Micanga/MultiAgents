@@ -77,14 +77,15 @@ def selectType():
 
 def main():
 	# 0. Checking the terminal input
-	if len(sys.argv) != 4:
-		print 'usage: python scenario_generator.py [size] [nagents] [nitems]'
+	if len(sys.argv) != 5:
+		print 'usage: python scenario_generator.py [size] [nagents] [nitems] [map_count]'
 		exit(0)
 
 	# 1. Taking the information
 	size = int(sys.argv[1])
 	nagents = int(sys.argv[2])
 	nitems = int(sys.argv[3])
+	map_count = sys.argv[-1]
 
 	# 2. Defining the simulation
 	grid_size = size
@@ -143,6 +144,24 @@ def main():
 
 		# b. creating the a csv file
 		with open(filename,'wb+') as file:
+			writer = csv.writer(file,delimiter = ',')
+
+			# i. grid
+			writer.writerows([GRID])
+
+			# ii. main agent
+			writer.writerows([MAIN])
+
+			# iii. commum agents
+			for agent_idx in range(nagents):
+				writer.writerows([AGENTS[agent_idx]])
+
+			# iv. items
+			for item_idx in range(nitems):
+				writer.writerows([ITEMS[item_idx]])
+
+		# c. saving map
+		with open('maps/'+map_count+'.csv','wb+') as file:
 			writer = csv.writer(file,delimiter = ',')
 
 			# i. grid

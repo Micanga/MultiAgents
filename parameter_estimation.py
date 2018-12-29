@@ -823,7 +823,7 @@ class ParameterEstimation:
         else:
             selected_types = ['l1', 'l2']
 
-        if unknown_agent.next_action is None:
+        if unknown_agent is None or unknown_agent.next_action is None:
             return
 
         # Estimate the parameters

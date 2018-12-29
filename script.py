@@ -7,14 +7,15 @@ import time
 from numpy import pi
 
 # 0. General Settings
-number_of_tests = 10
+map_count       = 0
+number_of_tests = 15
 
-square_grid_size    = ['10']#,'15','20','25']
-number_of_agents    = ['1']#,'2','3','4','5']
-number_of_items     = ['10']#,'15','20','25']
+square_grid_size    = ['15']
+number_of_agents    = ['2']#,'3','5','7','10'
+number_of_items     = ['15']#,'20','25']
 
 # 1. Defining the experiment type
-experiment_type_set = ['ABU', 'AGA', 'MIN']
+experiment_type_set = ['ABU', 'AGA']#, 'MIN']
 
 # 2. Starting the experiment
 test_number = 0
@@ -25,8 +26,9 @@ while test_number < number_of_tests:
                 # a. generating random scenarios
                 print '- Generating Scenario'
                 scenario_generator = 'python scenario_generator.py ' +\
-                    ' ' + size + ' ' + nagents + ' ' + nitems
+                    ' ' + size + ' ' + nagents + ' ' + nitems + ' ' + str(map_count)
                 experiment_dir = os.system(scenario_generator)
+                map_count += 1
                 time.sleep(1)
 
                 for experiment in experiment_type_set:
