@@ -178,53 +178,56 @@ while main_sim.items_left() > 0:
 
     log_file.write('***** Iteration #'+str(time_step)+' *****\n')
 
-    print '-------------------------------Iteration number ', time_step, '--------------------------------------'
-
+    # 1. Updating Unkown Agents
     if main_sim.main_agent is not None:
-        print('****** UPDATE UNKNOWN AGENT **********')
+        log_file.write('1) Updating Unknown Agents for Main Agent ')
         main_sim.main_agent.previous_state = main_sim.copy()
         main_sim.main_agent.update_unknown_agents(main_sim)
+        log_file.write('- OK\n')
 
-    print('****** MOVE AGENT **********')
+    # 2. Move Common Agent
     for i in range(len(main_sim.agents)):
+        log_file.write('2) Move Common Agent '+str(i))
         main_sim.agents[i] = main_sim.move_a_agent(main_sim.agents[i])
+        log_file.write(' - OK\ntarget: '+str(main_sim.agents[i].get_memory())+'\n')
 
-        print('main_sim.agents[i].next_action=', main_sim.agents[i].next_action)
-        # print 'agent ',main_sim.agents[i].index,' target: ', main_sim.agents[i].get_memory()
-
-    print('****** Movement of Intelligent agent based on MCTS ****************************************************')
+    # 3. Move Main Agent
     if main_sim.main_agent is not None:
+        log_file.write('3) Move Main Agent ')
         r,enemy_action_prob,search_tree = main_sim.main_agent.move(reuse_tree, main_sim, search_tree, time_step)
+        log_file.write(' - OK\n')
 
+    # 4. Move Adversary
     if main_sim.enemy_agent is not None:
-        # print('****** Movement of Enemy agent based on MCTS ****************************************************')
+        log_file.write('4) Move Adversary Agent ')
         r, main_action_prob,enemy_search_tree = main_sim.enemy_agent.move(reuse_tree, main_sim, enemy_search_tree, time_step)
+        log_file.write(' - OK\n')
 
+    # 5. Updating the Map
+    log_file.write('5) Updating Map\n')
     actions = main_sim.update_all_A_agents(False)
     main_sim.do_collaboration()
     main_sim.main_agent.update_unknown_agents_status(main_sim)
-    main_sim.draw_map()
+    log.write_map(log_file,main_sim)
 
-
-    print '********* Estimation for selfish agents ******'
+    # 6. Estimating
+    log_file.write('6) Estimating')
     if do_estimation:
         main_sim.main_agent.estimation(time_step,main_sim,enemy_action_prob,actions )
-
+    log_file.write(' - OK\n')
     time_step += 1
-    # print '---x_train_set in time step ', time_step ,' is :  '
-    # for xts in x_train_set:
-    #     print xts
 
     if main_sim.items_left() == 0:
         break
 
+    # 7. Updating
+    log_file.write('7) Updating the belief state')
     search_tree = uct.update_belief_state(main_sim,search_tree)
-    print "main agent left items", main_sim.main_agent.items_left()
-
-    print "left items", main_sim.items_left()
+    log_file.write(' - OK\n')
     gc.collect()
 
-    print('***********************************************************************************************************')
+    log_file.write("left items: "+str(main_sim.items_left())+'\n')
+    log_file.write('*********************\n')
 progress = 100 * (len(main_sim.items) - main_sim.items_left())/len(main_sim.items)
 sys.stdout.write("Experiment progress: %d%% | step: %d   \n" % (progress,time_step) )
     

@@ -8,10 +8,10 @@ from numpy import pi
 
 # 0. General Settings
 map_count       = 0
-number_of_tests = 15
+number_of_tests = 100
 
 square_grid_size    = ['15']
-number_of_agents    = ['2']#,'3','5','7','10'
+number_of_agents    = ['10']#'2','3','5','7','10'
 number_of_items     = ['15']#,'20','25']
 
 # 1. Defining the experiment type
