@@ -16,16 +16,14 @@ def read_files(root_dir,size,nagents,nitems,radius=None):
     for root, dirs, files in os.walk(root_dir):
         if 'pickleResults.txt' in files:
             with open(os.path.join(root,'pickleResults.txt'),"r") as pickleFile:
-                progress = 100 * float(count/2632.0)
+                progress = 100 * float(count/1)
                 sys.stdout.write("Progress: %.1f%% | file #%d   \r" % (progress,count) )
                 sys.stdout.flush()
                 estimationDictionary = {}
                 dataList = pickle.load(pickleFile)
 
-                data = dataList[1]
-                systemDetails = dataList[0]
-
                 # Simulator Information
+                systemDetails = dataList[0]
                 simWidth = systemDetails['simWidth']
                 simHeight = systemDetails['simHeight']
                 agentsCounts = systemDetails['agentsCounts']
@@ -40,41 +38,39 @@ def read_files(root_dir,size,nagents,nitems,radius=None):
                 estimationDictionary['computationalTime'] = int(endTime) - int(beginTime)
                 estimationDictionary['estimationMode'] = systemDetails['estimationMode']
 
-                agentDictionary = data[0]
-                trueType = agentDictionary['trueType']
+                data = dataList[1]
+                for i in range(len(data)):
+                    agentDictionary = data[i]
+                    trueType = agentDictionary['trueType']
+                    if trueType == 'l1':
+                        if trueType == 'l1':
+                            typeProbHistory = agentDictionary['l1TypeProbHistory']
+                            historyParameters = ast.literal_eval(agentDictionary['l1EstimationHistory'])
+                        elif trueType == 'l2':
+                            typeProbHistory = agentDictionary['l2TypeProbHistory']
+                            historyParameters = ast.literal_eval(agentDictionary['l2EstimationHistory'])
+                        elif trueType == 'f1':
+                            typeProbHistory = agentDictionary['f1TypeProbHistory']
+                            historyParameters = ast.literal_eval(agentDictionary['f1EstimationHistory'])
+                        else:
+                            typeProbHistory = agentDictionary['f2TypeProbHistory']
+                            historyParameters = ast.literal_eval(agentDictionary['f2EstimationHistory'])
 
-                if trueType == 'l1':
-
-                    typeProbHistory = agentDictionary['l1TypeProbHistory']
-                    historyParameters = ast.literal_eval(agentDictionary['l1EstimationHistory'])
-
-                elif trueType == 'l2':
-                    typeProbHistory = agentDictionary['l2TypeProbHistory']
-                    historyParameters = ast.literal_eval(agentDictionary['l2EstimationHistory'])
-
-                elif trueType == 'f1':
-                    typeProbHistory = agentDictionary['f1TypeProbHistory']
-                    historyParameters = ast.literal_eval(agentDictionary['f1EstimationHistory'])
-
-                else:
-                    typeProbHistory = agentDictionary['f2TypeProbHistory']
-                    historyParameters = ast.literal_eval(agentDictionary['f2EstimationHistory'])
-
-                trueParameters = agentDictionary['trueParameters']
-
-                estimationDictionary['typeProbHistory'] = typeProbHistory
-                estimationDictionary['trueParameters'] = trueParameters
-                estimationDictionary['historyParameters'] = historyParameters
-                estimationDictionary['path'] = root
-                if size == str(simWidth):
-                    if nagents == str(agentsCounts):
-                        if nitems == str(itemsCounts):
-                            if root_dir == 'Outputs_POMCP':
-                                if radius == str(systemDetails['mainAgentRadius']):
-                                    estimationDictionary['mainAgentRadius'] = str(systemDetails['mainAgentRadius'])
-                                    results.append(estimationDictionary)
-                            else:
-                                results.append(estimationDictionary)
+                        trueParameters = agentDictionary['trueParameters']
+                        estimationDictionary['trueType'] = trueType
+                        estimationDictionary['typeProbHistory'] = typeProbHistory
+                        estimationDictionary['trueParameters'] = trueParameters
+                        estimationDictionary['historyParameters'] = historyParameters
+                        estimationDictionary['path'] = root
+                        if size == str(simWidth):
+                            if nagents == str(agentsCounts):
+                                if nitems == str(itemsCounts):
+                                    if root_dir == 'Outputs_POMCP':
+                                        if radius == str(systemDetails['mainAgentRadius']):
+                                            estimationDictionary['mainAgentRadius'] = str(systemDetails['mainAgentRadius'])
+                                            results.append(estimationDictionary)
+                                    else:
+                                        results.append(estimationDictionary)
             count += 1
     #import ipdb; ipdb.set_trace()
     progress = 100 * float(count/2632.0)
@@ -118,7 +114,7 @@ def extract_information(results,name,radius=None):
                     info.PF_errors.append(calculate_error(result['trueParameters'], result['historyParameters']))
             else:
                 if len(result['historyParameters']) > info.PF_max_len_hist:
-                        info.PF_max_len_hist = len(result['historyParameters'])
+                    info.PF_max_len_hist = len(result['historyParameters'])
 
                 info.PF_typeProbHistory.append(result['typeProbHistory'])
                 info.PF_estimationHist.append(result['historyParameters'])

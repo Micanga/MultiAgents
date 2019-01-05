@@ -212,7 +212,7 @@ while main_sim.items_left() > 0:
    	# 6. Estimating
     log_file.write('6) Estimating')
     if do_estimation:
-        main_sim.main_agent.estimation(time_step,main_sim,enemy_action_prob)
+        main_sim.main_agent.estimation(time_step,main_sim,enemy_action_prob,types)
     log_file.write(' - OK\n')
     time_step += 1
 

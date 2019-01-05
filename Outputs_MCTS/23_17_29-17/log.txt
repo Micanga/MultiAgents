@@ -1,0 +1,3696 @@
+Grid Size: 15 - 15 Items - 7 Agents - 0 Obstacles
+do_estimation : True
+PF_del_threshold : 0.9
+mcts_mode : UCTH
+parameter_estimation_mode : ABU
+reuse_tree : False
+PF_weight : 1.2
+train_mode : none_history_based
+types : ['l1', 'l2', 'f1', 'f2']
+generated_data_number : 100
+type_selection_mode : AS
+max_depth : 50
+PF_add_threshold : 0.9
+iteration_max : 50
+apply_adversary : False
+sim_path : inputs/FO_O_ABU/sim.csv
+***** Initial map *****
+...........I..I
+...........I...
+...I........I..
+..............I
+...............
+AA.............
+.M....I........
+...............
+...............
+.AA..I.........
+..........I....
+A..A...I.....I.
+...II..........
+..I............
+.I.A...........
+
+***** Iteration #0 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (2, 1)
+2) Move Common Agent 1 - OK
+target: (11, 13)
+2) Move Common Agent 2 - OK
+target: (3, 2)
+2) Move Common Agent 3 - OK
+target: (1, 0)
+2) Move Common Agent 4 - OK
+target: (11, 13)
+2) Move Common Agent 5 - OK
+target: (-1, -1)
+2) Move Common Agent 6 - OK
+target: (6, 8)
+3) Move Main Agent  - OK
+5) Updating Map
+...........I..I
+...........D...
+...I........I..
+..............I
+...............
+..A............
+A.M...D........
+...............
+...............
+...A.I.........
+.A........I....
+A..A...I.....I.
+....I..........
+..D............
+.D..A..........
+
+6) Estimating - OK
+left items: 14
+*********************
+***** Iteration #1 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (2, 1)
+2) Move Common Agent 1 - OK
+target: (11, 13)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (1, 0)
+2) Move Common Agent 4 - OK
+target: (11, 13)
+2) Move Common Agent 5 - OK
+target: (-1, -1)
+2) Move Common Agent 6 - OK
+target: (6, 8)
+3) Move Main Agent  - OK
+5) Updating Map
+...........I..I
+...........D...
+...I........I..
+..............I
+...............
+...A...........
+..M...D........
+A..............
+...............
+....AI.........
+..........I....
+AAA....I.....I.
+....I..........
+..D.A..........
+.D.............
+
+6) Estimating - OK
+left items: 14
+*********************
+***** Iteration #2 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (2, 1)
+2) Move Common Agent 1 - OK
+target: (11, 13)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (1, 0)
+2) Move Common Agent 4 - OK
+target: (11, 13)
+2) Move Common Agent 5 - OK
+target: (-1, -1)
+2) Move Common Agent 6 - OK
+target: (6, 8)
+3) Move Main Agent  - OK
+5) Updating Map
+...........I..I
+...........D...
+...I........I..
+..............I
+...............
+....A..........
+...M..D........
+...............
+A...A..........
+.....I.........
+..A.......I....
+.......I.....I.
+AA..I..........
+..D..A.........
+.D.............
+
+6) Estimating - OK
+left items: 14
+*********************
+***** Iteration #3 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (2, 1)
+2) Move Common Agent 1 - OK
+target: (11, 13)
+2) Move Common Agent 2 - OK
+target: (3, 12)
+2) Move Common Agent 3 - OK
+target: (1, 0)
+2) Move Common Agent 4 - OK
+target: (11, 13)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (6, 8)
+3) Move Main Agent  - OK
+5) Updating Map
+...........I..I
+...........D...
+...D........I..
+..............I
+...............
+...M.A.........
+......D........
+...............
+.....A.........
+A.A..I.........
+..........D....
+A......I.....I.
+....IA.........
+.AD............
+.D.............
+
+6) Estimating - OK
+left items: 14
+*********************
+***** Iteration #4 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (2, 1)
+2) Move Common Agent 1 - OK
+target: (11, 13)
+2) Move Common Agent 2 - OK
+target: (3, 12)
+2) Move Common Agent 3 - OK
+target: (1, 0)
+2) Move Common Agent 4 - OK
+target: (11, 13)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (6, 8)
+3) Move Main Agent  - OK
+5) Updating Map
+...........I..I
+...........D...
+...D........I..
+..............I
+...............
+...M..A........
+......D........
+...............
+..A...A........
+.....I.........
+A.........D....
+.A...A.I.....I.
+....I..........
+.AD............
+...............
+
+6) Estimating - OK
+left items: 13
+*********************
+***** Iteration #5 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (2, 1)
+2) Move Common Agent 1 - OK
+target: (11, 13)
+2) Move Common Agent 2 - OK
+target: (3, 12)
+2) Move Common Agent 3 - OK
+target: (2, 1)
+2) Move Common Agent 4 - OK
+target: (11, 13)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (6, 8)
+3) Move Main Agent  - OK
+5) Updating Map
+...........I..I
+...........D...
+...D........I..
+..............I
+...M...........
+......A........
+......D........
+..A............
+.......A.......
+.....I.........
+..........D....
+A.A...AI.....I.
+....I..........
+.AD............
+...............
+
+6) Estimating - OK
+left items: 13
+*********************
+***** Iteration #6 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (2, 1)
+2) Move Common Agent 1 - OK
+target: (11, 13)
+2) Move Common Agent 2 - OK
+target: (3, 12)
+2) Move Common Agent 3 - OK
+target: (2, 1)
+2) Move Common Agent 4 - OK
+target: (11, 13)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (6, 8)
+3) Move Main Agent  - OK
+5) Updating Map
+...........I..I
+...........D...
+...D........I..
+...M..........I
+...............
+......A........
+..A............
+.......A.......
+...............
+.....I.........
+......A...D....
+.A.A...I.....I.
+....I..........
+.AD............
+...............
+
+6) Estimating - OK
+left items: 11
+*********************
+***** Iteration #7 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (11, 14)
+2) Move Common Agent 1 - OK
+target: (11, 13)
+2) Move Common Agent 2 - OK
+target: (3, 12)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (11, 13)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (4, 2)
+3) Move Main Agent  - OK
+5) Updating Map
+...........D..I
+...........D...
+...D........I..
+...M..........I
+...............
+.....A.........
+.A.............
+........A......
+...............
+.....IA........
+..........D....
+..A.A..I.....I.
+....D..........
+..A............
+...............
+
+6) Estimating - OK
+left items: 11
+*********************
+***** Iteration #8 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (11, 14)
+2) Move Common Agent 1 - OK
+target: (11, 13)
+2) Move Common Agent 2 - OK
+target: (3, 12)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (11, 13)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (4, 2)
+3) Move Main Agent  - OK
+5) Updating Map
+...........D..I
+...........D...
+...D........I..
+...M..........I
+...............
+.A.............
+.....A..A......
+...............
+...............
+.....I.A.......
+..........D....
+...A.A.I.....I.
+....D..........
+..A............
+...............
+
+6) Estimating - OK
+left items: 10
+*********************
+***** Iteration #9 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (11, 14)
+2) Move Common Agent 1 - OK
+target: (11, 13)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (11, 13)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (4, 2)
+3) Move Main Agent  - OK
+5) Updating Map
+...........D..I
+...........D...
+............I..
+...M..........I
+.A.............
+...............
+.........A.....
+.....A.........
+.......A.......
+.....I.........
+..........D....
+....A.AI.....I.
+....D..........
+..A............
+...............
+
+6) Estimating - OK
+left items: 10
+*********************
+***** Iteration #10 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (11, 14)
+2) Move Common Agent 1 - OK
+target: (11, 13)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (11, 13)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (4, 2)
+3) Move Main Agent  - OK
+5) Updating Map
+...........D..I
+...........D...
+............I..
+..M...........I
+...............
+.A.......A.....
+...............
+.......A.......
+.....A.........
+.....I.........
+......A...D....
+.....A.I.....I.
+....D..........
+..A............
+...............
+
+6) Estimating - OK
+left items: 10
+*********************
+***** Iteration #11 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (11, 14)
+2) Move Common Agent 1 - OK
+target: (11, 13)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (11, 13)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (4, 2)
+3) Move Main Agent  - OK
+5) Updating Map
+...........D..I
+...........D...
+............I..
+..............I
+..M......A.....
+.A.............
+...............
+........A......
+....A..........
+.....I.........
+.....A.A..D....
+.......I.....I.
+....D..........
+.A.............
+...............
+
+6) Estimating - OK
+left items: 10
+*********************
+***** Iteration #12 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (11, 14)
+2) Move Common Agent 1 - OK
+target: (11, 13)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (11, 13)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (4, 2)
+3) Move Main Agent  - OK
+5) Updating Map
+...........D..I
+...........D...
+............I..
+..............I
+..........A....
+.AM............
+........A......
+...............
+...............
+....AI.........
+......A.A.D....
+.......I.....I.
+....D..........
+..A............
+...............
+
+6) Estimating - OK
+left items: 10
+*********************
+***** Iteration #13 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (11, 14)
+2) Move Common Agent 1 - OK
+target: (11, 13)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (11, 13)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (4, 2)
+3) Move Main Agent  - OK
+5) Updating Map
+...........D..I
+...........D...
+............I..
+..........A...I
+...............
+.A.............
+..M......A.....
+...............
+...............
+.....IA........
+....A....AD....
+.......I.....I.
+..A.D..........
+...............
+...............
+
+6) Estimating - OK
+left items: 10
+*********************
+***** Iteration #14 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (11, 14)
+2) Move Common Agent 1 - OK
+target: (11, 13)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (11, 13)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (4, 2)
+3) Move Main Agent  - OK
+5) Updating Map
+...........D..I
+...........D...
+..........A.I..
+..............I
+...............
+..A......A.....
+...M...........
+...............
+......A........
+.....I.........
+.........AD....
+..A.A..I.....I.
+....D..........
+...............
+...............
+
+6) Estimating - OK
+left items: 10
+*********************
+***** Iteration #15 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (11, 14)
+2) Move Common Agent 1 - OK
+target: (11, 13)
+2) Move Common Agent 2 - OK
+target: (14, 11)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (11, 13)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (4, 2)
+3) Move Main Agent  - OK
+5) Updating Map
+...........D..I
+...........D...
+...........AI..
+..............D
+.........A.....
+...A...........
+...............
+...M...........
+.......A.......
+.....I.........
+.........AD....
+....A..I.....I.
+..A.D..........
+...............
+...............
+
+6) Estimating - OK
+left items: 10
+*********************
+***** Iteration #16 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (11, 14)
+2) Move Common Agent 1 - OK
+target: (11, 13)
+2) Move Common Agent 2 - OK
+target: (14, 11)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (11, 13)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (4, 2)
+3) Move Main Agent  - OK
+5) Updating Map
+...........D..I
+...........D...
+...........AI..
+..............D
+..........A....
+....A..........
+...............
+....M..A.......
+...............
+.....I.........
+.........AD....
+....A..I.....I.
+...AD..........
+...............
+...............
+
+6) Estimating - OK
+left items: 10
+*********************
+***** Iteration #17 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (11, 14)
+2) Move Common Agent 1 - OK
+target: (11, 13)
+2) Move Common Agent 2 - OK
+target: (14, 11)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (11, 13)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (4, 2)
+3) Move Main Agent  - OK
+5) Updating Map
+...........D..I
+...........D...
+...........AI..
+..........A...D
+...............
+.....A.........
+.......A.......
+...............
+....M..........
+.....I.........
+.........AD....
+....A..I.....I.
+..A.D..........
+...............
+...............
+
+6) Estimating - OK
+left items: 10
+*********************
+***** Iteration #18 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (11, 14)
+2) Move Common Agent 1 - OK
+target: (11, 13)
+2) Move Common Agent 2 - OK
+target: (14, 11)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (11, 13)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (4, 2)
+3) Move Main Agent  - OK
+5) Updating Map
+...........D..I
+...........D...
+..........AAI..
+..............D
+...............
+......A........
+........A......
+...............
+...............
+....MI.........
+.........AD....
+....A..I.....I.
+...AD..........
+...............
+...............
+
+6) Estimating - OK
+left items: 10
+*********************
+***** Iteration #19 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (11, 14)
+2) Move Common Agent 1 - OK
+target: (11, 13)
+2) Move Common Agent 2 - OK
+target: (14, 11)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (11, 13)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (4, 2)
+3) Move Main Agent  - OK
+5) Updating Map
+...........D..I
+..........AD...
+...........AI..
+..............D
+...............
+.......A.......
+........A......
+...............
+...............
+....MI.........
+.........AD....
+....A..I.....I.
+..A.D..........
+...............
+...............
+
+6) Estimating - OK
+left items: 10
+*********************
+***** Iteration #20 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (11, 14)
+2) Move Common Agent 1 - OK
+target: (11, 13)
+2) Move Common Agent 2 - OK
+target: (14, 11)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (11, 13)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (4, 2)
+3) Move Main Agent  - OK
+5) Updating Map
+...........D..I
+..........AD...
+...........AI..
+..............D
+...............
+.......AA......
+...............
+...............
+...............
+....M..........
+.........AD....
+....A..I.....I.
+..A.D..........
+...............
+...............
+
+6) Estimating - OK
+left items: 9
+*********************
+***** Iteration #21 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (11, 14)
+2) Move Common Agent 1 - OK
+target: (11, 13)
+2) Move Common Agent 2 - OK
+target: (14, 11)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (11, 13)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (4, 2)
+3) Move Main Agent  - OK
+5) Updating Map
+...........D..I
+..........AD...
+...........AI..
+..............D
+.......A.......
+.........A.....
+...............
+...............
+...............
+....M..........
+.........AD....
+....A..I.....I.
+....D..........
+..A............
+...............
+
+6) Estimating - OK
+left items: 8
+*********************
+***** Iteration #22 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (11, 14)
+2) Move Common Agent 1 - OK
+target: (-1, -1)
+2) Move Common Agent 2 - OK
+target: (14, 11)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 11)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (4, 2)
+3) Move Main Agent  - OK
+5) Updating Map
+...........D..I
+...............
+..........AAI..
+..............D
+........AA.....
+...............
+...............
+...............
+...............
+...............
+....M....AD....
+....A..I.....I.
+..A.D..........
+...............
+...............
+
+6) Estimating - OK
+left items: 8
+*********************
+***** Iteration #23 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (11, 14)
+2) Move Common Agent 1 - OK
+target: (-1, -1)
+2) Move Common Agent 2 - OK
+target: (14, 11)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 11)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (4, 2)
+3) Move Main Agent  - OK
+5) Updating Map
+...........D..I
+...............
+...........AI..
+........AAA...D
+...............
+...............
+...............
+...............
+...............
+...............
+.....M...AD....
+....A..I.....I.
+..A.D..........
+...............
+...............
+
+6) Estimating - OK
+left items: 8
+*********************
+***** Iteration #24 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (11, 14)
+2) Move Common Agent 1 - OK
+target: (8, 11)
+2) Move Common Agent 2 - OK
+target: (14, 11)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 11)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (4, 2)
+3) Move Main Agent  - OK
+5) Updating Map
+...........D..I
+...............
+.........A.AI..
+...........A..D
+........A......
+...............
+...............
+...............
+...............
+...............
+......M..AD....
+..A.A..I.....I.
+....D..........
+...............
+...............
+
+6) Estimating - OK
+left items: 8
+*********************
+***** Iteration #25 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (11, 14)
+2) Move Common Agent 1 - OK
+target: (8, 10)
+2) Move Common Agent 2 - OK
+target: (14, 11)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 11)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (4, 2)
+3) Move Main Agent  - OK
+5) Updating Map
+...........D..I
+...............
+..........AAI..
+............A.D
+.........A.....
+...............
+...............
+...............
+...............
+...............
+..A....M.AD....
+....A..I.....I.
+....D..........
+...............
+...............
+
+6) Estimating - OK
+left items: 8
+*********************
+***** Iteration #26 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (11, 14)
+2) Move Common Agent 1 - OK
+target: (9, 10)
+2) Move Common Agent 2 - OK
+target: (14, 11)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 11)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (4, 2)
+3) Move Main Agent  - OK
+5) Updating Map
+...........D..I
+..........AA...
+............I..
+............A.D
+..........A....
+...............
+...............
+...............
+...............
+...............
+.......M.AD....
+..A.A..I.....I.
+....D..........
+...............
+...............
+
+6) Estimating - OK
+left items: 8
+*********************
+***** Iteration #27 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (11, 14)
+2) Move Common Agent 1 - OK
+target: (10, 10)
+2) Move Common Agent 2 - OK
+target: (14, 11)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 11)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (4, 2)
+3) Move Main Agent  - OK
+5) Updating Map
+..........AD..I
+...........A...
+............I..
+.............AD
+...........A...
+...............
+...............
+...............
+...............
+...............
+.......M.AD....
+...AA..I.....I.
+....D..........
+...............
+...............
+
+6) Estimating - OK
+left items: 8
+*********************
+***** Iteration #28 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (11, 14)
+2) Move Common Agent 1 - OK
+target: (11, 10)
+2) Move Common Agent 2 - OK
+target: (14, 11)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 11)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (4, 2)
+3) Move Main Agent  - OK
+5) Updating Map
+..........AD..I
+...........A...
+............I..
+.............AD
+............A..
+...............
+...............
+...............
+...............
+...............
+.......M.AD....
+..A.A........I.
+....D..........
+...............
+...............
+
+6) Estimating - OK
+left items: 7
+*********************
+***** Iteration #29 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (11, 14)
+2) Move Common Agent 1 - OK
+target: (12, 10)
+2) Move Common Agent 2 - OK
+target: (14, 11)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 11)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (4, 2)
+3) Move Main Agent  - OK
+5) Updating Map
+..........AA..I
+...............
+............I..
+.............AD
+.............A.
+...............
+...............
+...............
+...............
+...............
+......M..AD....
+.A..A........I.
+....D..........
+...............
+...............
+
+6) Estimating - OK
+left items: 6
+*********************
+***** Iteration #30 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (12, 12)
+2) Move Common Agent 1 - OK
+target: (13, 10)
+2) Move Common Agent 2 - OK
+target: (14, 11)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 11)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (4, 2)
+3) Move Main Agent  - OK
+5) Updating Map
+...........A..I
+..........A....
+............D..
+.............AD
+..............A
+...............
+...............
+...............
+...............
+...............
+.....M...AD....
+....A........I.
+.A..D..........
+...............
+...............
+
+6) Estimating - OK
+left items: 6
+*********************
+***** Iteration #31 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (12, 12)
+2) Move Common Agent 1 - OK
+target: (14, 10)
+2) Move Common Agent 2 - OK
+target: (14, 11)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 11)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (4, 2)
+3) Move Main Agent  - OK
+5) Updating Map
+..........A...I
+...............
+..........A.D..
+.............AD
+..............A
+...............
+...............
+...............
+...............
+...............
+.........AD....
+....AM.......I.
+A...D..........
+...............
+...............
+
+6) Estimating - OK
+left items: 6
+*********************
+***** Iteration #32 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (12, 12)
+2) Move Common Agent 1 - OK
+target: (14, 10)
+2) Move Common Agent 2 - OK
+target: (14, 11)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 11)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (4, 2)
+3) Move Main Agent  - OK
+5) Updating Map
+..........A...I
+...............
+...........AD..
+.............AD
+..............A
+...............
+...............
+...............
+...............
+...............
+.........AD....
+....A........I.
+.A..DM.........
+...............
+...............
+
+6) Estimating - OK
+left items: 5
+*********************
+***** Iteration #33 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (12, 12)
+2) Move Common Agent 1 - OK
+target: (14, 10)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (4, 2)
+3) Move Main Agent  - OK
+5) Updating Map
+.........A....D
+...............
+...........A.A.
+...............
+..............A
+...............
+...............
+...............
+...............
+...............
+.........AD....
+....A........I.
+....DM.........
+.A.............
+...............
+
+6) Estimating - OK
+left items: 4
+*********************
+***** Iteration #34 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 10)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (4, 2)
+3) Move Main Agent  - OK
+5) Updating Map
+..............D
+.........A...A.
+...............
+...........A...
+..............A
+...............
+...............
+...............
+...............
+...............
+.........AD....
+...A.........I.
+.A..DM.........
+...............
+...............
+
+6) Estimating - OK
+left items: 3
+*********************
+***** Iteration #35 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 10)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.........A....D
+..............A
+...............
+..........A...A
+...............
+...............
+...............
+...............
+...............
+...............
+.........AD....
+....A........I.
+.....M.........
+.A.............
+...............
+
+6) Estimating - OK
+left items: 3
+*********************
+***** Iteration #36 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (-1, -1)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (13, 3)
+3) Move Main Agent  - OK
+5) Updating Map
+.........A....D
+..............A
+...............
+.........A....A
+...............
+...............
+...............
+...............
+...............
+...............
+.........AD....
+.....A.......D.
+....M..........
+...............
+.A.............
+
+6) Estimating - OK
+left items: 3
+*********************
+***** Iteration #37 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (-1, -1)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (13, 3)
+3) Move Main Agent  - OK
+5) Updating Map
+..........A...D
+..............A
+...............
+.........A.....
+..............A
+...............
+...............
+...............
+...............
+...............
+.........AD....
+......A......D.
+.....M.........
+...............
+.A.............
+
+6) Estimating - OK
+left items: 3
+*********************
+***** Iteration #38 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (13, 3)
+3) Move Main Agent  - OK
+5) Updating Map
+..............D
+..........A...A
+...............
+..........A....
+..............A
+...............
+...............
+...............
+...............
+...............
+.........AD....
+......A......D.
+......M........
+...............
+.A.............
+
+6) Estimating - OK
+left items: 3
+*********************
+***** Iteration #39 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (13, 3)
+3) Move Main Agent  - OK
+5) Updating Map
+..............D
+..............A
+..........A....
+..........A....
+..............A
+...............
+...............
+...............
+...............
+...............
+......A..AD....
+.............D.
+.......M.......
+.A.............
+...............
+
+6) Estimating - OK
+left items: 3
+*********************
+***** Iteration #40 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (13, 3)
+3) Move Main Agent  - OK
+5) Updating Map
+..............D
+..............A
+...........A...
+...............
+..........A...A
+...............
+...............
+...............
+...............
+...............
+.......A.AD....
+.............D.
+........M......
+..A............
+...............
+
+6) Estimating - OK
+left items: 3
+*********************
+***** Iteration #41 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (13, 3)
+3) Move Main Agent  - OK
+5) Updating Map
+..............D
+..............A
+...............
+...........A...
+..............A
+..........A....
+...............
+...............
+...............
+...............
+........AAD....
+.............D.
+.........M.....
+..A............
+...............
+
+6) Estimating - OK
+left items: 3
+*********************
+***** Iteration #42 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (13, 3)
+3) Move Main Agent  - OK
+5) Updating Map
+..............D
+..............A
+...............
+............A..
+.............A.
+.........A.....
+...............
+...............
+...............
+...............
+.........AD....
+........AM...D.
+...............
+...A...........
+...............
+
+6) Estimating - OK
+left items: 3
+*********************
+***** Iteration #43 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (13, 3)
+3) Move Main Agent  - OK
+5) Updating Map
+..............D
+..............A
+...............
+.............A.
+..............A
+..........A....
+...............
+...............
+...............
+...............
+.........AD....
+.........M...D.
+........A......
+...............
+...A...........
+
+6) Estimating - OK
+left items: 3
+*********************
+***** Iteration #44 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (13, 3)
+3) Move Main Agent  - OK
+5) Updating Map
+..............D
+..............A
+.............A.
+..............A
+...............
+...............
+..........A....
+...............
+...............
+...............
+..........D....
+........AAM..D.
+...............
+...............
+...A...........
+
+6) Estimating - OK
+left items: 3
+*********************
+***** Iteration #45 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (13, 3)
+3) Move Main Agent  - OK
+5) Updating Map
+..............D
+.............AA
+...............
+..............A
+...............
+...............
+...........A...
+...............
+...............
+...............
+.........AD....
+..........M..D.
+........A......
+...............
+....A..........
+
+6) Estimating - OK
+left items: 3
+*********************
+***** Iteration #46 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (10, 4)
+2) Move Common Agent 6 - OK
+target: (13, 3)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+..............A
+...............
+..............A
+...............
+...............
+...........A...
+...............
+...............
+...............
+..........D....
+..........M..D.
+.........A.....
+...............
+....A..........
+
+6) Estimating - OK
+left items: 2
+*********************
+***** Iteration #47 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (13, 3)
+2) Move Common Agent 6 - OK
+target: (13, 3)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+..............A
+...............
+.............A.
+...............
+...............
+...........A...
+...............
+...............
+...............
+...........A...
+...........M.D.
+..........A....
+...............
+...A...........
+
+6) Estimating - OK
+left items: 2
+*********************
+***** Iteration #48 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (13, 3)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (13, 3)
+2) Move Common Agent 6 - OK
+target: (13, 3)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+..............A
+...............
+.............A.
+...............
+...............
+...............
+...........A...
+...............
+...............
+............A..
+............MD.
+...........A...
+...............
+..A............
+
+6) Estimating - OK
+left items: 2
+*********************
+***** Iteration #49 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (13, 3)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (13, 3)
+2) Move Common Agent 6 - OK
+target: (13, 3)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+..............A
+...............
+............A..
+...............
+...............
+...............
+...............
+...........A...
+...............
+.............A.
+............MD.
+............A..
+..A............
+...............
+
+6) Estimating - OK
+left items: 2
+*********************
+***** Iteration #50 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (13, 3)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (13, 3)
+2) Move Common Agent 6 - OK
+target: (13, 3)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+..............A
+...............
+.............A.
+...............
+...............
+...............
+...............
+............A..
+...............
+...............
+............MD.
+.............A.
+...A...........
+...............
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #51 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (13, 2)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+..............A
+...............
+.............A.
+...............
+...............
+...............
+...............
+...........A...
+...............
+............M..
+.............A.
+............A..
+....A..........
+...............
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #52 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (12, 2)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+..............A
+...............
+............A..
+...............
+...............
+...............
+...............
+...........A...
+...............
+............M..
+...............
+............AA.
+....A..........
+...............
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #53 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (12, 2)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+..............A
+...............
+............A..
+...............
+...............
+...............
+...............
+...........A...
+...............
+...............
+............MA.
+.............A.
+.....A.........
+...............
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #54 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (13, 2)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+............A.D
+..............A
+...............
+............A..
+...............
+...............
+...............
+...............
+...............
+...........A...
+............MA.
+...............
+............A..
+.....A.........
+...............
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #55 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (12, 2)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+..............A
+............A..
+...............
+...............
+...............
+...............
+...............
+...........A...
+.............A.
+............M..
+...............
+...............
+.....A......A..
+...............
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #56 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (12, 1)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+..............A
+............A..
+...............
+...............
+...............
+...............
+...............
+...........A...
+............MA.
+...............
+...............
+...............
+.....A.....A...
+...............
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #57 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (11, 1)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+..............A
+...............
+............A..
+...............
+...............
+...............
+...............
+............A..
+...........M...
+.............A.
+...............
+...............
+...............
+.....A.....A...
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #58 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (11, 0)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+..............A
+...............
+............A..
+...............
+...............
+...............
+...............
+............A..
+...............
+...........M...
+.............A.
+...............
+...........A...
+....A..........
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #59 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (11, 1)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+..............A
+............A..
+...............
+...............
+...............
+...............
+...............
+...........A...
+...........M...
+...............
+.............A.
+...............
+...............
+.....A.....A...
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #60 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (11, 0)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+..............A
+...............
+............A..
+...............
+...............
+...............
+...............
+...........A...
+...........M...
+...............
+............A..
+...............
+.....A.........
+............A..
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #61 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (12, 0)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+..............A
+............A..
+...............
+...............
+...............
+...............
+...............
+...............
+..........MA...
+...............
+............A..
+...............
+.....A.........
+.............A.
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #62 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (13, 0)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+..............A
+............A..
+...............
+...............
+...............
+...............
+...............
+..........M....
+..........A....
+...............
+............A..
+...............
+......A........
+.............A.
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #63 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (13, 0)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+..............D
+.............AA
+...........A...
+...............
+...............
+...............
+...............
+...............
+..........M....
+..........A....
+...............
+............A..
+...............
+.....A.......A.
+...............
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #64 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (13, 1)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+..............A
+............A..
+...............
+...............
+...............
+...............
+..........M....
+...............
+...............
+..........A....
+.............A.
+.............A.
+.....A.........
+...............
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #65 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (13, 2)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+..............A
+...............
+............A..
+...............
+...............
+...............
+.........M.....
+...............
+...............
+...........A...
+..............A
+..............A
+...............
+.....A.........
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #66 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (14, 2)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+..............A
+...............
+...........A...
+...............
+...............
+.........M.....
+...............
+...............
+...........A...
+...............
+..............A
+...............
+..............A
+.....A.........
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #67 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (14, 1)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+.............A.
+...........A...
+...............
+...............
+...............
+..........M....
+...............
+...............
+...............
+...........A...
+...............
+..............A
+...............
+....A.........A
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #68 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (14, 0)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+...........A..A
+...............
+...............
+...............
+...............
+.........M.....
+...............
+...............
+...............
+............A..
+...............
+..............A
+...............
+....A.........A
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #69 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (14, 0)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+...........A..A
+...............
+...............
+...............
+...............
+..........M....
+...............
+...............
+............A..
+...............
+..............A
+...............
+....A..........
+.............A.
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #70 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (13, 0)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+..............A
+...........A...
+...............
+...............
+...............
+..........M....
+...............
+...............
+...........A...
+...............
+...............
+..............A
+.............A.
+....A..........
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #71 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (13, 1)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+..............A
+..........A....
+...............
+...............
+...............
+...........M...
+...............
+...............
+...............
+...........A...
+..............A
+.............A.
+...............
+.....A.........
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #72 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (13, 2)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+..............A
+..........A....
+...............
+...............
+...............
+...........M...
+...............
+...............
+...............
+...............
+...........A.A.
+..............A
+...............
+.....A.........
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #73 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (14, 2)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+..............A
+.........A.....
+...............
+...............
+...............
+............M..
+...............
+...............
+...............
+...........A...
+............A..
+..............A
+...............
+.....A.........
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #74 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (14, 2)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+..............A
+...............
+.........A.....
+...............
+............M..
+...............
+...............
+...............
+...............
+............A..
+...............
+............A..
+.....A........A
+...............
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #75 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (14, 1)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+..............A
+.........A.....
+...............
+...............
+.............M.
+...............
+...............
+...............
+...............
+...........A...
+............A..
+...............
+.............A.
+.....A.........
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #76 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (13, 1)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+..............A
+........A......
+...............
+.............M.
+...............
+...............
+...............
+...............
+...............
+...........A...
+...........A...
+...............
+.............A.
+.....A.........
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #77 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (13, 1)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+........A.....A
+...............
+.............M.
+...............
+...............
+...............
+...............
+...............
+...............
+............A..
+...............
+...........A...
+............A..
+....A..........
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #78 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (12, 1)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+.........A....A
+...............
+..............M
+...............
+...............
+...............
+...............
+...............
+...............
+............A..
+...............
+..........A.A..
+...............
+....A..........
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #79 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (12, 2)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+..............A
+.........A.....
+..............M
+...............
+...............
+...............
+...............
+...............
+...............
+............A..
+...............
+..........A.A..
+...............
+....A..........
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #80 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (12, 2)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+..............A
+.........A.....
+.............M.
+...............
+...............
+...............
+...............
+...............
+............A..
+...............
+............A..
+...........A...
+...............
+....A..........
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #81 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (12, 3)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+.........A....A
+...............
+..............M
+...............
+...............
+...............
+...............
+...............
+...............
+............A..
+...........A...
+............A..
+...............
+...A...........
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #82 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (12, 2)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.........A...AD
+..............A
+...............
+...............
+..............M
+...............
+...............
+...............
+...............
+...............
+...........A.A.
+...............
+...............
+...A........A..
+...............
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #83 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (12, 1)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+..........A..AD
+..............A
+...............
+..............M
+...............
+...............
+...............
+...............
+...............
+...........A.A.
+...............
+...............
+...............
+..A..........A.
+...............
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #84 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (13, 1)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.........A..A.D
+..............A
+...............
+.............M.
+...............
+...............
+...............
+...............
+.............A.
+...........A...
+...............
+...............
+...............
+.A.............
+.............A.
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #85 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (13, 0)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+........A....AD
+..............A
+...............
+..............M
+...............
+...............
+...............
+...............
+...............
+............AA.
+...............
+...............
+...............
+..A..........A.
+...............
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #86 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (13, 1)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+........A....AD
+..............A
+..............M
+...............
+...............
+...............
+...............
+...............
+............A..
+.............A.
+...............
+...............
+...............
+.A.............
+.............A.
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #87 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (13, 0)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+........A.....A
+..............M
+...............
+...............
+...............
+...............
+...............
+...........A...
+...............
+.............A.
+...............
+...............
+..A............
+.............A.
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #88 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (13, 0)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+.......A......A
+..............M
+...............
+...............
+...............
+...............
+...........A...
+...............
+...............
+............A..
+...............
+...............
+.A.............
+.............A.
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #89 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (13, 0)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+.......A......A
+.............M.
+...............
+...............
+...............
+...............
+..........A....
+...............
+...............
+...............
+............A..
+...............
+..A..........A.
+...............
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #90 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (13, 1)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+........A.....A
+..............M
+...............
+...............
+...............
+...............
+.........A.....
+...............
+...............
+...............
+...........A...
+...............
+.A.............
+.............A.
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #91 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (13, 0)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............AD
+........A.....A
+.............M.
+...............
+...............
+...............
+...............
+........A......
+...............
+...............
+...........A...
+...............
+...............
+A..............
+..............A
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #92 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (14, 0)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+........A....AD
+.............MA
+...............
+...............
+...............
+...............
+...............
+........A......
+...............
+...............
+...............
+...........A...
+...............
+...............
+A.............A
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #93 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (14, 0)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+........A....AD
+............M.A
+...............
+...............
+...............
+...............
+...............
+.......A.......
+...............
+...............
+...............
+...............
+...........A...
+...............
+.A............A
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #94 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (14, 0)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.......A.....AD
+............M.A
+...............
+...............
+...............
+...............
+...............
+.......A.......
+...............
+...............
+...............
+...............
+............A..
+...............
+.A...........A.
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #95 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (13, 0)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+............M.D
+.......A.....AA
+...............
+...............
+...............
+...............
+...............
+...............
+.......A.......
+...............
+...............
+............A..
+...............
+.............A.
+.A.............
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #96 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (13, 1)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............MD
+.......A.....AA
+...............
+...............
+...............
+...............
+...............
+...............
+.......A.......
+...............
+............A..
+...............
+.............A.
+...............
+.A.............
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #97 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (13, 2)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............MD
+......A......AA
+...............
+...............
+...............
+...............
+...............
+...............
+......A........
+...............
+...............
+............A..
+..............A
+.A.............
+...............
+
+6) Estimating - OK
+left items: 1
+*********************
+***** Iteration #98 *****
+1) Updating Unknown Agents for Main Agent - OK
+2) Move Common Agent 0 - OK
+target: (-1, -1)
+2) Move Common Agent 1 - OK
+target: (14, 14)
+2) Move Common Agent 2 - OK
+target: (-1, -1)
+2) Move Common Agent 3 - OK
+target: (-1, -1)
+2) Move Common Agent 4 - OK
+target: (14, 14)
+2) Move Common Agent 5 - OK
+target: (14, 2)
+2) Move Common Agent 6 - OK
+target: (-1, -1)
+3) Move Main Agent  - OK
+5) Updating Map
+.............MD
+......A......AA
+...............
+...............
+...............
+...............
+...............
+...............
+...............
+......A........
+...............
+...............
+............A..
+A.............A
+...............
+
+6) Estimating - OK
+writing to pickle file.
+writing over

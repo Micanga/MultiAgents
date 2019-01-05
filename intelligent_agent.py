@@ -88,11 +88,29 @@ class Agent:
 
 
     ####################################################################################################################
-    def estimation(self,time_step,main_sim,enemy_action_prob):
+    def estimation(self,time_step,main_sim,enemy_action_prob, types):
+        # For the unkown agents, estimating the parameters and types
+        for unknown_agent in self.visible_agents:
+            if unknown_agent is None or unknown_agent.next_action is None:
+                # 1. Selecting the types
+                if self.type_selection_mode == 'AS':
+                    selected_types = types
+                if self.type_selection_mode == 'BS':
+                    selected_types = self.UCB_selection(time_step)  # returns l1, l2, f1, f2,w
 
-        for u_a in self.visible_agents:
-            u_a.agents_parameter_estimation.process_parameter_estimations(time_step, u_a,self.previous_state, main_sim,
-                                                                                               enemy_action_prob)
+                # 2. Defining the next agent action or appending the action
+                # for the history based method
+                if self.train_mode == 'history_based':
+                    self.action_history.append(unknown_agent.next_action)
+                    if unknown_agent.next_action != 'L':
+                        self.actions_to_reach_target.append(unknown_agent.next_action)
+                else:
+                    unknown_agent.next_action = 'L'
+
+                # 3. Estimating
+                unknown_agent.agents_parameter_estimation.\
+                    process_parameter_estimations(unknown_agent,\
+                        self.previous_state, main_sim,enemy_action_prob,types)
 
     ####################################################################################################################
     def move(self,reuse_tree,main_sim,search_tree, time_step):

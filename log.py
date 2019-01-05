@@ -65,11 +65,10 @@ def print_result(main_sim,  time_steps, begin_time, end_time,mcts_mode, paramete
  reuse_tree, PF_add_threshold, PF_weight, end_cpu_time, memory_usage,log_file, current_folder):
 
     pickleFile = open(current_folder + "/pickleResults.txt", 'wb')
-
     dataList = []
 
+    # Simulation Information
     systemDetails = {}
-
     systemDetails['simWidth'] = main_sim.dim_w
     systemDetails['simHeight'] = main_sim.dim_h
     systemDetails['agentsCounts'] = len(main_sim.agents)
@@ -91,8 +90,8 @@ def print_result(main_sim,  time_steps, begin_time, end_time,mcts_mode, paramete
     systemDetails['PF_add_threshold'] = PF_add_threshold
     systemDetails['PF_weight'] = PF_weight
 
+    # Agents Information
     agentDictionary = {}
-
     for i in range(len(main_sim.agents)):
         u_a = main_sim.main_agent.visible_agents[i]
         agentData = {}
@@ -123,6 +122,7 @@ def print_result(main_sim,  time_steps, begin_time, end_time,mcts_mode, paramete
 
     dataList.append(systemDetails)
     dataList.append(agentDictionary)
+
     log_file.write("writing to pickle file.\n")
     pickle.dump(dataList,pickleFile)
     log_file.write("writing over\n")

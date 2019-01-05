@@ -20,7 +20,7 @@ ROOT_DIRS 	= ['Outputs_MCTS']#['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMA
 NAMES 		= ['MCTS']#['POMCP','POMCP','POMCP']#,'POMCP_FO']
  
 SIZE 	    = ['15']#,'15','20','25']
-NAGENTS     = ['10']#,'2','3','4','5']
+NAGENTS     = ['7']#,'2','3','4','5']
 NITEMS      = ['15']#,'15','20','25']
 RADIUS 		= ['3.0','5.0','7.0']
 
