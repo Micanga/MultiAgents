@@ -118,7 +118,7 @@ def print_result(main_sim,  time_steps, begin_time, end_time,mcts_mode, paramete
         agentData['f2EstimationHistory'] = f2EstimationHistory
         agentData['f2TypeProbHistory'] = u_a.agents_parameter_estimation.f2_estimation.type_probabilities
 
-        agentDictionary[i]=agentData
+        agentDictionary[i] = agentData
 
     dataList.append(systemDetails)
     dataList.append(agentDictionary)

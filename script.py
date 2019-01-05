@@ -8,14 +8,14 @@ from numpy import pi
 
 # 0. General Settings
 map_count       = 0
-number_of_tests = 100
+number_of_tests = 10
 
-square_grid_size    = ['15']
-number_of_agents    = ['10']#'2','3','5','7','10'
-number_of_items     = ['15']#,'20','25']
+square_grid_size    = ['10']
+number_of_agents    = ['2']#'2','3','5','7','10'
+number_of_items     = ['10']#,'20','25']
 
 # 1. Defining the experiment type
-experiment_type_set = ['ABU', 'AGA']#, 'MIN']
+experiment_type_set = ['MIN','ABU', 'AGA']
 
 # 2. Starting the experiment
 test_number = 0

@@ -91,26 +91,27 @@ class Agent:
     def estimation(self,time_step,main_sim,enemy_action_prob, types):
         # For the unkown agents, estimating the parameters and types
         for unknown_agent in self.visible_agents:
-            if unknown_agent is None or unknown_agent.next_action is None:
+            if unknown_agent is None or unknown_agent.next_action is not None:
                 # 1. Selecting the types
-                if self.type_selection_mode == 'AS':
-                    selected_types = types
-                if self.type_selection_mode == 'BS':
-                    selected_types = self.UCB_selection(time_step)  # returns l1, l2, f1, f2,w
+                parameter_estimation = unknown_agent.agents_parameter_estimation
 
+                if parameter_estimation.type_selection_mode == 'AS':
+                    selected_types = types
+                if parameter_estimation.type_selection_mode == 'BS':
+                    selected_types = parameter_estimation.UCB_selection(time_step)  # returns l1, l2, f1, f2,w
+                
                 # 2. Defining the next agent action or appending the action
                 # for the history based method
-                if self.train_mode == 'history_based':
-                    self.action_history.append(unknown_agent.next_action)
+                if parameter_estimation.train_mode == 'history_based':
+                    parameter_estimation.action_history.append(unknown_agent.next_action)
                     if unknown_agent.next_action != 'L':
-                        self.actions_to_reach_target.append(unknown_agent.next_action)
+                        parameter_estimation.actions_to_reach_target.append(unknown_agent.next_action)
                 else:
                     unknown_agent.next_action = 'L'
 
                 # 3. Estimating
-                unknown_agent.agents_parameter_estimation.\
-                    process_parameter_estimations(unknown_agent,\
-                        self.previous_state, main_sim,enemy_action_prob,types)
+                parameter_estimation.process_parameter_estimations(unknown_agent,\
+                    self.previous_state, main_sim, enemy_action_prob,selected_types)
 
     ####################################################################################################################
     def move(self,reuse_tree,main_sim,search_tree, time_step):

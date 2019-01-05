@@ -42,7 +42,7 @@ def read_files(root_dir,size,nagents,nitems,radius=None):
                 for i in range(len(data)):
                     agentDictionary = data[i]
                     trueType = agentDictionary['trueType']
-                    if trueType == 'l1':
+                    if trueType in ['l1','l2','f1','f2']:
                         if trueType == 'l1':
                             typeProbHistory = agentDictionary['l1TypeProbHistory']
                             historyParameters = ast.literal_eval(agentDictionary['l1EstimationHistory'])
@@ -52,7 +52,7 @@ def read_files(root_dir,size,nagents,nitems,radius=None):
                         elif trueType == 'f1':
                             typeProbHistory = agentDictionary['f1TypeProbHistory']
                             historyParameters = ast.literal_eval(agentDictionary['f1EstimationHistory'])
-                        else:
+                        elif trueType == 'f2':
                             typeProbHistory = agentDictionary['f2TypeProbHistory']
                             historyParameters = ast.literal_eval(agentDictionary['f2EstimationHistory'])
 
