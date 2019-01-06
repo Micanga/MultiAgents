@@ -841,19 +841,17 @@ class ParameterEstimation:
             
             # c. considering the new estimation
             if new_parameters_estimation is not None:
-                # i. generating the particle
+                # i. generating the particle for the selected type
                 if selected_type != 'w':
                     x,y = unknown_agent.previous_agent_status.get_position()
                     tmp_agent = agent.Agent(x, y, unknown_agent.previous_agent_status.direction, selected_type)
-                    tmp_agent.memory = self.update_internal_state(new_parameters_estimation, selected_type, unknown_agent,po)
-
-                    tmp_agent.set_parameters(previous_state, new_parameters_estimation.level,
-                                             new_parameters_estimation.radius,
-                                             new_parameters_estimation.angle)
+                    tmp_agent.memory = self.update_internal_state(new_parameters_estimation,\
+                        selected_type,unknown_agent,po)
+                    tmp_agent.set_parameters(previous_state, new_parameters_estimation.level,\
+                        new_parameters_estimation.radius,new_parameters_estimation.angle)
 
                     # Runs a simulator object
                     tmp_agent = previous_state.move_a_agent(tmp_agent)
-
                     action_prob = tmp_agent.get_action_probability(unknown_agent.next_action)
 
                     # ii. testing the generated particle and updating the estimation
@@ -874,7 +872,7 @@ class ParameterEstimation:
                     # TYPE F1 ------------------ 
                     elif selected_type == 'f1':
                         if self.train_mode == 'history_based':
-                            self.l1_estimation.type_probability = action_prob * \
+                            self.f1_estimation.type_probability = action_prob * \
                                                                   self.f1_estimation.get_last_type_probability()
                         else:
                             self.f1_estimation.type_probability = action_prob * self.f1_estimation.get_last_type_probability()
@@ -882,7 +880,7 @@ class ParameterEstimation:
                     # TYPE F2 ------------------ 
                     elif selected_type == 'f2':
                         if self.train_mode == 'history_based':
-                            self.l1_estimation.type_probability = action_prob * \
+                            self.f2_estimation.type_probability = action_prob * \
                                                                   self.f2_estimation.get_last_type_probability()
                         else:
                             self.f2_estimation.type_probability = action_prob * self.f2_estimation.get_last_type_probability()

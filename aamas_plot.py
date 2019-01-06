@@ -257,13 +257,13 @@ def plot_run_length_bar(aga_m,aga_s,abu_m,abu_s,pf_m,pf_s,plotname):
     axis = plt.gca()
 
     # AGA
-    aga=axis.bar(0.75,height=aga_m,width= bar_w,yerr=aga_s, color='b')
+    aga=axis.bar(0.75,height=aga_m,width= bar_w,yerr=aga_s-aga_m, color='b')
 
     # ABU
-    abu=axis.bar(1.75,height=abu_m,width= bar_w,yerr=abu_s, color='g')
+    abu=axis.bar(1.75,height=abu_m,width= bar_w,yerr=abu_s-abu_m, color='g')
 
     # PF
-    pf=axis.bar(2.75,height=pf_m,width= bar_w,yerr=pf_s, color='r')
+    pf=axis.bar(2.75,height = pf_m,width= bar_w,yerr = pf_s-pf_m, color='r')
 
     # b. getting the current axis to label
     axis.set_ylabel('Number of Iterations')

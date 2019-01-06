@@ -91,7 +91,7 @@ class Agent:
     def estimation(self,time_step,main_sim,enemy_action_prob, types):
         # For the unkown agents, estimating the parameters and types
         for unknown_agent in self.visible_agents:
-            if unknown_agent is None or unknown_agent.next_action is not None:
+            if unknown_agent is not None:
                 # 1. Selecting the types
                 parameter_estimation = unknown_agent.agents_parameter_estimation
 
@@ -110,8 +110,9 @@ class Agent:
                     unknown_agent.next_action = 'L'
 
                 # 3. Estimating
-                parameter_estimation.process_parameter_estimations(unknown_agent,\
-                    self.previous_state, main_sim, enemy_action_prob,selected_types)
+                if unknown_agent.next_action is not None:
+                    parameter_estimation.process_parameter_estimations(unknown_agent,\
+                        self.previous_state, main_sim, enemy_action_prob,selected_types)
 
     ####################################################################################################################
     def move(self,reuse_tree,main_sim,search_tree, time_step):
