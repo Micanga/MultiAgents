@@ -94,7 +94,6 @@ class Agent:
             if unknown_agent is not None:
                 # 1. Selecting the types
                 parameter_estimation = unknown_agent.agents_parameter_estimation
-
                 if parameter_estimation.type_selection_mode == 'AS':
                     selected_types = types
                 if parameter_estimation.type_selection_mode == 'BS':

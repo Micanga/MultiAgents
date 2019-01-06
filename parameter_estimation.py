@@ -790,7 +790,7 @@ class ParameterEstimation:
     def update_train_data(self, unknown_agent, previous_state, current_state, selected_type ,po= False):
         # 1. Copying the selected type train data
         tmp_train_data = self.copy_train_data(selected_type)
-
+        
         # 2. Training
         max_succeeded_steps = 0
         if self.train_mode == 'history_based':
@@ -824,13 +824,13 @@ class ParameterEstimation:
 
     ####################################################################################################################
     def process_parameter_estimations(self, unknown_agent,previous_state, current_state,\
-        enemy_action_prob, selected_types, po = False, actions = None):
+        enemy_action_prob, types, po = False, actions = None):
         # 1. Initialising the parameter variables
         x_train, types_train_data = [], []
         new_parameters_estimation = None
 
         # 2. Estimating the agent type
-        for selected_type in selected_types:
+        for selected_type in types:
             # a. updating the train data for the current state
             x_train, y_train, type_probability = \
                 self.update_train_data(unknown_agent, previous_state,

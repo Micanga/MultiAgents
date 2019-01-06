@@ -117,7 +117,9 @@ class TrainData:
 
         # 3. Generating data (particles)
         new_data_count = self.generated_data_number - len(self.data_set)
-        for i in range(0,new_data_count):
+        #for i in range(0,new_data_count):
+        while len(self.data_set) < self.generated_data_number:
+            print len(self.data_set)
             particle_filter = {}
 
             # i. Initializing the temporary parameters
@@ -153,7 +155,7 @@ class TrainData:
 
         # 4. Getting the max_succeeded_steps with the new particle
         # in the data set
-        seq = [x['succeeded_steps'] for x in self.data_set]
+        seq = [data['succeeded_steps'] for data in self.data_set]
         if seq != []:
             max_succeeded_steps = max(seq)
         else:
@@ -198,7 +200,8 @@ class TrainData:
         # 2. Counting the succeeded steps and increasing
         # the load count
         self.load_count += 1
-        seq = [x['succeeded_steps'] for x in self.data_set]
+        seq = [data['succeeded_steps'] for data in self.data_set]
+        print seq
         if seq != []:
             max_succeeded_steps = max(seq)
         else:
@@ -217,6 +220,9 @@ class TrainData:
                 [tmp_level, tmp_radius, tmp_angle] = ds['parameter']
                 tmp_agent.set_parameters(unknown_agent.choose_target_state, tmp_level, tmp_radius, tmp_angle)
 
+                print "1)",self.compare_actions(ds['route'], actions_to_reach_target)
+                print ds['route'],actions_to_reach_target
+                print "2)",ds['succeeded_steps'] > (2/3) * self.load_count
                 if self.compare_actions(ds['route'], actions_to_reach_target)\
                  or ds['succeeded_steps'] > (2/3) * self.load_count:
                     self.level_pool.append(tmp_level)
@@ -241,7 +247,7 @@ class TrainData:
             self.data_set.remove(d)
 
         # 5. Updating the succeeded steps
-        seq = [x['succeeded_steps'] for x in self.data_set]
+        seq = [data['succeeded_steps'] for data in self.data_set]
         if seq != []:
             max_succeeded_steps = max(seq)
         else:
