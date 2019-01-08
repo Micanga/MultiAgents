@@ -5,19 +5,20 @@ import UCT
 from math import sqrt
 import parameter_estimation
 import unknown_agent
-from copy import deepcopy
+from copy import copy, deepcopy
 
 
 class Agent:
-    def __init__(self, x, y, direction ,is_enemy =False):
+    def __init__(self, x, y, direction, is_enemy = False):
         self.position = (int(x), int(y))
-        self.level = None
-        self.apply_adversary = None
 
         if isinstance(direction, basestring):
             self.direction = self.convert_direction(direction)
         else:
             self.direction = float(direction)
+
+        self.level = None
+        self.apply_adversary = None
 
         self.visible_agents = []
         self.is_enemy =  is_enemy
@@ -27,7 +28,6 @@ class Agent:
 
     ####################################################################################################################
     def initialise_uct(self, uct):
-
         self.uct = uct
 
     ####################################################################################################################
@@ -50,7 +50,7 @@ class Agent:
 
         for unknown_a in self.visible_agents:
             param_estim = parameter_estimation.ParameterEstimation(generated_data_number, PF_add_threshold, train_mode,
-                                                                   apply_adversary)
+                                                                   apply_adversary,unknown_a, sim)
             param_estim.estimation_initialisation()
             param_estim.estimation_configuration(type_selection_mode, parameter_estimation_mode, polynomial_degree)
 
@@ -105,13 +105,13 @@ class Agent:
                     parameter_estimation.action_history.append(unknown_agent.next_action)
                     if unknown_agent.next_action != 'L':
                         parameter_estimation.actions_to_reach_target.append(unknown_agent.next_action)
-                else:
-                    unknown_agent.next_action = 'L'
 
                 # 3. Estimating
                 if unknown_agent.next_action is not None:
+                    tmp_sim = copy(main_sim)
+                    tmp_previous_state = self.previous_state
                     parameter_estimation.process_parameter_estimations(unknown_agent,\
-                        self.previous_state, main_sim, enemy_action_prob,selected_types)
+                        tmp_previous_state, tmp_sim, enemy_action_prob, selected_types)
 
     ####################################################################################################################
     def move(self,reuse_tree,main_sim,search_tree, time_step):

@@ -667,7 +667,6 @@ class Simulator:
                     self.mark_route_map(route,x_agent, y_agent)
                 a_agent.route_actions = self.convert_route_to_action(route)
 
-
                 if len(route) == 0:
                     a_agent.set_actions_probability(0.2, 0.2, 0.2, 0.2, 0.2)
                     a_agent.set_random_action()
