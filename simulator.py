@@ -96,7 +96,7 @@ class Simulator:
                 self.main_agent.level = v[0][4]
 
             elif 'enemy' in k:
-                self.enemy_agent = intelligent_agent.Agent(v[0][0], v[0][1], v[0][2])
+                self.enemy_agent = intelligent_agent.Agent(v[0][0], v[0][1], v[0][2],True)
                 self.enemy_agent.level = v[0][4]
 
             elif 'obstacle' in k:
@@ -560,6 +560,11 @@ class Simulator:
             if (item_x, item_y) == (x,y) and not self.items[i].loaded:
                 return False
 
+        for i in range(len(self.obstacles)):
+            (obs_x, obs_y) = self.obstacles[i].get_position()
+            if (obs_x, obs_y) == (x,y) :
+                return False
+
         for i in range(len(self.agents)):
             (agent_x, agent_y) = self.agents[i].get_position()
             if (agent_x, agent_y) == (x, y):
@@ -589,7 +594,7 @@ class Simulator:
                 item.loaded = True
                 for agent in item.agents_load_item:
                     self.agents[agent.index].reset_memory()
-                    print '2'
+                    #print '2'
                 item.agents_load_item = list()
                 c_reward += 1
 
@@ -661,7 +666,6 @@ class Simulator:
                 if len(route) > 1:
                     self.mark_route_map(route,x_agent, y_agent)
                 a_agent.route_actions = self.convert_route_to_action(route)
-
 
                 if len(route) == 0:
                     a_agent.set_actions_probability(0.2, 0.2, 0.2, 0.2, 0.2)

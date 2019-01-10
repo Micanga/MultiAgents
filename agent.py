@@ -175,7 +175,7 @@ class Agent:
     ################################################################################################################
     # The agent is "near" if it is next to the destination, and the heading is correct
     def is_agent_near_destination(self, item_x, item_y):
-        dx = [-1, 0, 1, 0]  # 0:W ,  1:N , 2:E  3:S
+        dx = [-1, 0, 1,  0]  # 0:W ,  1:N , 2:E  3:S
         dy = [ 0, 1, 0, -1]
 
         x_diff = 0
@@ -521,119 +521,145 @@ class Agent:
                 if self.distance(agents[i]) < radius:
                     if -angle / 2 <= self.angle_of_gradient(agents[i], self.direction) <= angle / 2:
                         self.visible_agents.append(agents[i])
-
-
+    
     ####################################################################################################################
-    def choose_target(self, items, agents):
-
-        max_index = -1
-        max_distance = 0
-
-        # if items visible, return furthest one;
-        # else, return 0
-        if self.agent_type == "l1":
-
-            for i in range(0, len(self.visible_items)):
-                if self.distance(self.visible_items[i]) > max_distance:
-                    max_distance = self.distance(self.visible_items[i])
-                    max_index = i
-
-            if max_index > -1:
-                return self.visible_items[max_index]
-            else:
-                return position.position(-1, -1)
-
-        # if items visible, return item with highest level below own level,
-        # or item with highest level if none are below own level;
-        # else, return 0
-
-        if self.agent_type == "l2":
-            max_level = -1
-            for i in range(0, len(self.visible_items)):
-                if self.visible_items[i].level > max_level:
-                    if self.visible_items[i].level < self.level:
-                        max_level = self.visible_items[i].level
-                        max_index = i
-
-            if max_index == -1:
-                return position.position(-1, -1)
-            else:
-                return self.visible_items[max_index]
-
-        furthest_agent = None
+    def choose_target_f2(self,items,agents):
+        # 1. Initialising the support variables
+        max_level = -1
+        high_level_agent = None
         max_distance = -1
+        furthest_agent = None
+
+        # 2. Searching for the furthest agent
         for visible_agent in self.visible_agents:
             if self.distance(visible_agent) > max_distance:
                 max_distance = self.distance(visible_agent)
                 furthest_agent = visible_agent
 
-        if self.agent_type == "f1":
-            # if agents visible but no items visible, return furthest agent;
-            if len(self.visible_items) == 0 and len(self.visible_agents) > 0:
-                return furthest_agent
-
-            # if agents and items visible, return item that furthest agent would choose if it had type L1;
-            elif len(self.visible_items) > 0 and len(self.visible_agents) > 0:
-
-                if furthest_agent is not None:
-                    furthest_agent.agent_type= 'l1'
-                    furthest_agent.level = self.level
-                    furthest_agent.radius = self.radius
-                    furthest_agent.angle = self.angle
-
-                    furthest_agent.visible_agents_items(items, agents)
-
-                    return furthest_agent.choose_target(items, agents)
-                else:
-                    return position.position(-1, -1)
-            else:
-                return position.position(-1, -1)
-
-        max_level = -1
-        high_level_agent = None
+        # 3. Searching for the high level agent
         for visible_agent in self.visible_agents:
-            if visible_agent.level > max_level and visible_agent.level > self.level:
+            if visible_agent.level > max_level\
+             and visible_agent.level > self.level:
                 max_level = visible_agent.level
                 high_level_agent = visible_agent
 
-        if self.agent_type == "f2":
+        # 4. if agents visible but no items visible, return agent with highest level above own level,
+        # or furthest agent if none are above own level;
+        if len(self.visible_items) == 0 and len(self.visible_agents) > 0:
+            if high_level_agent is None:
+                return furthest_agent.copy()
+            else:
+                return high_level_agent.copy()
+        # 5. if agents and items visible
+        elif len(self.visible_items) > 0 and len(self.visible_agents) > 0:
+            # a. Selecting the leader
+            if high_level_agent is None:
+                leader_agent = furthest_agent.copy()
+            else:
+                leader_agent = high_level_agent.copy()
 
-            # if agents visible but no items visible, return agent with highest level above own level,
-            if len(self.visible_items) == 0 and len(self.visible_agents) > 0:
+            # b. and return item that this agent would choose if it had type L2;
+            if leader_agent is not None:
 
-                if high_level_agent is None:
-                    return furthest_agent
+                leader_agent.agent_type = 'l2'
+                leader_agent.level = self.level
+                leader_agent.radius = self.radius
+                leader_agent.angle = self.angle
+                leader_agent.visible_agents_items(items, agents)
 
-                # or furthest agent if none are above own level;
-                else:
-                    return high_level_agent
-
-            # if agents and items visible
-
-            elif len(self.visible_items) > 0 and len(self.visible_agents) > 0:
-                # select agent as before
-
-                if high_level_agent is None:
-                    leader_agent = furthest_agent
-                else:
-                    leader_agent = high_level_agent
-
-                #  and return item that this agent would choose if it had type L2;
-                if leader_agent is not None:
-                    leader_agent.agent_type = 'l2'
-                    leader_agent.level = self.level
-                    leader_agent.radius = self.radius
-                    leader_agent.angle = self.angle
-
-                    leader_agent.visible_agents_items(items, agents)
-
-                    return leader_agent.choose_target(items, agents)
-                else:
-                    return position.position(-1, -1)
+                return leader_agent.choose_target(items, agents)
             else:
                 return position.position(-1, -1)
+        else:
+            return position.position(-1, -1)
 
-        return position.position(-1, -1)
+    ####################################################################################################################
+    def choose_target_f1(self,items,agents):
+        # 1. Initialising the support variables
+        max_distance = -1
+        furthest_agent = None
+
+        # 2. Searching for the furthest agent
+        for visible_agent in self.visible_agents:
+            if self.distance(visible_agent) > max_distance:
+                max_distance = self.distance(visible_agent)
+                furthest_agent = visible_agent
+
+        # 3. if agents visible but no items visible, return furthest agent;
+        if len(self.visible_items) == 0 and len(self.visible_agents) > 0:
+            return furthest_agent.copy()
+        # 4. if agents and items visible, return item that furthest agent would choose if it had type L1;
+        elif len(self.visible_items) > 0 and len(self.visible_agents) > 0:
+            if furthest_agent is not None:
+
+                furthest_agent = furthest_agent.copy()
+                furthest_agent.agent_type = 'l1'
+                furthest_agent.level = self.level
+                furthest_agent.radius = self.radius
+                furthest_agent.angle = self.angle
+                furthest_agent.visible_agents_items(items, agents)
+
+                return furthest_agent.choose_target(items, agents)
+            else:
+                return position.position(-1, -1)
+        else:
+            return position.position(-1, -1)
+
+    ####################################################################################################################
+    def choose_target_l2(self,items,agents):
+        # 1. Initialising the support variables
+        max_index, max_level = -1, -1
+
+        # 2. Searching for max level item
+        for i in range(0, len(self.visible_items)):
+            if self.visible_items[i].level > max_level:
+                if self.visible_items[i].level < self.level:
+                    max_level = self.visible_items[i].level
+                    max_index = i
+
+        # 3. Returning the result
+        if max_index > -1:
+            return self.visible_items[max_index]
+        else:
+            return position.position(-1, -1)
+
+    ####################################################################################################################
+    def choose_target_l1(self,items,agents):
+        # 1. Initialising the support variables
+        max_index, max_distance = -1, -1
+
+        # 2. Searching for max distance item
+        for i in range(0, len(self.visible_items)):
+            if self.distance(self.visible_items[i]) > max_distance:
+                max_distance = self.distance(self.visible_items[i])
+                max_index = i
+
+        # 3. Returning the result
+        if max_index > -1:
+            return self.visible_items[max_index]
+        else:
+            return position.position(-1, -1)
+
+    ####################################################################################################################
+    def choose_target(self, items, agents):
+        # 1. Choosing target (item) if type L1
+        if self.agent_type == "l1":
+            return self.choose_target_l1(items,agents)
+
+        # 2. Choosing target (item) if type L2
+        elif self.agent_type == "l2":
+            return self.choose_target_l2(items,agents)
+
+        # 3. Choosing target (agent) if type F1
+        elif self.agent_type == "f1":
+            return self.choose_target_f1(items,agents)
+
+        # 4. Choosing target (agent) if type F2
+        elif self.agent_type == "f2":
+            return self.choose_target_f2(items,agents)
+
+        else:
+            return position.position(-1, -1)
 
 
 

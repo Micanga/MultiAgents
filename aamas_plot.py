@@ -10,13 +10,18 @@ import aamas_plot_init as init
 from aamas_plot_statistics import is_constant, calcConfInt
 
 # 0. Variables
+count 		 = 0
 fig_count 	 = 0
 results 	 = list()
 informations = list()
 
 # 1. Defining the Graph Generation Parameters
-ROOT_DIRS 	= ['outputs']#['AAMAS_Outputs_MCTS']#['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
-NAMES 		= ['MCTS']#['MCTS']#['POMCP','POMCP','POMCP']#,'POMCP_FO']
+ROOT_DIRS 	= ['Outputs_MCTS']#['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
+NAMES 		= ['MCTS']#['POMCP','POMCP','POMCP']#,'POMCP_FO']
+ 
+SIZE 	    = ['10']#,'15','20','25']
+NAGENTS     = ['2']#,'2','3','4','5']
+NITEMS      = ['10']#,'15','20','25']
 RADIUS 		= ['3.0','5.0','7.0']
 
 ############################################################################################
@@ -252,13 +257,13 @@ def plot_run_length_bar(aga_m,aga_s,abu_m,abu_s,pf_m,pf_s,plotname):
     axis = plt.gca()
 
     # AGA
-    aga=axis.bar(0.75,height=aga_m,width= bar_w,yerr=aga_s, color='b')
+    aga=axis.bar(0.75,height=aga_m,width= bar_w,yerr=aga_s-aga_m, color='b')
 
     # ABU
-    abu=axis.bar(1.75,height=abu_m,width= bar_w,yerr=abu_s, color='g')
+    abu=axis.bar(1.75,height=abu_m,width= bar_w,yerr=abu_s-abu_m, color='g')
 
     # PF
-    pf=axis.bar(2.75,height=pf_m,width= bar_w,yerr=pf_s, color='r')
+    pf=axis.bar(2.75,height = pf_m,width= bar_w,yerr = pf_s-pf_m, color='r')
 
     # b. getting the current axis to label
     axis.set_ylabel('Number of Iterations')
@@ -266,7 +271,7 @@ def plot_run_length_bar(aga_m,aga_s,abu_m,abu_s,pf_m,pf_s,plotname):
     axis.set_xticklabels(['AGA','ABU','PF'])
 
     # 5. Showing the result
-    plt.savefig('./plots/' + plotname+'.pdf', bbox_inches = 'tight',pad_inches = 0)
+    plt.savefig(plotname+'.pdf', bbox_inches = 'tight',pad_inches = 0)
     #plt.show()
     plt.close(fig)
 
@@ -336,7 +341,7 @@ def plot_run_length(aga_m,aga_ci,abu_m,abu_ci,pf_m,pf_ci,plotname):
 				fancybox=True,framealpha=0.8,ncol=3)
 
 	# 5. Showing the result
-	plt.savefig('./plots/' +plotname+'.pdf', bbox_inches = 'tight',pad_inches = 0)
+	plt.savefig(plotname+'.pdf', bbox_inches = 'tight',pad_inches = 0)
 	#plt.show()
 	plt.close(fig)
 
@@ -439,7 +444,7 @@ def plot_summarised(aga,aga_std,aga_ci,
 				fancybox=True,framealpha=0.8,ncol=3)
 
 	# 3. Showing the result
-	plt.savefig('./plots/' +plotname+'.pdf', bbox_inches = 'tight',pad_inches = 0)
+	plt.savefig(plotname+'.pdf', bbox_inches = 'tight',pad_inches = 0)
 	#plt.show()
 	plt.close(fig)
 
@@ -452,53 +457,54 @@ def plot_summarised(aga,aga_std,aga_ci,
 		##	   ## ##	 ##  ##  ##   ### 
 		##	   ## ##	 ## #### ##	   ## 
 ######################################################################
-radius_count = 0
-# 1. Reading the files
+# 1. Reading the files and extracting the results
 for root in ROOT_DIRS:
-	if root == 'AAMAS_Outputs_POMCP':
-		results.append(init.read_files(root,RADIUS[radius_count]))
-		radius_count += 1
+	if root == 'Outputs_POMCP':
+		for sz in SIZE:
+			for na in NAGENTS:
+				for ni in NITEMS:
+					for ra in RADIUS:
+						filename = 'POMCP_s'+sz+'_a'+na+'_i'+ni+'_r'+ra+'_Pickle'
+						if not os.path.exists(filename):
+							results.append(init.read_files(root,sz,na,ni,ra))
+							info = init.extract_information(results[-1],'POMCP_s'+sz+'_a'+na+'_i'+ni+'_r'+ra)
+							print info.name
+							info.normalise()
+							info.extract()
+							info.threshold = min([info.AGA_max_len_hist,info.ABU_max_len_hist,info.PF_max_len_hist])
+							informations.append(info)
+
+							file = open(filename)
+							pickle.dump(info,file)
+							file.close() 
+						else:
+							file = open(filename,'r')
+							info = pickle.load(file)
+							informations.append(info)
+							file.close()
 	else:
-		results.append(init.read_files(root))
+		for sz in SIZE:
+			for na in NAGENTS:
+				for ni in NITEMS:
+					filename = 'MCTS_s'+sz+'_a'+na+'_i'+ni+'_Pickle'
+					if not os.path.exists(filename):
+						results.append(init.read_files(root,sz,na,ni))
+						info = init.extract_information(results[-1],'MCTS_s'+sz+'_a'+na+'_i'+ni)
+						print info.name
+						info.normalise()
+						info.extract()
+						info.threshold = min([info.AGA_max_len_hist,info.ABU_max_len_hist,info.PF_max_len_hist])
+						informations.append(info)
 
-radius_count = 0
-# 2. Extracting the results
-for i in range(len(results)):
-	if NAMES[i] == 'POMCP':
-		if not os.path.exists(NAMES[i]+'_r'+RADIUS[radius_count]+'Pickle'):
-			info = init.extract_information(results[i],NAMES[i],RADIUS[radius_count])
-			print info.name
-			info.normalise()
-			info.extract()
-			info.threshold = min([info.AGA_max_len_hist,info.ABU_max_len_hist,info.PF_max_len_hist])
-			informations.append(info)
-
-			file = open(info.name+'Pickle','wb')
-			pickle.dump(info,file)
-			file.close() 
-		else:
-			file = open(NAMES[i]+'_r'+RADIUS[radius_count]+'Pickle','r')
-			info = pickle.load(file)
-			informations.append(info)
-			file.close()
-		radius_count += 1
-	else:
-		if not os.path.exists(NAMES[i]+'Pickle'):
-			info = init.extract_information(results[i],NAMES[i])
-			print info.name
-			info.normalise()
-			info.extract()
-			info.threshold = min([info.AGA_max_len_hist,info.ABU_max_len_hist,info.PF_max_len_hist])
-			informations.append(info)
-
-			file = open(info.name+'Pickle','wb')
-			pickle.dump(info,file)
-			file.close() 
-		else:
-			file = open(NAMES[i]+'Pickle','r')
-			info = pickle.load(file)
-			informations.append(info)
-			file.close()
+						file = open(filename,'wb')
+						pickle.dump(info,file)
+						file.close() 
+					else:
+						print filename,'already exists'
+						file = open(filename,'r')
+						info = pickle.load(file)
+						informations.append(info)
+						file.close()
 
 # 3. Plotting the Information
 print '***** plotting *****'

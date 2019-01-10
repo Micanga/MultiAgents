@@ -94,8 +94,7 @@ class Information:
 		return True
 
 	def normalise(self):
-		self.AGA_mean_len_hist, self.AGA_std_len_hist, self.AGA_ci_len_hist = \
-			self.calc_mean_len_hist(self.AGA_errors,'AGA')
+		self.AGA_mean_len_hist, self.AGA_std_len_hist, self.AGA_ci_len_hist = self.calc_mean_len_hist(self.AGA_errors,'AGA')
 		self.AGA_errors = self.normalise_arrays(self.AGA_max_len_hist,self.AGA_errors)
 		print '*** AGA data = ',len(self.AGA_errors),'/AGA avg len = ', self.AGA_mean_len_hist,' ***'
 
