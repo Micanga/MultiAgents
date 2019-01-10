@@ -306,9 +306,9 @@ class POUCT(UCT,object):
         return next_state, observation, total_reward
 
     ################################################################################################################
-    def do_move(self, sim, move,  enemy = False, real=False):
+    def do_move(self, sim, move,  real=False):
 
-        if enemy:
+        if self.enemy:
             tmp_m_agent = sim.enemy_agent
         else:
             tmp_m_agent = sim.main_agent
@@ -334,7 +334,7 @@ class POUCT(UCT,object):
             else:
                 tmp_m_agent.change_direction_with_action(move)
 
-            if enemy:
+            if self.enemy:
                 sim.suspect_agent = tmp_m_agent
             else:
                 sim.main_agent = tmp_m_agent

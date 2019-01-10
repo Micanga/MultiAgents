@@ -1,4 +1,4 @@
-from copy import copy, deepcopy
+from copy import copy
 from math import sqrt
 from numpy.random import choice
 import numpy as np
@@ -87,7 +87,6 @@ class POAgent(Agent, object):
             param_estim.estimation_configuration(type_selection_mode, parameter_estimation_mode, polynomial_degree)
             param_estim.choose_target_state = copy(sim)
             unknown_a.agents_parameter_estimation = param_estim
-            unknown_a.previous_agent_status = deepcopy(unknown_a)
             # Initial values for parameters and types
 
     def init_visibility(self,sim):
@@ -160,7 +159,6 @@ class POAgent(Agent, object):
                     vis_ag.agents_parameter_estimation = mem_ag.agents_parameter_estimation
                     vis_ag.choose_target_state = mem_ag.choose_target_state
                     mem_ag.next_action = vis_ag.next_action
-                    mem_ag.previous_agent_status = vis_ag.previous_agent_status
                     if pos in empty_positions:
                         empty_positions.remove(pos)
 
@@ -194,7 +192,6 @@ class POAgent(Agent, object):
                     inv_ag.position = pos
                     inv_ag.agents_parameter_estimation = mem_ag.agents_parameter_estimation
                     inv_ag.choose_target_state = mem_ag.choose_target_state
-                    inv_ag.previous_agent_status = mem_ag.previous_agent_status
                     mem_ag.next_action = None
                     if pos in empty_positions:
                         empty_positions.remove(pos)
@@ -242,7 +239,6 @@ class POAgent(Agent, object):
                         if mem_ag.index == vis_ag.index:
                             vis_ag.agents_parameter_estimation = mem_ag.agents_parameter_estimation
                             vis_ag.choose_target_state = copy(mem_ag.choose_target_state)
-                            vis_ag.previous_agent_status = copy(mem_ag.previous_agent_status)
                             break
                     break
 
@@ -287,13 +283,11 @@ class POAgent(Agent, object):
             idx = len(copy_agent.visible_agents)-1
             copy_agent.visible_agents[idx].agents_parameter_estimation = va.agents_parameter_estimation
             copy_agent.visible_agents[idx].choose_target_state = va.choose_target_state
-            copy_agent.visible_agents[idx].previous_agent_status = va.previous_agent_status
         for ia in self.invisible_agents:
             copy_agent.invisible_agents.append(ia.copy())
             idx = len(copy_agent.invisible_agents)-1
             copy_agent.invisible_agents[idx].agents_parameter_estimation = ia.agents_parameter_estimation
             copy_agent.invisible_agents[idx].choose_target_state = ia.choose_target_state
-            copy_agent.invisible_agents[idx].previous_agent_status = ia.previous_agent_status
 
         for vi in self.visible_items:
             copy_agent.visible_items.append(vi.copy())
