@@ -19,7 +19,10 @@ class TrainData:
         self.type = train_data_type
 
         self.data_set = []
-        self.initialise_data_set(uknown_agent, sim)
+        if train_mode == 'history_based':
+            self.initialise_particle_data_set(uknown_agent, sim)
+        else:
+            self.initialise_data_set(uknown_agent, sim)
 
         self.false_data_set = []
         self.level_pool = []
@@ -28,7 +31,7 @@ class TrainData:
         self.load_count = 0
 
     ####################################################################################################################
-    def initialise_data_set(self, unknown_agent, sim):
+    def initialise_particle_data_set(self, unknown_agent, sim):
         # 1. Generating initial data (particles)
         none_count, none_thereshold = 0, 500
         while len(self.data_set) < self.generated_data_number:
@@ -42,7 +45,7 @@ class TrainData:
             tmp_angle = random.uniform(angle_min, angle_max)  # 'angle'
             tmp_level = random.uniform(level_min, level_max)  # 'level'
 
-            # 3. Simulating the particle
+            # 3. Creating the temporary agent
             x,y,direction = unknown_agent.position[0], unknown_agent.position[1], unknown_agent.direction
             tmp_agent = agent.Agent(x,y,direction, self.type, -1)
             tmp_agent.set_parameters(sim, tmp_level, tmp_radius, tmp_angle)
@@ -65,6 +68,39 @@ class TrainData:
                 none_count += 1
 
     ####################################################################################################################
+    def initialise_data_set(self, unknown_agent, sim,po = False):
+        # 1. Generating initial data (particles)
+        none_count, none_thereshold = 0, 500
+        while len(self.data_set) < self.generated_data_number:
+            if none_count == none_thereshold:
+                break
+
+            # 2. Random uniform parameter sampling
+            tmp_radius = random.uniform(radius_min, radius_max)  # 'radius'
+            tmp_angle = random.uniform(angle_min, angle_max)  # 'angle'
+            tmp_level = random.uniform(level_min, level_max)  # 'level'
+
+            # 3. Creating the temporary agent
+            x,y,direction = unknown_agent.position[0], unknown_agent.position[1], unknown_agent.direction
+            tmp_agent = agent.Agent(x,y,direction, self.type, -1)
+            tmp_agent.set_parameters(sim, tmp_level, tmp_radius, tmp_angle)
+            
+            # 4. Defining route
+            tmp_sim = copy(sim)
+            tmp_agent = tmp_sim.move_a_agent(tmp_agent)
+            target = tmp_agent.get_memory()
+            route_actions = tmp_agent.route_actions
+
+            if route_actions is not None and route_actions != []:
+                p_action = tmp_agent.get_action_probability(route_actions[0])
+                if p_action is not None:
+                    self.data_set.append([tmp_level, tmp_radius, tmp_angle, p_action])
+                else:
+                    none_count += 1
+            else:
+                none_count += 1
+
+    ####################################################################################################################
     def train_configuration(self, generated_data_number, PF_add_threshold,  train_mode):
         # the number of data we want to generate for estimating
         self.generated_data_number = generated_data_number
@@ -73,7 +109,6 @@ class TrainData:
 
     ####################################################################################################################
     def update_internal_state(self, radius,angle,level, selected_type, unknown_agent , po =False):
-
         if po:
             u_agent = unknown_agent.choose_target_state.main_agent.agent_memory[unknown_agent.index]
         else:
@@ -142,21 +177,21 @@ class TrainData:
 
     ###################################################################################################################
     def generate_data(self, unknown_agent):
-        if self.data_set == []:
-            self.initialise_data_set(unknown_agent, unknown_agent.choose_target_state)
+        if self.data_set == [] or len(self.data_set) == 0:
+            tmp_sim = copy(unknown_agent.choose_target_state)
+            self.initialise_particle_data_set(unknown_agent, tmp_sim)
 
         # 1. Generating data (particles)
-        none_count, none_thereshold = 0, 250
+        previous_particles = [i for i in range(0,len(self.data_set))]
+        none_count, none_thereshold = 0, self.generated_data_number
         while len(self.data_set) < self.generated_data_number:
             # a. Sampling a particle
             particle = {}
             if none_count < none_thereshold:
-                particle = random.choice(self.data_set)
+                particle = self.data_set[random.choice(previous_particles)]
                 [tmp_level, tmp_radius, tmp_angle] = particle['parameter']
             else:
-                tmp_radius = random.uniform(radius_min, radius_max)  # 'radius'
-                tmp_angle = random.uniform(angle_min, angle_max)  # 'angle'
-                tmp_level = random.uniform(level_min, level_max)  # 'level'
+                break
 
             # b. Simulating and Filtering the particle
             # i. creating the new particle
@@ -171,7 +206,7 @@ class TrainData:
             route_actions = tmp_agent.route_actions
 
             # iii. filtering
-            if route_actions is not None:
+            if route_actions is not None and route_actions != []:
                 #if p_action > self.PF_add_threshold:
                 particle['target'] = target
                 particle['parameter'] = [tmp_level, tmp_radius, tmp_angle]
@@ -221,7 +256,7 @@ class TrainData:
                 false_actions.append(actions_to_reach_target[i])
 
         #false_real_len = self.count_weird_movements(false_actions)
-        if len(false_actions) < float(2*len(actions_to_reach_target)/3):
+        if len(false_actions) < float(len(actions_to_reach_target)/3):
             return True
         else:
             return False
@@ -230,7 +265,7 @@ class TrainData:
     def update_data_set(self, unknown_agent, actions_to_reach_target, po=False):
         # 1. Getting the agent to update
         if po:
-            cts_agent = unknown_agent.choose_target_state.main_agent.agent_memory[unknown_agent.index]
+            cts_agent = unknown_agent.choose_target_state.main_agent.get_memory_agent(unknown_agent)
         else:
             cts_agent = unknown_agent.choose_target_state.main_agent.visible_agents[unknown_agent.index]
 
@@ -286,14 +321,8 @@ class TrainData:
         # 4. Removing the marked data
         k_removed_particle = len(remove_pf)
         for marked_particle in remove_pf:
-            [tmp_level, tmp_radius, tmp_angle] = marked_particle['parameter']
-            if tmp_level in self.level_pool:
-                self.level_pool.remove(tmp_level)
-            if tmp_angle in self.angle_pool:
-                self.angle_pool.remove(tmp_angle)
-            if tmp_radius in self.radius_pool:
-                self.radius_pool.remove(tmp_radius)
-            self.data_set.remove(marked_particle)
+            if marked_particle in self.data_set:
+                self.data_set.remove(marked_particle)
 
         # 5. Updating the succeeded steps
         particle_sum = sum([particle['succeeded_steps'] for particle in self.data_set])

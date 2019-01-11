@@ -188,8 +188,9 @@ while main_sim.items_left() > 0:
     for i in range(len(main_sim.agents)):
         log_file.write('2) Move Common Agent '+str(i))
         main_sim.agents[i] = main_sim.move_a_agent(main_sim.agents[i])
+        print i,':',main_sim.agents[i].index,main_sim.agents[i].agent_type,
         log_file.write(' - OK\ntarget: '+str(main_sim.agents[i].get_memory())+'\n')
-
+    print
     # 3. Move Main Agent
     if main_sim.main_agent is not None:
         log_file.write('3) Move Main Agent ')
@@ -207,6 +208,7 @@ while main_sim.items_left() > 0:
     main_sim.update_all_A_agents(False)
     main_sim.do_collaboration()
     main_sim.main_agent.update_unknown_agents_status(main_sim)
+    main_sim.draw_map()
     log.write_map(log_file,main_sim)
 
    	# 6. Estimating

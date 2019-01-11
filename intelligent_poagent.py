@@ -246,6 +246,11 @@ class POAgent(Agent, object):
                             break
                     break
 
+    def get_memory_agent(self,unkown_agent):
+        for m_a in self.agent_memory:
+            if m_a.index == unkown_agent.index :
+                return m_a
+
     def estimation(self,time_step,main_sim,enemy_action_prob,actions):
 
         for u_a in self.agent_memory:

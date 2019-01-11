@@ -11,7 +11,6 @@ from copy import copy, deepcopy
 class Agent:
     def __init__(self, x, y, direction, is_enemy = False):
         self.position = (int(x), int(y))
-
         if isinstance(direction, basestring):
             self.direction = self.convert_direction(direction)
         else:
@@ -19,6 +18,7 @@ class Agent:
 
         self.level = None
         self.apply_adversary = None
+        self.uct = None
 
         self.visible_agents = []
         self.is_enemy =  is_enemy
@@ -55,19 +55,14 @@ class Agent:
             param_estim.estimation_configuration(type_selection_mode, parameter_estimation_mode, polynomial_degree)
 
             unknown_a.agents_parameter_estimation = param_estim
-            # Initial values for parameters and types
 
     ####################################################################################################################
-
     def update_unknown_agents(self, sim):
-
         enemy_index = 0
         for i in range(len(sim.agents)):
-            
             self.visible_agents[i].previous_agent_status = sim.agents[i]
 
         enemy_index = i + 1
-
         if self.apply_adversary:          
             self.visible_agents[enemy_index].previous_agent_status = sim.enemy_agent
 
@@ -85,33 +80,6 @@ class Agent:
             self.visible_agents[enemy_index].next_action = sim.enemy_agent.next_action
             self.visible_agents[enemy_index].direction = sim.enemy_agent.direction
             self.visible_agents[enemy_index].position = sim.enemy_agent.position
-
-
-    ####################################################################################################################
-    def estimation(self,time_step,main_sim,enemy_action_prob, types):
-        # For the unkown agents, estimating the parameters and types
-        for unknown_agent in self.visible_agents:
-            if unknown_agent is not None:
-                # 1. Selecting the types
-                parameter_estimation = unknown_agent.agents_parameter_estimation
-                if parameter_estimation.type_selection_mode == 'AS':
-                    selected_types = types
-                if parameter_estimation.type_selection_mode == 'BS':
-                    selected_types = parameter_estimation.UCB_selection(time_step)  # returns l1, l2, f1, f2,w
-                
-                # 2. Defining the next agent action or appending the action
-                # for the history based method
-                if parameter_estimation.train_mode == 'history_based':
-                    parameter_estimation.action_history.append(unknown_agent.next_action)
-                    if unknown_agent.next_action != 'L':
-                        parameter_estimation.actions_to_reach_target.append(unknown_agent.next_action)
-
-                # 3. Estimating
-                if unknown_agent.next_action is not None:
-                    tmp_sim = copy(main_sim)
-                    tmp_previous_state = self.previous_state
-                    parameter_estimation.process_parameter_estimations(unknown_agent,\
-                        tmp_previous_state, tmp_sim, enemy_action_prob, selected_types)
 
     ####################################################################################################################
     def move(self,reuse_tree,main_sim,search_tree, time_step):
@@ -337,6 +305,28 @@ class Agent:
 
         return new_position
 
+    ####################################################################################################################
+    def estimation(self,time_step,main_sim,enemy_action_prob, types):
+        # For the unkown agents, estimating the parameters and types
+        for unknown_agent in self.visible_agents:
+            if unknown_agent is not None:
+                # 1. Selecting the types
+                parameter_estimation = unknown_agent.agents_parameter_estimation
+                if parameter_estimation.type_selection_mode == 'AS':
+                    selected_types = types
+                if parameter_estimation.type_selection_mode == 'BS':
+                    selected_types = parameter_estimation.UCB_selection(time_step)  # returns l1, l2, f1, f2,w
+                
+                # 2. Defining the next agent action or appending the action
+                # for the history based method
+                if parameter_estimation.train_mode == 'history_based':
+                    parameter_estimation.action_history.append(unknown_agent.next_action)
+                    if unknown_agent.next_action != 'L':
+                        parameter_estimation.actions_to_reach_target.append(unknown_agent.next_action)
 
-
-
+                # 3. Estimating
+                if unknown_agent.next_action is not None:
+                    tmp_sim = copy(main_sim)
+                    tmp_previous_state = copy(self.previous_state)
+                    parameter_estimation.process_parameter_estimations(unknown_agent,\
+                        tmp_previous_state, tmp_sim, enemy_action_prob, selected_types)

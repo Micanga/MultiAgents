@@ -3,7 +3,7 @@ import position
 import numpy as np
 from math import sqrt
 import parameter_estimation
-
+from copy import copy
 
 class Agent:
     def __init__(self, x, y, direction, agent_type='l1', index='0'):
@@ -525,25 +525,22 @@ class Agent:
     ####################################################################################################################
     def choose_target_f2(self,items,agents):
         # 1. Initialising the support variables
-        max_level = -1
-        high_level_agent = None
-        max_distance = -1
-        furthest_agent = None
+        max_level, max_distance = -1, -1
+        high_level_agent, furthest_agent = None, None
 
-        # 2. Searching for the furthest agent
+        # 2. Searching for the furthest agent and for
+        # the highest level agent above own level
         for visible_agent in self.visible_agents:
             if self.distance(visible_agent) > max_distance:
                 max_distance = self.distance(visible_agent)
                 furthest_agent = visible_agent
 
-        # 3. Searching for the high level agent
-        for visible_agent in self.visible_agents:
-            if visible_agent.level > max_level\
-             and visible_agent.level > self.level:
-                max_level = visible_agent.level
-                high_level_agent = visible_agent
+            if visible_agent.level > max_level:
+                if visible_agent.level > self.level:
+                    max_level = visible_agent.level
+                    high_level_agent = visible_agent
 
-        # 4. if agents visible but no items visible, return agent with highest level above own level,
+        # 3. if agents visible but no items visible, return agent with highest level above own level,
         # or furthest agent if none are above own level;
         if len(self.visible_items) == 0 and len(self.visible_agents) > 0:
             if high_level_agent is None:
@@ -587,12 +584,13 @@ class Agent:
 
         # 3. if agents visible but no items visible, return furthest agent;
         if len(self.visible_items) == 0 and len(self.visible_agents) > 0:
-            return furthest_agent.copy()
+            return copy(furthest_agent)
+
         # 4. if agents and items visible, return item that furthest agent would choose if it had type L1;
         elif len(self.visible_items) > 0 and len(self.visible_agents) > 0:
             if furthest_agent is not None:
 
-                furthest_agent = furthest_agent.copy()
+                furthest_agent = copy(furthest_agent)
                 furthest_agent.agent_type = 'l1'
                 furthest_agent.level = self.level
                 furthest_agent.radius = self.radius
@@ -610,18 +608,29 @@ class Agent:
         # 1. Initialising the support variables
         max_index, max_level = -1, -1
 
-        # 2. Searching for max level item
+        # 2. Searching for highest level item below own level
         for i in range(0, len(self.visible_items)):
             if self.visible_items[i].level > max_level:
                 if self.visible_items[i].level < self.level:
                     max_level = self.visible_items[i].level
                     max_index = i
 
-        # 3. Returning the result
+        # - return the result if the item was found
         if max_index > -1:
-            return self.visible_items[max_index]
+            return self.visible_items[max_index].position
+        # 3. Else search for highest level item
         else:
-            return position.position(-1, -1)
+            for i in range(0, len(self.visible_items)):
+                if self.visible_items[i].level > max_level:
+                    max_level = self.visible_items[i].level
+                    max_index = i
+
+            # - return the result if the item was found 
+            if max_index > -1:
+                return self.visible_items[max_index].position
+            # 4. Else return no item
+            else:
+                return position.position(-1, -1)
 
     ####################################################################################################################
     def choose_target_l1(self,items,agents):

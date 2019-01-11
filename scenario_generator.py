@@ -108,7 +108,7 @@ def main():
 		agentLevel = round(random.uniform(0,1), 3)
 		agentRadius = round(random.uniform(0.1,1), 3)
 		agentAngle = round(random.uniform(0.1,1), 3)
-		AGENTS.append(['agent'+ str(agent_idx),agentx,agenty,agentDirection,agentType,agentLevel,agentRadius,agentAngle])
+		AGENTS.append(['agent'+ str(agent_idx),str(agent_idx),agentx,agenty,agentDirection,agentType,agentLevel,agentRadius,agentAngle])
 
 	ITEMS = []
 	for item_idx in range(nitems):
