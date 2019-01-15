@@ -795,8 +795,7 @@ class ParameterEstimation:
 
     ####################################################################################################################
 
-    def process_parameter_estimations(self, time_step, unknown_agent,previous_state, current_state,enemy_action_prob,
-                                      po=False, actions = None):
+    def process_parameter_estimations(self, time_step, unknown_agent,previous_state, current_state,enemy_action_prob, po=False,actions = None):
         # Initialising the parameter variables
         x_train = []
 
@@ -812,7 +811,6 @@ class ParameterEstimation:
 
         if actions == 1:
             unknown_agent.next_action = 'L'
-
         print ('unknown_agent.next_action=',unknown_agent.next_action)
         if self.train_mode == 'history_based':
             self.action_history.append(unknown_agent.next_action)
@@ -849,10 +847,10 @@ class ParameterEstimation:
             # print 'Estimating parameters for agent', unknown_agent.index
             new_parameters_estimation = self.parameter_estimation(x_train, y_train, selected_type)
             
-            print 'new estimated parameters:'\
-                , str(new_parameters_estimation.level)\
-                , str(new_parameters_estimation.radius)\
-                , str(new_parameters_estimation.angle)
+            # print 'selected type :', selected_type,'new estimated parameters:'\
+            #     , str(new_parameters_estimation.level)\
+            #     , str(new_parameters_estimation.radius)\
+            #     , str(new_parameters_estimation.angle)
 
             # ==========================================================================================================
 
@@ -867,9 +865,10 @@ class ParameterEstimation:
                     tmp_agent.set_parameters(previous_state, new_parameters_estimation.level,
                                              new_parameters_estimation.radius,
                                              new_parameters_estimation.angle)
-
+                    #previous_state.draw_map()
                     # Runs a simulator object
                     tmp_agent = previous_state.move_a_agent(tmp_agent)
+                  #  if unknown_agent.next_action=='L':
 
                     action_prob = tmp_agent.get_action_probability(unknown_agent.next_action)
 
@@ -940,6 +939,10 @@ class ParameterEstimation:
             self.actions_to_reach_target = []
 
         self.normalize_type_probabilities()
+        # print 'l1',self.l1_estimation.type_probabilities
+        # print 'l2',self.l2_estimation.type_probabilities
+        # print 'f1',self.f1_estimation.type_probabilities
+        # print 'f2',self.f2_estimation.type_probabilities
 
         return new_parameters_estimation,x_train
 

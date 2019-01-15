@@ -25,8 +25,9 @@ def calcConfInt(p):
 
 	f.close()
 
-	os.system("chmod +x ./tmp.R")
-	output = subprocess.check_output("./tmp.R",stderr=subprocess.STDOUT,shell=True)
+	#os.system("chmod +x ./tmp.R")
+	#output = subprocess.check_output("./tmp.R",stderr=subprocess.STDOUT,shell=True)
+	output = subprocess.check_output(['Rscript', 'tmp.R'], stderr=subprocess.STDOUT, shell=False)
 	output = output.split()
 	#print 'end of function', float(output[-7])
 	return float(output[-7])

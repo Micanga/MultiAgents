@@ -56,7 +56,8 @@ if len(sys.argv) > 1 :
     dir = str(sys.argv[1])
 
 #dir = "inputs/history/"
-#dir = "inputs/adversary2/"
+dir = "inputs/FO_1_10/10S_1A_O_MIN0/"
+# dir = "inputs/adversary/"
 
 # path = 'config.csv'
 path = dir + 'config.csv'
@@ -196,7 +197,7 @@ while main_sim.items_left() > 0:
     main_sim.update_all_A_agents(False)
     main_sim.do_collaboration()
     main_sim.main_agent.update_unknown_agents_status(main_sim)
-    main_sim.draw_map()
+    # main_sim.draw_map()
 
     print '********* Estimation for selfish agents ******'
     if do_estimation:
@@ -276,10 +277,13 @@ def print_result(main_sim,  time_steps, begin_time, end_time,mcts_mode):
         l1EstimationHistory = u_a.agents_parameter_estimation.l1_estimation.get_estimation_history()
         agentData['l1EstimationHistory'] = l1EstimationHistory
         agentData['l1TypeProbHistory'] = u_a.agents_parameter_estimation.l1_estimation.type_probabilities
+        print 'l1 type prob hist:' ,u_a.agents_parameter_estimation.l1_estimation.type_probabilities
 
         l2EstimationHistory = u_a.agents_parameter_estimation.l2_estimation.get_estimation_history()
         agentData['l2EstimationHistory'] = l2EstimationHistory
         agentData['l2TypeProbHistory'] = u_a.agents_parameter_estimation.l2_estimation.type_probabilities
+        print  'l2 type prob hist:',\
+            u_a.agents_parameter_estimation.l2_estimation.type_probabilities
 
         f1EstimationHistory = u_a.agents_parameter_estimation.f1_estimation.get_estimation_history()
         agentData['f1EstimationHistory'] = f1EstimationHistory

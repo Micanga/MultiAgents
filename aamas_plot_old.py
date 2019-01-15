@@ -129,9 +129,9 @@ def plot_errors(levels,lerr,lci,angles,aerr,aci,radius,rerr,rci,plot_type):
 	plt.close(fig)
 
 def plot_type_probability(aga_tp, abu_tp, pf_tp, threshold, plotname):
-	# aga_tp = np.array(aga_tp)
-	# abu_tp = np.array(abu_tp)
-	# pf_tp = np.array(pf_tp)
+	aga_tp = np.array(aga_tp)
+	abu_tp = np.array(abu_tp)
+	pf_tp = np.array(pf_tp)
 
 	# 1. Setting the figure
 	global fig_count
@@ -140,17 +140,14 @@ def plot_type_probability(aga_tp, abu_tp, pf_tp, threshold, plotname):
 
 	# 2. Normalizing TP
 	# AGA
-	# aga_error= list()
-	# for t in range(threshold):
-	# 	er =[]
-	# 	for i in range(len(aga_tp)):
-	# 		if t < len(aga_tp[i]):
-	# 			er.append(aga_tp[i][t])
-	# 	aga_error.append(np.array(er).mean())
-
-	a = np.array(aga_tp)
-	print a
-	aga_error= a.mean(axis=0)#.tolist()
+	aga_error= list()
+	for t in range(threshold):
+		er =[]
+		for i in range(len(aga_tp)):
+			if t < len(aga_tp[i]):
+				er.append(aga_tp[i][t])
+		aga_error.append(np.array(er).mean())
+	aga_error = np.array(aga_error)
 
 	ci_list = []
 	for e_l in aga_tp:
@@ -161,17 +158,14 @@ def plot_type_probability(aga_tp, abu_tp, pf_tp, threshold, plotname):
 			aga_ci = 0
 
 	# ABU
-	# abu_error= list()
-	# for t in range(threshold):
-	# 	er =[]
-	# 	for i in range(len(abu_tp)):
-	# 		if t < len(abu_tp[i]):
-	# 			er.append(abu_tp[i][t])
-	# 	abu_error.append(np.array(er).mean())
-
-	a = np.array(abu_tp)
-	abu_error= a.mean(axis=0).tolist()
-
+	abu_error= list()
+	for t in range(threshold):
+		er =[]
+		for i in range(len(abu_tp)):
+			if t < len(abu_tp[i]):
+				er.append(abu_tp[i][t])
+		abu_error.append(np.array(er).mean())
+	abu_error = np.array(abu_error)
 
 	ci_list = []
 	for e_l in abu_tp:
@@ -182,16 +176,14 @@ def plot_type_probability(aga_tp, abu_tp, pf_tp, threshold, plotname):
 			abu_ci = 0
 
 	# PF
-	# pf_error= list()
-	# for t in range(threshold):
-	# 	er =[]
-	# 	for i in range(len(pf_tp)):
-	# 		if t < len(pf_tp[i]):
-	# 			er.append(pf_tp[i][t])
-	# 	pf_error.append(np.array(er).mean())
-
-	a = np.array(pf_tp)
-	pf_error = a.mean(axis=0).tolist()
+	pf_error= list()
+	for t in range(threshold):
+		er =[]
+		for i in range(len(pf_tp)):
+			if t < len(pf_tp[i]):
+				er.append(pf_tp[i][t])
+		pf_error.append(np.array(er).mean())
+	pf_error = np.array(pf_error)
 
 	ci_list = []
 	for e_l in pf_tp:

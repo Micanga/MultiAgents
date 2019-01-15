@@ -227,6 +227,7 @@ def type_prob_mean(max_len_hist,prob_hist):
     prob_hist = normalise_arrays(max_len_hist,prob_hist)
 
     a = np.array(prob_hist)
+    print a
     return a.mean(axis=0).tolist()
 
 
@@ -381,13 +382,54 @@ def extract_radius_errors(error_histories):
 
 results = read_files()
 
+def plot_typeProbAll(AGA_typeProbHistory,ABU_typeProbHistory,PF_typeProbHistory,max_len):
+    fig_count=0
+    fig = plt.figure(fig_count, figsize=(6.4, 2.4))
+    fig_count += 1
 
+    aga = type_prob_mean(max_len, AGA_typeProbHistory)
+    plt.plot(aga,
+             label='AGA',
+             color='b',
+             linestyle='-',
+             linewidth=2)
+
+    abu = type_prob_mean(max_len, ABU_typeProbHistory)
+    plt.plot(abu,
+             label='ABU',
+             color='g',
+             linestyle='-',
+             linewidth=2)
+
+    pf = type_prob_mean(max_len, PF_typeProbHistory)
+    plt.plot(pf,
+             label='PF',
+             color='r',
+             linestyle='-',
+             linewidth=2)
+
+    axis = plt.gca()
+    axis.set_ylabel('True Type Estimation', fontsize='x-large')
+    axis.set_xlabel('Number of Iterations', fontsize='x-large')
+    axis.xaxis.set_tick_params(labelsize=14)
+    axis.yaxis.set_tick_params(labelsize=14)
+    axis.legend(loc="upper center", fontsize='large', \
+                borderaxespad=0.1, borderpad=0.1, handletextpad=0.1, \
+                fancybox=True, framealpha=0.8, ncol=3)
+
+    # 3. Showing the result
+    plotname = "type_prob"
+    plt.savefig("./plots/" + plotname + '.pdf', bbox_inches='tight', pad_inches=0)
+    # plt.show()
+    plt.close(fig)
 extract_information()
 print PF_typeProbHistory
 #
-plot_typeProb('AGA', AGA_typeProbHistory, AGA_max_len_hist)
-plot_typeProb('ABU', ABU_typeProbHistory, ABU_max_len_hist)
-plot_typeProb('PF', PF_typeProbHistory, PF_max_len_hist)
+# plot_typeProb('AGA', AGA_typeProbHistory, AGA_max_len_hist)
+# plot_typeProb('ABU', ABU_typeProbHistory, ABU_max_len_hist)
+# plot_typeProb('PF', PF_typeProbHistory, PF_max_len_hist)
+max_len = max (AGA_max_len_hist,ABU_max_len_hist,PF_max_len_hist)
+plot_typeProbAll(AGA_typeProbHistory,ABU_typeProbHistory,PF_typeProbHistory,max_len)
 # plot_error_AGA()
 # plot_error_ABU()
 #plot_error_PF()

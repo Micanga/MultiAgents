@@ -80,8 +80,9 @@ class Information:
 
 		f.close()
 
-		os.system("chmod +x ./tmp.R")
-		output = subprocess.check_output("./tmp.R",stderr=subprocess.STDOUT,shell=True)
+		#os.system("chmod +x ./tmp.R")
+		#output = subprocess.check_output("./tmp.R",stderr=subprocess.STDOUT,shell=True)
+		output = subprocess.check_output(['Rscript', 'tmp.R'], stderr=subprocess.STDOUT, shell=False)
 		output = output.split()
 		#print 'end of function', float(output[-7])
 		return float(output[-7])
@@ -94,28 +95,29 @@ class Information:
 		return True
 
 	def normalise(self):
-		self.AGA_mean_len_hist, self.AGA_std_len_hist, self.AGA_ci_len_hist = \
-			self.calc_mean_len_hist(self.AGA_errors,'AGA')
-		self.AGA_errors = self.normalise_arrays(self.AGA_max_len_hist,self.AGA_errors)
+		max_len = max(self.AGA_max_len_hist, self.ABU_max_len_hist, self.PF_max_len_hist)
+		self.AGA_mean_len_hist, self.AGA_std_len_hist, self.AGA_ci_len_hist = self.calc_mean_len_hist(self.AGA_errors,'AGA')
+		self.AGA_errors = self.normalise_arrays(max_len,self.AGA_errors)
 		print '*** AGA data = ',len(self.AGA_errors),'/AGA avg len = ', self.AGA_mean_len_hist,' ***'
 
 		self.ABU_mean_len_hist, self.ABU_std_len_hist, self.ABU_ci_len_hist = self.calc_mean_len_hist(self.ABU_errors,'ABU')
-		self.ABU_errors = self.normalise_arrays(self.ABU_max_len_hist,self.ABU_errors)
+		self.ABU_errors = self.normalise_arrays(max_len,self.ABU_errors)
 		print '*** ABU data = ',len(self.ABU_errors),'/ABU avg len = ', self.ABU_mean_len_hist, " ***"
 
 		self.PF_mean_len_hist, self.PF_std_len_hist, self.PF_ci_len_hist = self.calc_mean_len_hist(self.PF_errors,'PF')
-		self.PF_errors = self.normalise_arrays(self.PF_max_len_hist,self.PF_errors)
+		self.PF_errors = self.normalise_arrays(max_len,self.PF_errors)
 		print '*** PF data  = ',len(self.PF_errors),'/PF avg len  = ', self.PF_mean_len_hist,' ***'
 
 	def normalise_type_probability(self):
+		max_len = max (self.AGA_max_len_hist,self.ABU_max_len_hist,self.PF_max_len_hist)
 		print 'Normalizing AGA TP'
-		self.AGA_typeProbHistory = self.normalise_arrays(self.AGA_max_len_hist,self.AGA_typeProbHistory)
+		self.AGA_typeProbHistory = self.normalise_arrays(max_len,self.AGA_typeProbHistory)
 
 		print 'Normalizing ABU TP'
-		self.ABU_typeProbHistory = self.normalise_arrays(self.ABU_max_len_hist,self.ABU_typeProbHistory)
+		self.ABU_typeProbHistory = self.normalise_arrays(max_len,self.ABU_typeProbHistory)
 
 		print 'Normalizing PF  TP'
-		self.PF_typeProbHistory  = self.normalise_arrays(self.PF_max_len_hist,self.PF_typeProbHistory)
+		self.PF_typeProbHistory  = self.normalise_arrays(max_len,self.PF_typeProbHistory)
 
 	def calc_mean_len_hist(self,errors_list,te):
 		lens = []

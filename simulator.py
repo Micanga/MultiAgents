@@ -390,7 +390,7 @@ class Simulator:
 
         if self.enemy_agent is not None:
             (e_agent_x, e_agent_y) = self.enemy_agent.get_position()
-            self.the_map[e_agent_y][e_agent_x] = 10
+            self.the_map[e_agent_x][e_agent_y] = 10
 
     ###############################################################################################################
 
