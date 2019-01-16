@@ -80,8 +80,10 @@ class Information:
 
 		f.close()
 
-		os.system("chmod +x ./tmp.R")
-		output = subprocess.check_output("./tmp.R",stderr=subprocess.STDOUT,shell=True)
+		# os.system("chmod +x ./tmp.R")
+		output = subprocess.check_output(['Rscript', 'tmp.R'], stderr=subprocess.STDOUT, shell=False)
+
+		# output = subprocess.check_output("./tmp.R",stderr=subprocess.STDOUT,shell=True)
 		output = output.split()
 		#print 'end of function', float(output[-7])
 		return float(output[-7])

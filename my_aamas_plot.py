@@ -40,7 +40,7 @@ PF_trueParameter = list()
 
 ########################################################################################################################
 def read_files():
-    for root, dirs, files in os.walk('outputs'):
+    for root, dirs, files in os.walk('outputs/AGAABU'):
        # print root
         if 'pickleResults.txt' in files:
             with open(os.path.join(root,'pickleResults.txt'),"r") as pickleFile:
@@ -65,7 +65,8 @@ def read_files():
 
                 estimationDictionary['computationalTime'] = int(endTime) - int(beginTime)
                 estimationDictionary['estimationMode'] = systemDetails['estimationMode']
-
+                if  systemDetails['estimationMode']=='MIN':
+                    print root
                 agentDictionary = data[0]
                 trueType = agentDictionary['trueType']
 
@@ -87,7 +88,7 @@ def read_files():
 
                 estimationDictionary['timeSteps'] = len(typeProbHistory)
                 trueParameters = agentDictionary['trueParameters']
-                print typeProbHistory
+                # print typeProbHistory
                 estimationDictionary['typeProbHistory'] = typeProbHistory
                 estimationDictionary['trueParameters'] = trueParameters
                 estimationDictionary['historyParameters'] = historyParameters
@@ -128,8 +129,8 @@ def plot_one_data_set(true_parameter, estimated_parameter_history):
 
     for pr in estimated_parameter_history:
         levels.append(abs(true_level - pr[0]))
-        print abs(true_angle - pr[1])
-        print pr[1]
+        # print abs(true_angle - pr[1])
+        # print pr[1]
         angles.append(abs(true_angle - pr[1]))
         radius.append(abs(true_radius - pr[2]))
 
@@ -191,7 +192,7 @@ def plot_error_ABU():
 ########################################################################################################################
 def plot_error_PF():
     global PF_errors
-    print PF_errors
+    # print PF_errors
     PF_errors = normalise_arrays(PF_max_len_hist,PF_errors)
 
     radius = extract_radius_errors(PF_errors)
@@ -381,13 +382,13 @@ def extract_radius_errors(error_histories):
 
 results = read_files()
 
-
-extract_information()
-print PF_typeProbHistory
 #
-plot_typeProb('AGA', AGA_typeProbHistory, AGA_max_len_hist)
-plot_typeProb('ABU', ABU_typeProbHistory, ABU_max_len_hist)
-plot_typeProb('PF', PF_typeProbHistory, PF_max_len_hist)
+# extract_information()
+# print PF_typeProbHistory
+# #
+# plot_typeProb('AGA', AGA_typeProbHistory, AGA_max_len_hist)
+# plot_typeProb('ABU', ABU_typeProbHistory, ABU_max_len_hist)
+# plot_typeProb('PF', PF_typeProbHistory, PF_max_len_hist)
 # plot_error_AGA()
 # plot_error_ABU()
 #plot_error_PF()

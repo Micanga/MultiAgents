@@ -61,7 +61,7 @@ class TrainData:
                 particle['target'] = target
                 particle['parameter'] = [tmp_level, tmp_radius, tmp_angle]
                 particle['route'] = tmp_agent.route_actions
-                particle['succeeded_steps'] = 0
+                particle['succeeded_steps'] = 1
                 particle['total_steps'] = 0
                 self.data_set.append(particle)
             else:
@@ -163,9 +163,12 @@ class TrainData:
         x_train, y_train = [], []
 
         if self.train_mode == 'history_based':
-            for i in range(len(self.angle_pool)):
-                x_train.append([self.level_pool[i],self.radius_pool[i],self.angle_pool[i]])
-                y_train.append(0.96)
+            # for i in range(len(self.angle_pool)):
+            #     x_train.append([self.level_pool[i],self.radius_pool[i],self.angle_pool[i]])
+            #     y_train.append(0.96)
+            for ds in self.data_set:
+                x_train.append(ds['parameter'])
+                y_train.append(ds['succeeded_steps'])
         else:
            if len(self.data_set) == 0:
                 return
@@ -211,7 +214,7 @@ class TrainData:
                 particle['target'] = target
                 particle['parameter'] = [tmp_level, tmp_radius, tmp_angle]
                 particle['route'] = tmp_agent.route_actions
-                particle['succeeded_steps'] = 0
+                particle['succeeded_steps'] = 1
                 particle['total_steps'] = 0
                 self.data_set.append(particle)
             else:
