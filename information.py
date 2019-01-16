@@ -199,7 +199,7 @@ class Information:
 			std_dev[i] = sqrt(std_dev[i])
 
 		# 3. Confidence Interval
-		ci_hist = []
+			ci_hist = []
 		for error_history in error_histories:
 			ci = []
 			for e_h in error_history:

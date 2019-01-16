@@ -53,6 +53,10 @@ def plot_type_probability(aga_tp, abu_tp, pf_tp, threshold, plotname):
 	pf_tp = np.array(pf_tp)
 	pf_error = pf_tp.mean(axis=0)#.tolist()
 
+	aga_error = np.array([aga_error[t] for t in range(threshold)])
+	abu_error = np.array([abu_error[t] for t in range(threshold)])
+	pf_error  = np.array([pf_error[t]  for t in range(threshold)])
+
 	# 3. Plotting
 	plt.plot(aga_error,
 			 label='AGA',
@@ -96,13 +100,13 @@ def plot_run_length_bar(aga_m,aga_s,abu_m,abu_s,pf_m,pf_s,plotname):
     axis = plt.gca()
 
     # AGA
-    aga=axis.bar(0.75,height=aga_m,width= bar_w,yerr=aga_s-aga_m, color='b')
+    aga=axis.bar(1,height=aga_m,width= bar_w,yerr=aga_s-aga_m, color='b')
 
     # ABU
-    abu=axis.bar(1.75,height=abu_m,width= bar_w,yerr=abu_s-abu_m, color='g')
+    abu=axis.bar(2,height=abu_m,width= bar_w,yerr=abu_s-abu_m, color='g')
 
     # PF
-    pf=axis.bar(2.75,height = pf_m,width= bar_w,yerr = pf_s-pf_m, color='r')
+    pf=axis.bar(3,height = pf_m,width= bar_w,yerr = pf_s-pf_m, color='r')
 
     # b. getting the current axis to label
     axis.set_ylabel('Number of Iterations')
@@ -110,7 +114,7 @@ def plot_run_length_bar(aga_m,aga_s,abu_m,abu_s,pf_m,pf_s,plotname):
     axis.set_xticklabels(['AGA','ABU','PF'])
 
     # 5. Saving the result
-    plt.savefig(plotname+'.pdf', bbox_inches = 'tight',pad_inches = 0)
+    plt.savefig("./plots/"+plotname+'.pdf', bbox_inches = 'tight',pad_inches = 0)
     plt.close(fig)
 
 def plot_summarised(aga,aga_std,aga_ci, 
@@ -180,7 +184,7 @@ def plot_summarised(aga,aga_std,aga_ci,
 	axis.legend(loc="upper center", fontsize='large',\
 				borderaxespad=0.1,borderpad=0.1,handletextpad=0.1,\
 				fancybox=True,framealpha=0.8,ncol=3)
-	plt.savefig(plotname+'.pdf', bbox_inches = 'tight',pad_inches = 0)
+	plt.savefig("./plots/"+plotname+'.pdf', bbox_inches = 'tight',pad_inches = 0)
 	plt.close(fig)
 
 ######################################################################
