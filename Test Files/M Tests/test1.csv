@@ -1,6 +1,0 @@
-# Basic test with a single agent and a single item
-# Position of agent can be easily modified to test N, S, E, W
-grid,10,10
-main,1,1,S,M
-item1,4,3,0
-

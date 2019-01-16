@@ -1,9 +1,0 @@
-# Four agents with lower levels trying to collect an item with
-# higher level
-grid,10,10
-agent1,1,5,E,l1,0.25,0.78,0.25
-agent2,9,2,W,l1,0.25,0.78,0.25
-agent3,4,7,N,l1,0.25,0.78,0.25
-agent4,3,1,S,l1,0.25,0.78,0.25
-item1,5,5,1
-

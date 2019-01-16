@@ -1,8 +1,0 @@
-# Basic test with a single agent, a single item and obstacles (to check A changing heading next to item)
-# Position of agent and obstacles can be easily modified to test N, S, E, W
-grid,10,10
-agent,8,5,W,l1,1,0.78,0.25
-item1,5,5,0
-obstacle1,4,5
-obstacle2,6,5
-obstacle3,5,6

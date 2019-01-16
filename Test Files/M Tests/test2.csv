@@ -1,6 +1,0 @@
-# Basic test with a single agent and a single item
-# M agent is far from item
-grid,10,10
-main,1,1,S,M
-item1,8,7,0
-
