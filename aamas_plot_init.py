@@ -73,7 +73,7 @@ def read_files(root_dir,size,nagents,nitems,radius=None):
                                         results.append(estimationDictionary)
             count += 1
     #import ipdb; ipdb.set_trace()
-    progress = 100 * float(count/2632.0)
+    progress = 1 * float(count/1.0)
     sys.stdout.write("Progress: %.1f%% | file #%d      \n" % (progress,count) )
     return results
 

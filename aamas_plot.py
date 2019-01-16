@@ -33,101 +33,6 @@ RADIUS 		= ['3.0','5.0','7.0']
 			##		  ##	   ##	  ##	 ##	   ##    ## 
 			##		  ########  #######	     ##	    ######  
 ############################################################################################
-def plot_errors(levels,lerr,lci,angles,aerr,aci,radius,rerr,rci,plot_type):
-	# 0. Layout Settings
-	err_marker = 'o'
-	err_marker_size = 1
-	err_color = 'lightblue'
-	err_offset = 5
-	err_gap = 7
-
-	# 1. Setting the figure
-	fig = plt.figure(1)
-
-	# 2. Plotting the Level error
-	# a. defining the main plot
-	plt.subplot(3, 1, 1)
-
-	# + Confiance Interval
-	x = [i for i in range(len(levels))]
-	plt.fill_between(x, levels+(lci/2), levels-(lci/2),
-					 color='b', alpha=.25)
-
-	plt.plot(levels,
-			 label=plot_type,
-			 color='cornflowerblue',
-			 linewidth=1)
-
-	# + Standard Deviation
-	#for i in range(len(levels)):
-	#	if (i+err_offset) % err_gap == 0:
-	#		plt.errorbar(x=i,y=levels[i],yerr=lerr[i],\
-	#			marker=err_marker,markersize=err_marker_size,\
-	#			color=err_color)
-
-	# b. getting the current axis to label
-	axis = plt.gca()
-	axis.set_ylabel('Level Error')
-	axis.legend(loc="upper right", shadow=True, fontsize='x-large')
-
-	# 3. Plotting the Angle error
-	# a. defining the main plot
-	plt.subplot(3, 1, 2)
-
-	# + Confiance Interval
-	x = [i for i in range(len(angles))]
-	plt.fill_between(x, angles+(aci/2), angles-(aci/2),
-					 color='b', alpha=.25)
-
-	plt.plot(angles, 
-			 label='Angle', 
-			 linestyle='-', 
-			 color='cornflowerblue',
-			 linewidth=1)
-
-	# + Standard Deviation
-	#for i in range(len(angles)):
-	#	if (i+err_offset) % err_gap == 0:
-	#		plt.errorbar(x=i,y=angles[i],yerr=aerr[i],\
-	#			marker=err_marker,markersize=err_marker_size,\
-	#			color=err_color)
-
-	# b. getting the current axis to label
-	axis = plt.gca()
-	axis.set_ylabel('Angle Error')
-
-	# 4. Plotting the Radius error
-	# a. defining the main plot
-	plt.subplot(3, 1, 3)
-
-	# + Confiance Interval
-	x = [i for i in range(len(radius))]
-	plt.fill_between(x, radius+(rci/2), radius-(rci/2),
-					 color='b', alpha=.25)
-
-	plt.plot(radius, 
-			 label='Radius', 
-			 linestyle='-', 
-			 color='cornflowerblue',
-			 linewidth=1)
-
-	#for i in range(len(radius)):
-	#	if (i+err_offset) % err_gap == 0:
-	#		plt.errorbar(x=i,y=radius[i],yerr=rerr[i],\
-	#			marker=err_marker,markersize=err_marker_size,\
-	#			color=err_color)
-
-	# b. getting the current axis to label
-	axis = plt.gca()
-	axis.set_ylabel('Radius Error')
-
-	axis.set_xlabel('Number of Iterations')
-
-	# 5. Showing the result
-	# fig.savefig("./plots/dataset_history_based.jpg")
-	plt.show()
-	plt.close(fig)
-
 def plot_type_probability(aga_tp, abu_tp, pf_tp, threshold, plotname):
 	aga_tp = np.array(aga_tp)
 	abu_tp = np.array(abu_tp)
@@ -148,31 +53,7 @@ def plot_type_probability(aga_tp, abu_tp, pf_tp, threshold, plotname):
 	pf_tp = np.array(pf_tp)
 	pf_error = pf_tp.mean(axis=0)#.tolist()
 
-	# 3. Computing the Confidence Interval
-	"""
-	ci_list = []
-	for e_l in aga_tp:
-		ci_list.append(len(e_l))
-		if not is_constant(ci_list):
-			aga_ci = calcConfInt(ci_list)
-		else:
-			aga_ci = 0
-
 	# 3. Plotting
-	x = [t for t in range(threshold)]
-	plt.fill_between(x, aga_error-(aga_ci/2), 
-						aga_error+(aga_ci/2),
-					 color='b', alpha=.25)
-
-	plt.fill_between(x, abu_error-(abu_ci/2), 
-						abu_error+(abu_ci/2),
-					 color='g', alpha=.15)
-
-	plt.fill_between(x, pf_error-(pf_ci/2), 
-						pf_error+(pf_ci/2),
-					 color='r', alpha=.15)
-	"""
-
 	plt.plot(aga_error,
 			 label='AGA',
 			 color='b',
@@ -191,7 +72,7 @@ def plot_type_probability(aga_tp, abu_tp, pf_tp, threshold, plotname):
 			 linestyle='-',   
 			 linewidth=2)
 
-	# 4. Showing Results
+	# 4. Saving the result
 	axis = plt.gca()
 	axis.set_ylabel('True Type Estimation',fontsize='x-large')
 	axis.set_xlabel('Number of Iterations',fontsize='x-large')
@@ -200,8 +81,6 @@ def plot_type_probability(aga_tp, abu_tp, pf_tp, threshold, plotname):
 	axis.legend(loc="upper center", fontsize='large',\
 				borderaxespad=0.1,borderpad=0.1,handletextpad=0.1,\
 				fancybox=True,framealpha=0.8,ncol=3)
-
-	# 3. Showing the result
 	plt.savefig("./plots/"+plotname+'.pdf', bbox_inches = 'tight',pad_inches = 0)
 	plt.close(fig)
 
@@ -210,7 +89,6 @@ def plot_run_length_bar(aga_m,aga_s,abu_m,abu_s,pf_m,pf_s,plotname):
     global fig_count
     fig = plt.figure(fig_count,figsize=(6.4,2.4))
     fig_count += 1
-
     bar_w = 0.5
 
     # 2. Plotting the number of iteration for each run to load items
@@ -228,97 +106,23 @@ def plot_run_length_bar(aga_m,aga_s,abu_m,abu_s,pf_m,pf_s,plotname):
 
     # b. getting the current axis to label
     axis.set_ylabel('Number of Iterations')
-    axis.set_xticks([0,1,2])
+    axis.set_xticks([1,2,3])
     axis.set_xticklabels(['AGA','ABU','PF'])
 
-    # 5. Showing the result
+    # 5. Saving the result
     plt.savefig(plotname+'.pdf', bbox_inches = 'tight',pad_inches = 0)
-    #plt.show()
     plt.close(fig)
-
-def plot_run_length(aga_m,aga_ci,abu_m,abu_ci,pf_m,pf_ci,plotname):
-	aga_m = np.array(aga_m)
-	aga_ci = np.array(aga_ci)
-	abu_m = np.array(abu_m)
-	abu_ci = np.array(abu_ci)
-	pf_m = np.array(pf_m)
-	pf_ci = np.array(pf_ci)
-
-	# 1. Setting the figure
-	global fig_count
-	fig = plt.figure(fig_count,figsize=(6.4,2.4))
-	fig_count += 1
-
-	# 2. Plotting
-	x = np.array([3,5,7])
-
-	# a. Len CI
-	delta = (aga_ci-aga_m)
-	plt.fill_between(x, aga_m-delta, 
-						aga_m+delta,
-					 color='b', alpha=.15)
-   	delta = (abu_ci-abu_m)
-	plt.fill_between(x, abu_m-delta,
-					 abu_m+delta, 
-					 color='g', alpha=.15)
-	delta = (pf_ci-pf_m)
-	plt.fill_between(x, pf_m-delta,
-					 pf_m+delta, 
-					 color='r', alpha=.15)
-
-	plt.plot(x,aga_m,
-			 label='AGA',
-			 color='b',
-			 linestyle=':',			 
-			 linewidth=2,
-			 clip_on=False)
-
-	plt.plot(x,abu_m,
-			 label='ABU',
-			 color='g',
-			 linestyle='-.',   
-			 linewidth=2,
-			 clip_on=False)
-
-	plt.plot(x,pf_m,
-			 label='PF',
-			 color='r',
-			 linestyle='-',   
-			 linewidth=2,
-			 clip_on=False)
-
-	# c. Formating
-	axis = plt.gca()
-	axis.set_ylabel('Mean Iterations',fontsize='x-large')
-	axis.set_xlabel('Visibility Radius',fontsize='x-large')
-	axis.xaxis.set_tick_params(labelsize=14)
-	axis.yaxis.set_tick_params(labelsize=14)
-	axis.legend(loc="upper center", fontsize='large',\
-				borderaxespad=0.1,borderpad=0.1,handletextpad=0.1,\
-				fancybox=True,framealpha=0.8,ncol=3)
-
-	# 5. Showing the result
-	plt.savefig(plotname+'.pdf', bbox_inches = 'tight',pad_inches = 0)
-	plt.close(fig)
 
 def plot_summarised(aga,aga_std,aga_ci, 
 	abu,abu_std,abu_ci, pf,pf_std,pf_ci,
 	threshold, plotname, show_errorbar=False, show_confint=False):
-	# 0. Layout Settings
-	fig_w, fig_h = 6.4, 2.4
-
-	err_marker = 'o'
-	err_marker_size = 1
-	err_color = 'lightblue'
-	err_offset = 0
-	err_gap = 1
-
 	# 1. Setting the figure
 	global fig_count
+	fig_w, fig_h = 6.4, 2.4
 	fig = plt.figure(fig_count,figsize=(6.4,2.4))
 	fig_count += 1
 
-	# 2. Plotting
+	# 2. Normalizing for plot
 	x = [t for t in range(threshold)]
 
 	plot_aga = np.array([aga[t] for t in range(threshold)])
@@ -329,6 +133,7 @@ def plot_summarised(aga,aga_std,aga_ci,
 	plot_abu_ci = np.array([abu_ci[t] for t in range(threshold)])
 	plot_pf_ci  = np.array([pf_ci[t]  for t in range(threshold)])
 
+	# 3. Plotting the confidence interval
 	if show_confint:
 		delta = (plot_aga_ci-plot_aga)
 		plt.fill_between(x, plot_aga-delta, 
@@ -343,7 +148,7 @@ def plot_summarised(aga,aga_std,aga_ci,
 						 plot_pf+delta, 
 						 color='r', alpha=.15)
 
-
+	# 4. Plotting the main lines
 	plt.rcParams["figure.figsize"] = (fig_w,fig_h)
 	plt.plot(plot_aga,
 			 label='AGA',
@@ -366,6 +171,7 @@ def plot_summarised(aga,aga_std,aga_ci,
 			 linewidth=2,
 			 clip_on=False)
 
+	# 5. Saving the result
 	axis = plt.gca()
 	axis.set_ylabel('Error',fontsize='x-large')
 	axis.set_xlabel('Number of Iterations',fontsize='x-large')
@@ -374,8 +180,6 @@ def plot_summarised(aga,aga_std,aga_ci,
 	axis.legend(loc="upper center", fontsize='large',\
 				borderaxespad=0.1,borderpad=0.1,handletextpad=0.1,\
 				fancybox=True,framealpha=0.8,ncol=3)
-
-	# 3. Showing the result
 	plt.savefig(plotname+'.pdf', bbox_inches = 'tight',pad_inches = 0)
 	plt.close(fig)
 
@@ -438,7 +242,7 @@ for root in ROOT_DIRS:
 						file.close()
 
 # 3. Plotting the Information
-print '***** plotting *****'
+print '***** plotting parameters results *****'
 for info in informations:
 	print info.name,'Level'
 	plot_summarised(info.aga_levels,info.aga_levels_std_dev,info.aga_levels_ci,\
@@ -456,7 +260,7 @@ for info in informations:
 		info.pf_angles, info.pf_angles_std_dev, info.pf_angles_ci,\
 		info.threshold, info.name+'_Angle',False, True)
 
-print '***** general results *****'
+print '***** plotting general results *****'
 for info in informations:
 	general_aga = np.array([info.aga_levels[i]+info.aga_radius[i]\
 							+info.aga_angles[i] for i in range(info.threshold)])/3
@@ -485,15 +289,16 @@ for info in informations:
 		info.threshold, info.name + '_General',False, True)
 
 # 4. Plotting the mean run length
-print '***** history len performance *****'
-aga_m, aga_ci = list(), list()
-abu_m, abu_ci = list(), list()
-pf_m , pf_ci  = list(), list()
+print '***** plotting history len performance *****'
 for info in informations:
-	print '*******'
+	aga_m, aga_ci = list(), list()
+	abu_m, abu_ci = list(), list()
+	pf_m , pf_ci  = list(), list()
+
 	print 'AGA',info.AGA_mean_len_hist
 	print 'ABU',info.ABU_mean_len_hist
 	print 'PF',info.PF_mean_len_hist
+
 	aga_m.append(info.AGA_mean_len_hist)
 	aga_ci.append(info.AGA_ci_len_hist)
 	abu_m.append(info.ABU_mean_len_hist)
@@ -504,7 +309,6 @@ for info in informations:
 	plot_run_length_bar(info.AGA_mean_len_hist,info.AGA_ci_len_hist,\
 						info.ABU_mean_len_hist,info.ABU_ci_len_hist,\
 						info.PF_mean_len_hist,info.PF_ci_len_hist,'Perform')
-#plot_run_length(aga_m,aga_ci,abu_m,abu_ci,pf_m,pf_ci,'Visibility')
 
 # 5. Plotting the type probability
 print '***** type probability performance *****'
