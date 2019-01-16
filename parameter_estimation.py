@@ -22,7 +22,7 @@ angle_min = 0.1
 level_max = 1
 level_min = 0
 
-types = ['l1', 'l2', 'f1', 'f2', 'w']
+types = ['l1', 'l2']#, 'f1', 'f2', 'w']
 
 ########################################################################################################################
 class Parameter:
@@ -814,8 +814,9 @@ class ParameterEstimation:
             return None
 
     ####################################################################################################################
-    def update_train_data(self, unknown_agent, previous_state, current_state, selected_type ,po= False):
+    def update_train_data(self, u_a, previous_state, current_state, selected_type ,po= False):
         # 1. Copying the selected type train data
+        unknown_agent = deepcopy(u_a)
         train_data = self.get_train_data(selected_type)
         
         # 2. Updating th Particles
@@ -857,11 +858,13 @@ class ParameterEstimation:
             if new_parameters_estimation is not None:
                 # i. generating the particle for the selected type
                 if selected_type != 'w':
-                    tmp_sim = copy(previous_state)
+                    tmp_sim = previous_state.copy()
+
                     x = unknown_agent.previous_agent_status.position[0] 
                     y = unknown_agent.previous_agent_status.position[1]
-                    direction = unknown_agent.direction
+                    direction = unknown_agent.previous_agent_status.direction
                     tmp_agent = agent.Agent(x, y, direction, selected_type)
+
                     tmp_agent.set_parameters(tmp_sim, new_parameters_estimation.level,\
                         new_parameters_estimation.radius,new_parameters_estimation.angle)
                     tmp_agent.memory = self.update_internal_state(new_parameters_estimation,\

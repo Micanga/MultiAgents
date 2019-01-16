@@ -25,7 +25,7 @@ memory_usage = 0
 # Simulation Configuration
 sim_path = None
 
-types = ['l1', 'l2', 'f1', 'f2']
+types = ['l1', 'l2']#, 'f1', 'f2']
 type_selection_mode = None
 
 iteration_max = None

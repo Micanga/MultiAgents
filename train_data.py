@@ -256,7 +256,7 @@ class TrainData:
                 false_actions.append(actions_to_reach_target[i])
 
         #false_real_len = self.count_weird_movements(false_actions)
-        if len(false_actions) < float(len(actions_to_reach_target)/3):
+        if len(false_actions) < float(2*len(actions_to_reach_target)/3):
             return True
         else:
             return False
@@ -319,7 +319,6 @@ class TrainData:
                     remove_pf.append(particle)
 
         # 4. Removing the marked data
-        k_removed_particle = len(remove_pf)
         for marked_particle in remove_pf:
             if marked_particle in self.data_set:
                 self.data_set.remove(marked_particle)

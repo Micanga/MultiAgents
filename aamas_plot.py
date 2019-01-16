@@ -139,16 +139,17 @@ def plot_type_probability(aga_tp, abu_tp, pf_tp, threshold, plotname):
 	fig_count += 1
 
 	# 2. Normalizing TP
-	# AGA
-	aga_error= list()
-	for t in range(threshold):
-		er =[]
-		for i in range(len(aga_tp)):
-			if t < len(aga_tp[i]):
-				er.append(aga_tp[i][t])
-		aga_error.append(np.array(er).mean())
-	aga_error = np.array(aga_error)
+	aga_tp = np.array(aga_tp)
+	aga_error = aga_tp.mean(axis=0)#.tolist()
 
+	abu_tp = np.array(abu_tp)
+	abu_error = abu_tp.mean(axis=0)#.tolist()
+
+	pf_tp = np.array(pf_tp)
+	pf_error = pf_tp.mean(axis=0)#.tolist()
+
+	# 3. Computing the Confidence Interval
+	"""
 	ci_list = []
 	for e_l in aga_tp:
 		ci_list.append(len(e_l))
@@ -157,60 +158,21 @@ def plot_type_probability(aga_tp, abu_tp, pf_tp, threshold, plotname):
 		else:
 			aga_ci = 0
 
-	# ABU
-	abu_error= list()
-	for t in range(threshold):
-		er =[]
-		for i in range(len(abu_tp)):
-			if t < len(abu_tp[i]):
-				er.append(abu_tp[i][t])
-		abu_error.append(np.array(er).mean())
-	abu_error = np.array(abu_error)
-
-	ci_list = []
-	for e_l in abu_tp:
-		ci_list.append(len(e_l))
-		if not is_constant(ci_list):
-			abu_ci = calcConfInt(ci_list)
-		else:
-			abu_ci = 0
-
-	# PF
-	pf_error= list()
-	for t in range(threshold):
-		er =[]
-		for i in range(len(pf_tp)):
-			if t < len(pf_tp[i]):
-				er.append(pf_tp[i][t])
-		pf_error.append(np.array(er).mean())
-	pf_error = np.array(pf_error)
-
-	ci_list = []
-	for e_l in pf_tp:
-		ci_list.append(len(e_l))
-		if not is_constant(ci_list):
-			pf_ci = calcConfInt(ci_list)
-		else:
-			pf_ci = 0
-
-
 	# 3. Plotting
-	#x = [t for t in range(threshold)]
-	#print aga_error
-	#plt.fill_between(x, aga_error-(aga_ci/2), 
-	#					aga_error+(aga_ci/2),
-	#				 color='b', alpha=.25)
+	x = [t for t in range(threshold)]
+	plt.fill_between(x, aga_error-(aga_ci/2), 
+						aga_error+(aga_ci/2),
+					 color='b', alpha=.25)
 
-	#plt.fill_between(x, abu_error-(abu_ci/2), 
-	#					abu_error+(abu_ci/2),
-	#				 color='g', alpha=.15)
+	plt.fill_between(x, abu_error-(abu_ci/2), 
+						abu_error+(abu_ci/2),
+					 color='g', alpha=.15)
 
-	#plt.fill_between(x, pf_error-(pf_ci/2), 
-	#					pf_error+(pf_ci/2),
-	#				 color='r', alpha=.15)
+	plt.fill_between(x, pf_error-(pf_ci/2), 
+						pf_error+(pf_ci/2),
+					 color='r', alpha=.15)
+	"""
 
-
-	# b. Len Mean
 	plt.plot(aga_error,
 			 label='AGA',
 			 color='b',
@@ -240,8 +202,7 @@ def plot_type_probability(aga_tp, abu_tp, pf_tp, threshold, plotname):
 				fancybox=True,framealpha=0.8,ncol=3)
 
 	# 3. Showing the result
-	plt.savefig(plotname+'.pdf', bbox_inches = 'tight',pad_inches = 0)
-	#plt.show()
+	plt.savefig("./plots/"+plotname+'.pdf', bbox_inches = 'tight',pad_inches = 0)
 	plt.close(fig)
 
 def plot_run_length_bar(aga_m,aga_s,abu_m,abu_s,pf_m,pf_s,plotname):
@@ -289,7 +250,6 @@ def plot_run_length(aga_m,aga_ci,abu_m,abu_ci,pf_m,pf_ci,plotname):
 	fig_count += 1
 
 	# 2. Plotting
-	#x = [t for t in range(len(aga_m))]
 	x = np.array([3,5,7])
 
 	# a. Len CI
@@ -306,9 +266,6 @@ def plot_run_length(aga_m,aga_ci,abu_m,abu_ci,pf_m,pf_ci,plotname):
 					 pf_m+delta, 
 					 color='r', alpha=.15)
 
-	# b. Len Mean
-	#import ipdb; ipdb.set_trace()
-	#plt.plot(x,aga_m)
 	plt.plot(x,aga_m,
 			 label='AGA',
 			 color='b',
@@ -342,7 +299,6 @@ def plot_run_length(aga_m,aga_ci,abu_m,abu_ci,pf_m,pf_ci,plotname):
 
 	# 5. Showing the result
 	plt.savefig(plotname+'.pdf', bbox_inches = 'tight',pad_inches = 0)
-	#plt.show()
 	plt.close(fig)
 
 def plot_summarised(aga,aga_std,aga_ci, 
@@ -364,7 +320,6 @@ def plot_summarised(aga,aga_std,aga_ci,
 
 	# 2. Plotting
 	x = [t for t in range(threshold)]
-	#import ipdb; ipdb.set_trace()
 
 	plot_aga = np.array([aga[t] for t in range(threshold)])
 	plot_abu = np.array([abu[t] for t in range(threshold)])
@@ -375,7 +330,6 @@ def plot_summarised(aga,aga_std,aga_ci,
 	plot_pf_ci  = np.array([pf_ci[t]  for t in range(threshold)])
 
 	if show_confint:
-		#import ipdb; ipdb.set_trace()
 		delta = (plot_aga_ci-plot_aga)
 		plt.fill_between(x, plot_aga-delta, 
 							plot_aga+delta,
@@ -412,28 +366,6 @@ def plot_summarised(aga,aga_std,aga_ci,
 			 linewidth=2,
 			 clip_on=False)
 
-	if show_errorbar:
-		delta = (plot_aga_ci-plot_aga)
-		for i in range(len(plot_aga)):
-			if (i+err_offset) % err_gap == 0:
-				plt.errorbar(x=i,y=plot_aga[i],yerr=delta[i],\
-					marker=err_marker,markersize=err_marker_size,\
-					color='b',alpha=0.15)
-
-		delta = (plot_abu_ci-plot_abu)
-		for i in range(len(plot_aga)):
-			if (i+err_offset) % err_gap == 0:
-				plt.errorbar(x=i,y=plot_abu[i],yerr=delta[i],\
-					marker=err_marker,markersize=err_marker_size,\
-					color='g',alpha=0.15)
-
-		delta = (plot_pf_ci-plot_pf)
-		for i in range(len(plot_aga)):
-			if (i+err_offset) % err_gap == 0:
-				plt.errorbar(x=i,y=plot_pf[i],yerr=delta[i],\
-					marker=err_marker,markersize=err_marker_size,\
-					color='r',alpha=0.15)
-
 	axis = plt.gca()
 	axis.set_ylabel('Error',fontsize='x-large')
 	axis.set_xlabel('Number of Iterations',fontsize='x-large')
@@ -445,7 +377,6 @@ def plot_summarised(aga,aga_std,aga_ci,
 
 	# 3. Showing the result
 	plt.savefig(plotname+'.pdf', bbox_inches = 'tight',pad_inches = 0)
-	#plt.show()
 	plt.close(fig)
 
 ######################################################################

@@ -15,7 +15,7 @@ iteration_max_set = ['50']
 # (2) SIM.CSV - INFORMATION
 # Defining the parameter of simulation file
 possible_directions = ['N','S','E','W']
-agent_types 		= ['l1','l2','f1','f2']
+agent_types 		= ['l1','l2']#,'f1','f2']
 selected_types 		= [False,False]
 
 experiment_type_set = ['ABU', 'AGA', 'MIN']
