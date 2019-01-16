@@ -833,6 +833,22 @@ class ParameterEstimation:
             self.data = train_data.\
                 generate_data_for_update_parameter(previous_state,unknown_agent,selected_type,po)
 
+        # 3. Updating the estimation train data
+        if selected_type == 'l1':
+            self.l1_estimation.train_data = copy(tmp_train_data)
+
+        if selected_type == 'l2':
+            self.l2_estimation.train_data = copy(tmp_train_data)
+
+        if selected_type == 'f1':
+            self.f1_estimation.train_data = copy(tmp_train_data)
+
+        if selected_type == 'f2':
+            self.f2_estimation.train_data = copy(tmp_train_data)
+
+        if selected_type == 'w':
+            self.w_estimation.train_data = copy(tmp_train_data)
+            
         # 4. Extrating and returning the train set
         x_train, y_train = train_data.extract_train_set()
         return x_train, y_train, type_probability

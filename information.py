@@ -139,9 +139,9 @@ class Information:
 
 	def normalise_arrays(self, max_value , errors_list):
 		for e_l in errors_list:
-			last_value = e_l[ - 1]
+			last_value = e_l[-1]
 			diff = max_value - len(e_l)
-			for i in range(diff):
+			for i in range(0,diff):
 				e_l.append(last_value)
 		return errors_list
 

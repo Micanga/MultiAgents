@@ -15,8 +15,9 @@ def read_files(root_dir,size,nagents,nitems,radius=None):
     count = 0
     for root, dirs, files in os.walk(root_dir):
         if 'pickleResults.txt' in files:
+            print root
             with open(os.path.join(root,'pickleResults.txt'),"r") as pickleFile:
-                progress = 100 * float(count/1)
+                progress = 1 * float(count/1)
                 sys.stdout.write("Progress: %.1f%% | file #%d   \r" % (progress,count) )
                 sys.stdout.flush()
                 estimationDictionary = {}
