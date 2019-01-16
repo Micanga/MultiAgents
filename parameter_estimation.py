@@ -688,20 +688,30 @@ class ParameterEstimation:
             return Parameter(parameter_estimate[0], parameter_estimate[1], parameter_estimate[2])
 
     ####################################################################################################################
-    def mean_estimation(self, x_train):
+    def mean_estimation(self, x_train,y_train):# y_train is weight of parameters which are equal to
         a_data_set = np.transpose(np.array(x_train))
-
+        print x_train,y_train
         if a_data_set != []:
+            a_weights = np.array(y_train)
             levels = a_data_set[0, :]
-            ave_level = np.average(levels)
-
+            ave_level = np.average(levels, weights=a_weights)
             angle = a_data_set[1, :]
-            ave_angle = np.average(angle)
-
+            ave_angle = np.average(angle, weights=a_weights)
             radius = a_data_set[2, :]
-            ave_radius = np.average(radius)
-
+            ave_radius = np.average(radius, weights=a_weights)
             new_parameter = Parameter(ave_level, ave_angle, ave_radius)
+
+        # if a_data_set != []:
+        #     levels = a_data_set[0, :]
+        #     ave_level = np.average(levels)
+        #
+        #     angle = a_data_set[1, :]
+        #     ave_angle = np.average(angle)
+        #
+        #     radius = a_data_set[2, :]
+        #     ave_radius = np.average(radius)
+        #
+        #     new_parameter = Parameter(ave_level, ave_angle, ave_radius)
             return new_parameter
         else:
             return None
@@ -730,7 +740,7 @@ class ParameterEstimation:
         # sets are not empty
         if x_train != [] and y_train != []:
             if self.parameter_estimation_mode == 'MIN':
-                estimated_parameter = self.mean_estimation(x_train)
+                estimated_parameter = self.mean_estimation(x_train,y_train)
             elif self.parameter_estimation_mode == 'AGA':
                 estimated_parameter = self.calculate_gradient_ascent(x_train, y_train, last_parameters_value)
             elif self.parameter_estimation_mode == 'ABU':
@@ -897,6 +907,7 @@ class ParameterEstimation:
                             if unknown_agent.next_action != 'L':
                                 self.l1_estimation.type_probability = action_prob * self.l1_estimation.get_last_type_probability()
                             else:
+                                pf_type_probability = self.l1_estimation.get_last_type_probability()
                                 self.l1_estimation.type_probability = pf_type_probability * self.l1_estimation.get_last_type_probability()
                         else:
                             self.l1_estimation.type_probability = action_prob * self.l1_estimation.get_last_type_probability()
@@ -907,6 +918,7 @@ class ParameterEstimation:
                             if unknown_agent.next_action != 'L':
                                 self.l2_estimation.type_probability = action_prob * self.l2_estimation.get_last_type_probability()
                             else:
+                                pf_type_probability = self.l2_estimation.get_last_type_probability()
                                 self.l2_estimation.type_probability = pf_type_probability * self.l2_estimation.get_last_type_probability()
                         else:
                             self.l2_estimation.type_probability = action_prob * self.l2_estimation.get_last_type_probability()
@@ -917,6 +929,7 @@ class ParameterEstimation:
                             if unknown_agent.next_action != 'L':
                                 self.f1_estimation.type_probability = action_prob * self.f1_estimation.get_last_type_probability()
                             else:
+                                pf_type_probability = self.f1_estimation.get_last_type_probability()
                                 self.f1_estimation.type_probability = pf_type_probability * self.f1_estimation.get_last_type_probability()
                         else:
                             self.f1_estimation.type_probability = action_prob * self.f1_estimation.get_last_type_probability()
@@ -927,6 +940,7 @@ class ParameterEstimation:
                             if unknown_agent.next_action != 'L':
                                 self.f2_estimation.type_probability = action_prob * self.f2_estimation.get_last_type_probability()
                             else:
+                                pf_type_probability = self.f2_estimation.get_last_type_probability()
                                 self.f2_estimation.type_probability = pf_type_probability * self.f2_estimation.get_last_type_probability()
                         else:
                             self.f2_estimation.type_probability = action_prob * self.f2_estimation.get_last_type_probability()
