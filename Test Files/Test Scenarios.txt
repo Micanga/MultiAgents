@@ -1,9 +1,0 @@
-File specification:
-- row start with "grid" specifies the grid size.
-- row start with "main" specifies the main agent which moved based on MCTS. The other values in row is : x ,y , direction, type and level of agent.
-- row start with "agent" specifies the A agent which moved based on A *. The other values in row is : x ,y , direction, type, level,radius, angle .
-- row start with "item" specifies items to be collected. The other values in row is : x ,y and level.
-- row start with "obstacle" specifies obstacle to be collected. The other values in row is : x ,y .
-
-
-
