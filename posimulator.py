@@ -47,51 +47,51 @@ class POSimulator(Simulator,object):
 
     ###############################################################################################################
     def loader(self, path):
+        """
+        Takes in a csv file and stores the necessary instances for the simulation object. The file path referenced
+        should point to a file of a particular format - an example of which can be found in utils.py txt_generator().
+        The exact order of the file is unimportant - the three if statements will extract the needed information.
+        :param path: File path directory to a .csv file holding the simulation information
+        :return:
+        """
         # Load and store csv file
+        i, j, l = 0, 0, 0
         info = defaultdict(list)
         print path
         with open(path) as info_read:
             for line in info_read:
+                print line
                 if not self.is_comment(line):
                     data = line.strip().split(',')
                     key, val = data[0], data[1:]
-                    info[key].append(val)
 
-        # print(info)
-        # Extract grid dimensions
-        self.dim_w = int(info['grid'][0][0])
-        self.dim_h = int(info['grid'][0][1])
+                    if key == 'grid':
+                        self.dim_w = int(val[0])
+                        self.dim_h = int(val[1])
 
-        # Add items and agents to the environment
-        i = 0
-        j = 0
-        l = 0
-        for k, v in info.items():
-            # print k
-            # print v
-            if 'item' in k:
-                self.items.append(item.item(v[0][0], v[0][1], v[0][2], i))
-                i += 1
-            elif 'agent' in k:
-                #import ipdb; ipdb.set_trace()
-                agnt = agent.Agent(v[0][0], v[0][1], v[0][2], v[0][3], j)
-                agnt.set_parameters(self, v[0][4], v[0][5], v[0][6])
-                agnt.choose_target_state = copy(self)
-                self.agents.append(agnt)
+                    if 'item' in key:
+                        self.items.append(item.item(val[0], val[1], val[2], i))
+                        i += 1
+                    elif 'agent' in key:
+                        #import ipdb; ipdb.set_trace()
+                        agnt = agent.Agent(val[1], val[2], val[3], val[4], int(val[0]))
+                        agnt.set_parameters(self, val[5], val[6], val[7])
+                        agnt.choose_target_state = copy(self)
+                        self.agents.append(agnt)
 
-                j += 1
-            elif 'main' in k:
-                # x-coord, y-coord, direction, type, index
-                self.main_agent = intelligent_poagent.POAgent(v[0][0], v[0][1], v[0][2],float(v[0][5]),float(v[0][6]))
-                self.main_agent.level = v[0][4]
+                        j += 1
+                    elif 'main' in key:
+                        # x-coord, y-coord, direction, type, index
+                        self.main_agent = intelligent_poagent.POAgent(val[0], val[1], val[2],float(val[5]),float(val[6]))
+                        self.main_agent.level = val[4]
 
-            elif 'enemy' in k:
-                self.enemy_agent = intelligent_poagent.POAgent(v[0][0], v[0][1], v[0][2],float(v[0][5]),float(v[0][6]))
-                self.enemy_agent.level = v[0][4]
+                    elif 'enemy' in key:
+                        self.enemy_agent = intelligent_poagent.POAgent(val[0], val[1], val[2],float(val[5]),float(val[6]),True)
+                        self.enemy_agent.level = val[4]
 
-            elif 'obstacle' in k:
-                self.obstacles.append(obstacle.Obstacle(v[0][0], v[0][1]))
-                l += 1
+                    elif 'obstacle' in key:
+                        self.obstacles.append(obstacle.Obstacle(val[0], val[1]))
+                        l += 1
 
         # Run Checks
         assert len(self.items) == i, 'Incorrect Item Loading'

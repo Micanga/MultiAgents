@@ -9,13 +9,13 @@ from numpy import pi
 
 # (1) CONFIG.CSV - INFORMATION
 # Defining the parameter estimation modes and
-max_depth_set = ['50']
-iteration_max_set = ['50']
+max_depth_set = ['10']
+iteration_max_set = ['10']
 
 # (2) SIM.CSV - INFORMATION
 # Defining the parameter of simulation file
 possible_directions = ['N','S','E','W']
-agent_types 		= ['l1','l2','f1','f2']
+agent_types 		= ['l1','l2']#,'f1','f2']
 selected_types 		= [False,False]
 
 experiment_type_set = ['ABU', 'AGA', 'MIN']
@@ -111,7 +111,7 @@ def main():
 		agentLevel = round(random.uniform(0,1), 3)
 		agentRadius = round(random.uniform(0.1,1), 3)
 		agentAngle = round(random.uniform(0.1,1), 3)
-		AGENTS.append(['agent'+ str(agent_idx),agentx,agenty,agentDirection,agentType,agentLevel,agentRadius,agentAngle])
+		AGENTS.append(['agent'+ str(agent_idx),str(agent_idx),agentx,agenty,agentDirection,agentType,agentLevel,agentRadius,agentAngle])
 
 	ITEMS = []
 	for item_idx in range(nitems):

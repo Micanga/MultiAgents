@@ -15,7 +15,7 @@ import sensor
 class POAgent(Agent, object): 
 
     # init methods
-    def __init__(self, x, y, direction,radius,angle):
+    def __init__(self, x, y, direction,radius,angle,is_enemy = False):
         # Common Parameters
         # >> position, level, apply_adevary, direction,
         # visible_agents, next_action
@@ -82,27 +82,28 @@ class POAgent(Agent, object):
         # 4. starting the param estimation
         for unknown_a in self.agent_memory:
             param_estim = parameter_estimation.ParameterEstimation(generated_data_number, PF_add_threshold, train_mode,
-                                                                   apply_adversary)
+                                                                   apply_adversary,unknown_a,sim)
             param_estim.estimation_initialisation()
             param_estim.estimation_configuration(type_selection_mode, parameter_estimation_mode, polynomial_degree)
-            param_estim.choose_target_state = copy(sim)
+            
             unknown_a.agents_parameter_estimation = param_estim
-            unknown_a.previous_agent_status = deepcopy(unknown_a)
-            # Initial values for parameters and types
 
     def init_visibility(self,sim):
 
         self.visible_agents = []
         self.invisible_agents = []
+
         if sim.agents is not None:
             for ag in sim.agents:
                 x,y = ag.get_position()
                 a = unknown_agent.Agent(x, y, ag.direction,ag.index)
                 if self.see_object((x,y)):
                     a.next_action = ag.next_action
+                    a.previous_agent_status = ag
                     self.visible_agents.append(a)
                 else:
                     a.next_action = None
+                    a.previous_agent_status = None
                     self.invisible_agents.append(a)
 
         if sim.enemy_agent is not None:
@@ -154,13 +155,13 @@ class POAgent(Agent, object):
             for vis_ag in self.visible_agents:
                 if mem_ag.index == vis_ag.index:
                     mem_ag.already_seen = True
-
-                    pos = vis_ag.get_position()
-                    mem_ag.position = pos
                     vis_ag.agents_parameter_estimation = mem_ag.agents_parameter_estimation
                     vis_ag.choose_target_state = mem_ag.choose_target_state
+
+                    mem_ag.position = vis_ag.get_position()
                     mem_ag.next_action = vis_ag.next_action
                     mem_ag.previous_agent_status = vis_ag.previous_agent_status
+
                     if pos in empty_positions:
                         empty_positions.remove(pos)
 
@@ -222,14 +223,21 @@ class POAgent(Agent, object):
                             break
     
     def update_unknown_agents(self, sim):
-        # print 'sim.agents',sim.agents
-        # print 'self.visible_agents',self.visible_agents
-        # print 'self.invisible_agents',self.invisible_agents
         for sim_ag in sim.agents:
             for vis_ag in self.visible_agents:
                 if sim_ag.index == vis_ag.index:
                     vis_ag.previous_agent_status = sim_ag
+                    vis_ag.choose_target_state = copy(sim)
+                    for mem_ag in self.agent_memory:
+                        if mem_ag.index == vis_ag.index:
+                            mem_ag.previous_agent_status = vis_ag.previous_agent_status
+                            mem_ag.choose_target_state = copy(sim)
 
+            for inv_ag in self.invisible_agents:
+                if sim_ag.index == inv_ag.index:
+                    for mem_ag in self.agent_memory:
+                        if mem_ag.index == inv_ag.index:
+                            inv_ag.previous_agent_status = mem_ag
 
     def update_unknown_agents_status(self, sim):
        for sim_ag in sim.agents:
@@ -238,11 +246,13 @@ class POAgent(Agent, object):
                     vis_ag.next_action = sim_ag.next_action
                     vis_ag.direction  = sim_ag.direction
                     vis_ag.position = sim_ag.position
-                    for mem_ag in sim.main_agent.agent_memory:
+                    vis_ag.previous_agent_status = sim_ag
+                    vis_ag.choose_target_state = sim_ag.choose_target_state
+                    for mem_ag in self.agent_memory:
                         if mem_ag.index == vis_ag.index:
-                            vis_ag.agents_parameter_estimation = mem_ag.agents_parameter_estimation
-                            vis_ag.choose_target_state = copy(mem_ag.choose_target_state)
-                            vis_ag.previous_agent_status = copy(mem_ag.previous_agent_status)
+                            mem_ag.agents_parameter_estimation = vis_ag.agents_parameter_estimation
+                            mem_ag.choose_target_state = copy(vis_ag.choose_target_state)
+                            mem_ag.previous_agent_status = copy(vis_ag.previous_agent_status)
                             break
                     break
 
@@ -250,13 +260,6 @@ class POAgent(Agent, object):
         for m_a in self.agent_memory:
             if m_a.index == unkown_agent.index :
                 return m_a
-
-    def estimation(self,time_step,main_sim,enemy_action_prob,actions):
-
-        for u_a in self.agent_memory:
-            u_a.agents_parameter_estimation.process_parameter_estimations(time_step, u_a,self.previous_state, main_sim,
-                                                                          enemy_action_prob,  True,actions
-                                                                          )
         
     def see_object(self,obj_position):
         agent_pos = self.position
@@ -324,3 +327,41 @@ class POAgent(Agent, object):
         print 'vision angle:',self.vision.angle
         print 'history:',self.history
         print '**************************************'
+
+    ####################################################################################################################
+    def agent_is_visible(self,unknown_agent):
+        for v_a in self.visible_agents:
+            if v_a.index == unknown_agent.index:
+                return True
+        return False
+
+    def estimation(self,time_step,main_sim,enemy_action_prob, types, actions):
+        # For the unkown agents, estimating the parameters and types
+        for unknown_agent in self.agent_memory:
+            if unknown_agent is not None:
+                # 1. Selecting the types
+                parameter_estimation = unknown_agent.agents_parameter_estimation
+                if parameter_estimation.type_selection_mode == 'AS':
+                    selected_types = types
+                if parameter_estimation.type_selection_mode == 'BS':
+                    selected_types = parameter_estimation.UCB_selection(time_step)  # returns l1, l2, f1, f2,w
+                
+                # 2. Defining the next agent action or appending the action
+                # for the history based method
+                if parameter_estimation.train_mode == 'history_based':
+                    parameter_estimation.action_history.append(unknown_agent.next_action)
+                    if unknown_agent.next_action != 'L':
+                        parameter_estimation.actions_to_reach_target.append(unknown_agent.next_action)
+
+                # 3. Estimating
+                print unknown_agent.next_action
+                if unknown_agent.next_action is not None and self.agent_is_visible(unknown_agent):
+                    tmp_sim = copy(main_sim)
+                    tmp_previous_state = copy(self.previous_state)
+                    parameter_estimation.process_parameter_estimations(unknown_agent,\
+                        tmp_previous_state, tmp_sim, enemy_action_prob, selected_types,True)
+                else:
+                    sampled_state = sample(self.uct.belief_state,1)[0]
+
+                    #parameter_estimation.unseen_parameter_estimation_not_update(unknown_agent,selected_types)
+                    parameter_estimation.unseen_parameter_estimation_particle_evaluation(sampled_state,unknown_agent,selected_types)

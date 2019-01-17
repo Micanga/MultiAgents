@@ -26,7 +26,7 @@ memory_usage = 0
 # Simulation Configuration
 sim_path = None
 
-types = ['l1', 'l2', 'f1', 'f2']
+types = ['l1', 'l2']#, 'f1', 'f2']
 type_selection_mode = None
 
 iteration_max = None
@@ -189,8 +189,10 @@ while main_sim.items_left() > 0:
     for i in range(len(main_sim.agents)):
         log_file.write('2) Move Common Agent '+str(i))
         main_sim.agents[i] = main_sim.move_a_agent(main_sim.agents[i])
+        main_sim.main_agent.update_unknown_agents(main_sim)
+        print i,':',main_sim.agents[i].index,main_sim.agents[i].agent_type,
         log_file.write(' - OK\ntarget: '+str(main_sim.agents[i].get_memory())+'\n')
-
+    print
     # 3. Move Main Agent
     if main_sim.main_agent is not None:
         log_file.write('3) Move Main Agent ')
@@ -208,12 +210,13 @@ while main_sim.items_left() > 0:
     actions = main_sim.update_all_A_agents(False)
     main_sim.do_collaboration()
     main_sim.main_agent.update_unknown_agents_status(main_sim)
+    main_sim.draw_map()
     log.write_map(log_file,main_sim)
 
     # 6. Estimating
     log_file.write('6) Estimating')
     if do_estimation:
-        main_sim.main_agent.estimation(time_step,main_sim,enemy_action_prob,actions )
+        main_sim.main_agent.estimation(time_step,main_sim,enemy_action_prob,types,actions)
     log_file.write(' - OK\n')
     time_step += 1
 

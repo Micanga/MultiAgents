@@ -7,18 +7,18 @@ import time
 from numpy import pi
 
 # 0. General Settings
-map_count = 0
-number_of_tests = 100
+map_count       = 0
+number_of_tests = 1
 
-square_grid_size    = ['10']#,'15','20','25']
-number_of_agents    = ['1']#,'2','3','4','5']
-number_of_items     = ['10']#,'15','20','25']
+square_grid_size    = ['10']
+number_of_agents    = ['2']#'2','3','5','7','10'
+number_of_items     = ['10']#,'20','25']
 
-radius_set = ['3','5','7']
-angle_set = [2*pi]
+radius_set          = ['3','5','7']
+angle_set           = [2*pi]
 
 # 1. Defining the experiment type
-experiment_type_set = ['ABU', 'AGA']#, 'MIN']
+experiment_type_set = ['ABU', 'AGA', 'MIN']
 
 # 2. Starting the experiment
 test_number = 0
@@ -52,10 +52,10 @@ while test_number < number_of_tests:
                             sub_dir = 'PO_O_' + experiment
                             experiment_dir = "po_inputs/" + sub_dir + '/'
                             filename = 'posim.csv'
-                            experiment = 'python po_run_world.py '+ experiment_dir
-
-                            print experiment
-                            os.system(experiment)
+                            experiment_run = 'python po_run_world.py '+ experiment_dir
+                            print experiment_run
+                            
+                            os.system(experiment_run)
                             time.sleep(5)
 
     test_number += 1

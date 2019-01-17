@@ -108,11 +108,16 @@ class TrainData:
         self.PF_add_threshold = PF_add_threshold
 
     ####################################################################################################################
-    def update_internal_state(self, radius,angle,level, selected_type, unknown_agent , po =False):
-        if po:
-            u_agent = unknown_agent.choose_target_state.main_agent.agent_memory[unknown_agent.index]
-        else:
+    def update_internal_state(self, radius,angle,level, selected_type, unknown_agent,po):
+        u_agent = None 
+        if not po:
             u_agent = unknown_agent.choose_target_state.main_agent.visible_agents[unknown_agent.index]
+        else:
+            visible_agents = unknown_agent.choose_target_state.main_agent.visible_agents
+            for v_a in visible_agents:
+                if v_a.index == unknown_agent.index:
+                    u_agent = v_a
+                    break
 
 
         tmp_sim = unknown_agent.choose_target_state
@@ -132,7 +137,7 @@ class TrainData:
 
     # =================Generating  D = (p,f(p)) , f(p) = P(a|H_t_1,teta,p)==============================================
 
-    def generate_data_for_update_parameter(self, previous_state, unknown_agent, selected_type,po = False):
+    def generate_data_for_update_parameter(self, previous_state, unknown_agent, selected_type, po):
 
         previous_agent = unknown_agent.previous_agent_status
         action = unknown_agent.next_action
@@ -148,7 +153,7 @@ class TrainData:
             x, y = previous_agent.get_position()
             tmpAgent = agent.Agent(x, y, previous_agent.direction, selected_type)
             tmpAgent.agent_type = selected_type
-            tmpAgent.memory = self.update_internal_state(tmp_radius,tmp_angle,tmp_level, selected_type, unknown_agent,po)
+            tmpAgent.memory = self.update_internal_state(tmp_radius,tmp_angle,tmp_level, selected_type, unknown_agent, po)
 
             tmpAgent.set_parameters(previous_state, tmp_level, tmp_radius, tmp_angle)
 
@@ -265,12 +270,17 @@ class TrainData:
             return False
 
     ###################################################################################################################
-    def update_data_set(self, unknown_agent, actions_to_reach_target, po=False):
+    def update_data_set(self, unknown_agent, actions_to_reach_target,po):
         # 1. Getting the agent to update
-        if po:
-            cts_agent = unknown_agent.choose_target_state.main_agent.get_memory_agent(unknown_agent)
-        else:
+        cts_agent = None 
+        if not po:
             cts_agent = unknown_agent.choose_target_state.main_agent.visible_agents[unknown_agent.index]
+        else:
+            memory_agents = unknown_agent.choose_target_state.main_agent.visible_agents
+            for v_a in visible_agents:
+                if v_a.index == unknown_agent.index:
+                    cts_agent = v_a
+                    break
 
         # 2. Increasing the load count
         self.load_count += 1
