@@ -690,7 +690,7 @@ class ParameterEstimation:
     ####################################################################################################################
     def mean_estimation(self, x_train,y_train):# y_train is weight of parameters which are equal to
         a_data_set = np.transpose(np.array(x_train))
-        print x_train,y_train
+        
         if a_data_set != []:
             a_weights = np.array(y_train)
             levels = a_data_set[0, :]

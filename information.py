@@ -174,34 +174,38 @@ class Information:
 		print 'PF - angles OK'
 
 	def extract_parameter_errors(self,main_error,parameter):
-		# 1. Errors
 		error_histories = deepcopy(main_error)
-		level_error_hist = []
-		for error_history in error_histories:
-			level_error = []
-			for e_h in error_history:
-				level_error.append(e_h[ parameter ])
-			level_error_hist.append(level_error)
 
-		errors=np.array(level_error_hist)
+		# 1. Errors
+		# a. extracting the parameter history
+		parameter_history = []
+		for error_history in error_histories:
+			error = []
+			for e in error_history:
+				error.append(e[ parameter ])
+			parameter_history.append(error)
+
+		# b. normalizing
+		errors=np.array(parameter_history)
 		errors=errors.mean(axis=0).tolist()
 
 		# 2. Standard Deviation
-		level_std_dev_hist = []
+		# b. extracting the std dev
+		std_dev_hist = []
 		for error_history in error_histories:
-			levels_std_dev = []
+			error = []
 			for i in range(len(error_history)):
-				levels_std_dev.append((errors[i]-error_history[i][ parameter ])**2)
-			level_std_dev_hist.append(levels_std_dev)
+				error.append((errors[i]-error_history[i][ parameter ])**2)
+			std_dev_hist.append(error)
 
-		std_dev=np.array(level_std_dev_hist)
+		std_dev=np.array(std_dev_hist)
 		std_dev=std_dev.mean(axis=0).tolist()
 
 		for i in range(len(std_dev)):
 			std_dev[i] = sqrt(std_dev[i])
 
 		# 3. Confidence Interval
-			ci_hist = []
+		ci_hist = []
 		for error_history in error_histories:
 			ci = []
 			for e_h in error_history:

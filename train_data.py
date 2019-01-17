@@ -21,8 +21,8 @@ class TrainData:
         self.data_set = []
         if train_mode == 'history_based':
             self.initialise_particle_data_set(uknown_agent, sim)
-        else:
-            self.initialise_data_set(uknown_agent, sim)
+        #else:
+        #    self.initialise_data_set(uknown_agent, sim)
 
         self.false_data_set = []
         self.level_pool = []
