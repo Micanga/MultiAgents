@@ -244,4 +244,4 @@ log.print_result(main_sim,  time_step, begin_time, end_time,\
     mcts_mode, parameter_estimation_mode, type_selection_mode,\
     iteration_max,max_depth, generated_data_number,reuse_tree,\
     PF_add_threshold, PF_weight,\
-    end_cpu_time, memory_usage,log_file,output_folder)
+    end_cpu_time, memory_usage,log_file,output_folder,True)

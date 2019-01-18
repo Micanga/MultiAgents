@@ -26,6 +26,8 @@ class POAgent(Agent, object):
         self.visible_items = []
         self.invisible_agents = []
         self.invisible_items = []
+        self.already_seen_position = set()
+
         self.agent_memory = list()
         self.item_memory = list()
         self.history = list()
@@ -61,8 +63,10 @@ class POAgent(Agent, object):
         # b. removing the visible position
         for x in range(sim.dim_w):
             for y in range(sim.dim_h):
-                if self.see_object((x,y)) and (x,y) in empty_positions:
-                    empty_positions.remove((x,y))
+                if self.see_object((x,y)):
+                    self.already_seen_position.add((x,y))
+                    if (x,y) in empty_positions:
+                        empty_positions.remove((x,y))
 
         # c. invisible stuff
         for item in self.invisible_items:
@@ -146,7 +150,9 @@ class POAgent(Agent, object):
                     if not mem_it.loaded:
                         pos = vis_it.get_position()
                         mem_it.position = position.position(pos[0],pos[1])
-                        empty_positions.remove(pos)
+
+                        if pos in empty_positions:
+                            empty_positions.remove(pos)
 
                     break
 
@@ -159,35 +165,44 @@ class POAgent(Agent, object):
                     vis_ag.choose_target_state = mem_ag.choose_target_state
 
                     mem_ag.position = vis_ag.get_position()
+                    mem_ag.direction = vis_ag.direction
                     mem_ag.next_action = vis_ag.next_action
-                    mem_ag.previous_agent_status = vis_ag.previous_agent_status
+                    mem_ag.previous_agent_status = vis_ag
 
                     if pos in empty_positions:
                         empty_positions.remove(pos)
 
                     break
 
-        # c. removing the visible position
+        # 4. Removing the visible position
         for x in range(sim.dim_w):
             for y in range(sim.dim_h):
-                if self.see_object((x,y)) and (x,y) in empty_positions:
+                if self.see_object((x,y)):
+                    self.already_seen_position.add((x,y))
                     if (x,y) in empty_positions:
                         empty_positions.remove((x,y))
 
-        # d. sinc inv items and sinc inv ag already seen
+        # 5. Sampling the invisible stuff
+        # a. sinc inv items
         for mem_it in self.item_memory:
             for inv_it in self.invisible_items:
                 if mem_it.index == inv_it.index:
                     if not mem_it.loaded:
-                        if not mem_it.loaded:
-                            if mem_it.already_seen:
-                                pos = mem_it.get_position()
-                                inv_it.position = position.position(pos[0],pos[1])
-                                if pos in empty_positions:
-                                    empty_positions.remove(pos)
+                        if mem_it.already_seen:
+                            pos = mem_it.get_position()
+                            inv_it.position = position.position(pos[0],pos[1])
+                            if pos in empty_positions:
+                                empty_positions.remove(pos)
+                        else:
+                            pos = sample(empty_positions,1)[0]
+                            while pos in self.already_seen_position:
+                                pos = sample(empty_positions,1)[0]
 
-                                break
+                            inv_it.position = position.position(pos[0],pos[1])
+                            if pos in empty_positions:
+                                empty_positions.remove(pos)
 
+        # b. sinc inv agents
         for mem_ag in self.agent_memory:
             for inv_ag in self.invisible_agents:
                 if mem_ag.index == inv_ag.index:
@@ -201,60 +216,57 @@ class POAgent(Agent, object):
                         empty_positions.remove(pos)
 
                     break
-        
-        # e. sinc inv items and sinc inv ag never seen
-        already_seen_item_position = []
-        for mem_it in self.item_memory:
-            if mem_it.already_seen:
-                already_seen_item_position.append(mem_it.get_position())
-
-        for mem_it in self.item_memory:
-            for inv_it in self.invisible_items:
-                if mem_it.index == inv_it.index:
-                    if not mem_it.already_seen: 
-                        if not mem_it.loaded:
-                            while True:
-                                pos = sample(empty_positions,1)[0]
-                                if pos not in already_seen_item_position:
-                                    break
-                            inv_it.position = position.position(pos[0],pos[1])
-                            empty_positions.remove(pos)
-
-                            break
     
     def update_unknown_agents(self, sim):
         for sim_ag in sim.agents:
             for vis_ag in self.visible_agents:
                 if sim_ag.index == vis_ag.index:
+                    vis_ag.position = copy(sim_ag.position)
+                    vis_ag.direction  = sim_ag.direction
+
+                    vis_ag.next_action = sim_ag.next_action
                     vis_ag.previous_agent_status = sim_ag
                     vis_ag.choose_target_state = copy(sim)
+
                     for mem_ag in self.agent_memory:
                         if mem_ag.index == vis_ag.index:
-                            mem_ag.previous_agent_status = vis_ag.previous_agent_status
+                            mem_ag.position = copy(sim_ag.position)
+                            mem_ag.direction  = sim_ag.direction
+
+                            mem_ag.next_action = vis_ag.next_action
+                            mem_ag.previous_agent_status = sim_ag
                             mem_ag.choose_target_state = copy(sim)
+
+                            break
 
             for inv_ag in self.invisible_agents:
                 if sim_ag.index == inv_ag.index:
                     for mem_ag in self.agent_memory:
                         if mem_ag.index == inv_ag.index:
                             inv_ag.previous_agent_status = mem_ag
+                            break
 
     def update_unknown_agents_status(self, sim):
-       for sim_ag in sim.agents:
+        for sim_ag in sim.agents:
             for vis_ag in self.visible_agents:
-                if vis_ag.index == sim_ag.index:
-                    vis_ag.next_action = sim_ag.next_action
+                if sim_ag.index == vis_ag.index:
+                    vis_ag.position = copy(sim_ag.position)
                     vis_ag.direction  = sim_ag.direction
-                    vis_ag.position = sim_ag.position
+
+                    vis_ag.next_action = sim_ag.next_action
                     vis_ag.previous_agent_status = sim_ag
-                    vis_ag.choose_target_state = sim_ag.choose_target_state
+                    vis_ag.choose_target_state = copy(sim)
+
                     for mem_ag in self.agent_memory:
                         if mem_ag.index == vis_ag.index:
-                            mem_ag.agents_parameter_estimation = vis_ag.agents_parameter_estimation
-                            mem_ag.choose_target_state = copy(vis_ag.choose_target_state)
-                            mem_ag.previous_agent_status = copy(vis_ag.previous_agent_status)
+                            mem_ag.position = copy(sim_ag.position)
+                            mem_ag.direction  = sim_ag.direction
+
+                            mem_ag.next_action = vis_ag.next_action
+                            mem_ag.previous_agent_status = sim_ag
+                            mem_ag.choose_target_state = copy(sim)
+
                             break
-                    break
 
     def get_memory_agent(self,unkown_agent):
         for m_a in self.agent_memory:
@@ -355,13 +367,12 @@ class POAgent(Agent, object):
 
                 # 3. Estimating
                 print unknown_agent.next_action
-                if unknown_agent.next_action is not None and self.agent_is_visible(unknown_agent):
+                if self.agent_is_visible(unknown_agent) and unknown_agent.next_action is not None:
                     tmp_sim = copy(main_sim)
                     tmp_previous_state = copy(self.previous_state)
                     parameter_estimation.process_parameter_estimations(unknown_agent,\
                         tmp_previous_state, tmp_sim, enemy_action_prob, selected_types,True)
                 else:
-                    sampled_state = sample(self.uct.belief_state,1)[0]
-
+                    sampled_state = copy(sample(self.uct.belief_state,1)[0])
                     #parameter_estimation.unseen_parameter_estimation_not_update(unknown_agent,selected_types)
                     parameter_estimation.unseen_parameter_estimation_particle_evaluation(sampled_state,unknown_agent,selected_types)

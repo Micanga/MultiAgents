@@ -1023,17 +1023,58 @@ class ParameterEstimation:
         self.f1_estimation.type_probability,self.f2_estimation.type_probability)
 
     ####################################################################################################################
-    def unseen_parameter_estimation_particle_evaluation(self,state,unknown_agent,types):
-        # 1. Getting action probability
-        action_prob = None
-        for agent in state.simulator.agents:
-            if agent.index == unknown_agent.index:
-                action_prob = agent.\
-                get_action_probability(agent.next_action)
-                break
-
-        # 2. Updating with the uniform action probability
+    def unseen_parameter_estimation_particle_evaluation(self,state,u_a,types):
+        # 1. Updating with the uniform action probability
         for selected_type in types:
+            # a. copying the simulator
+            tmp_sim = state.simulator.copy()
+
+            # b. getting the agent
+            tmp_agent = None
+            for agent in tmp_sim.agents:
+                if agent.index == u_a.index:
+                    tmp_agent = deepcopy(agent)
+                    break
+
+            # a. getting the train data and extracting it
+            train_data = self.get_train_data(selected_type) 
+            x_train, y_train = train_data.extract_train_set()
+
+            # b. estimating the type with the new train data
+            new_parameters_estimation = \
+            self.parameter_estimation(x_train, y_train, selected_type)
+
+            tmp_agent.agent_type = selected_type
+
+            if new_parameters_estimation is None:
+                if self.train_mode == 'history_based':
+                    particle = random.sample(train_data.data_set,1)[0]
+                    tmp_level = particle['parameter'][0]
+                    tmp_radius = particle['parameter'][1]
+                    tmp_angle = particle['parameter'][2]
+                else:
+                    i = random.randint(0,train_data.generated_data_number)
+                    tmp_radius = radius_min + (1.0 * (radius_max - radius_min) / train_data.generated_data_number) * i
+                    tmp_angle = angle_min + (1.0 * (angle_max - angle_min) / train_data.generated_data_number) * i
+                    tmp_level = level_min + (1.0 * (level_max - level_min) / train_data.generated_data_number) * i 
+                
+                new_parameters = Parameter(tmp_level,tmp_angle,tmp_radius)
+            else:
+                tmp_radius = new_parameters_estimation.level
+                tmp_angle = new_parameters_estimation.angle
+                tmp_level = new_parameters_estimation.radius
+
+            tmp_agent.set_parameters(tmp_sim, new_parameters_estimation.level,\
+                    new_parameters_estimation.radius,new_parameters_estimation.angle)
+
+            # Runs a simulator object
+            tmp_agent = tmp_sim.move_a_agent(tmp_agent)
+            if tmp_agent.next_action is not None:
+                action_prob = tmp_agent.get_action_probability(tmp_agent.next_action)
+            else:
+                action_prob = 0.2
+            print '>>>>',action_prob
+
             # TYPE L1 ------------------ 
             if selected_type == 'l1':
                 new_parameters_estimation = self.l1_estimation.get_last_estimation()
@@ -1059,7 +1100,8 @@ class ParameterEstimation:
                 new_parameters_estimation = self.w_estimation.get_last_estimation()
                 self.w_estimation.type_probability = action_prob * self.w_estimation.get_last_type_probability()
                 self.w_estimation.update_estimation(new_parameters_estimation,action_prob)
+        
         # 2. Appending type probabilities
         self.normalize_type_probabilities()
-        print '>>> %d) %.4lf %.4lf %.4lf %.4lf' %(unknown_agent.index,self.l1_estimation.type_probability,self.l2_estimation.type_probability,\
+        print '>>> %d) %.4lf %.4lf %.4lf %.4lf' %(u_a.index,self.l1_estimation.type_probability,self.l2_estimation.type_probability,\
         self.f1_estimation.type_probability,self.f2_estimation.type_probability)

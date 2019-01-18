@@ -62,7 +62,8 @@ def write_map(file, sim):
 
 def print_result(main_sim,  time_steps, begin_time, end_time,mcts_mode, parameter_estimation_mode,\
  type_selection_mode, iteration_max, max_depth, generated_data_number,\
- reuse_tree, PF_add_threshold, PF_weight, end_cpu_time, memory_usage,log_file, current_folder):
+ reuse_tree, PF_add_threshold, PF_weight, end_cpu_time, memory_usage,log_file, current_folder,\
+ po=False):
 
     pickleFile = open(current_folder + "/pickleResults.txt", 'wb')
     dataList = []
@@ -93,7 +94,10 @@ def print_result(main_sim,  time_steps, begin_time, end_time,mcts_mode, paramete
     # Agents Information
     agentDictionary = {}
     for i in range(len(main_sim.agents)):
-        u_a = main_sim.main_agent.visible_agents[i]
+        if po:
+            u_a = main_sim.main_agent.agent_memory[i]
+        else:
+            u_a = main_sim.main_agent.visible_agents[i]
         agentData = {}
 
         agentData['trueType'] = main_sim.agents[i].agent_type

@@ -18,7 +18,7 @@ radius_set          = ['3','5','7']
 angle_set           = [2*pi]
 
 # 1. Defining the experiment type
-experiment_type_set = ['ABU', 'AGA', 'MIN']
+experiment_type_set = ['MIN','AGA','ABU',]
 
 # 2. Starting the experiment
 test_number = 0

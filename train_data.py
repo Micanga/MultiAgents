@@ -168,16 +168,13 @@ class TrainData:
         x_train, y_train = [], []
 
         if self.train_mode == 'history_based':
-            # for i in range(len(self.angle_pool)):
-            #     x_train.append([self.level_pool[i],self.radius_pool[i],self.angle_pool[i]])
-            #     y_train.append(0.96)
             for ds in self.data_set:
                 x_train.append(ds['parameter'])
                 y_train.append(ds['succeeded_steps'])
-        else:
-           if len(self.data_set) == 0:
-                return
-           for i in range(0, self.generated_data_number):
+        elif self.generated_data_number is not None:
+            if len(self.data_set) == 0:
+                return x_train, y_train
+            for i in range(0, self.generated_data_number):
                 x_train.append(self.data_set[i][0:3])
                 y_train.append(self.data_set[i][3])
 
@@ -276,7 +273,7 @@ class TrainData:
         if not po:
             cts_agent = unknown_agent.choose_target_state.main_agent.visible_agents[unknown_agent.index]
         else:
-            memory_agents = unknown_agent.choose_target_state.main_agent.visible_agents
+            visible_agents = unknown_agent.choose_target_state.main_agent.visible_agents
             for v_a in visible_agents:
                 if v_a.index == unknown_agent.index:
                     cts_agent = v_a

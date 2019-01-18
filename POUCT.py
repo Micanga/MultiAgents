@@ -455,7 +455,7 @@ class POUCT(UCT,object):
 
         # 2. Sampling new particles while dont get k particles
         sample_counter = 0
-        if not non_child: 
+        if not non_child and len(cur_belief) > 1: 
             while len(self.belief_state) != self.k and sample_counter < self.max_samples:
                 sample_counter += 1
 
