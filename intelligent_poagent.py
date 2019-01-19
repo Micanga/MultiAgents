@@ -268,9 +268,9 @@ class POAgent(Agent, object):
 
                             break
 
-    def get_memory_agent(self,unkown_agent):
+    def get_memory_agent(self,unknown_agent):
         for m_a in self.agent_memory:
-            if m_a.index == unkown_agent.index :
+            if m_a.index == unknown_agent.index :
                 return m_a
         
     def see_object(self,obj_position):
@@ -341,13 +341,29 @@ class POAgent(Agent, object):
         print '**************************************'
 
     ####################################################################################################################
+    def generate_previous_state(self,unknown_agent,next_action,current_state):
+        previous_state = deepcopy(current_state)
+        for agent in current_state.agents:
+            if agent.index == unknown_agent.index:
+                pos = agent.position
+                if next_action == 'N':
+                    agent.position =  (pos[0] - 0, pos[1] - 1)
+                elif next_action == 'S':
+                    agent.position =  (pos[0] - 0, pos[1] + 1)
+                elif next_action == 'W':
+                    agent.position =  (pos[0] + 1, pos[1] - 0)
+                elif next_action == 'E':
+                    agent.position =  (pos[0] - 1, pos[1] - 0)
+                break
+        return previous_state
+
     def agent_is_visible(self,unknown_agent):
         for v_a in self.visible_agents:
             if v_a.index == unknown_agent.index:
                 return True
         return False
 
-    def estimation(self,time_step,main_sim,enemy_action_prob, types, actions):
+    def estimation(self,time_step,main_sim,enemy_action_prob, types, actions,current_state):
         # For the unkown agents, estimating the parameters and types
         for unknown_agent in self.agent_memory:
             if unknown_agent is not None:
@@ -372,7 +388,18 @@ class POAgent(Agent, object):
                     tmp_previous_state = copy(self.previous_state)
                     parameter_estimation.process_parameter_estimations(unknown_agent,\
                         tmp_previous_state, tmp_sim, enemy_action_prob, selected_types,True)
-                else:
-                    sampled_state = copy(sample(self.uct.belief_state,1)[0])
+                elif current_state is not None:
+                    
+                    for agent in current_state.agents:
+                        if agent.index == unknown_agent.index:
+                            next_action = agent.next_action
+                            break
+
+                    previous_state = self.generate_previous_state(unknown_agent,next_action,current_state)
+
+                    unknown_agent.next_action = next_action
+                    unknown_agent.choose_target_state = copy(current_state)
+
                     #parameter_estimation.unseen_parameter_estimation_not_update(unknown_agent,selected_types)
-                    parameter_estimation.unseen_parameter_estimation_particle_evaluation(sampled_state,unknown_agent,selected_types)
+                    parameter_estimation.process_parameter_estimations(unknown_agent,\
+                        previous_state, current_state, enemy_action_prob, selected_types,True)

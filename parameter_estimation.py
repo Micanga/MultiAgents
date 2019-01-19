@@ -793,10 +793,10 @@ class ParameterEstimation:
         if not po:
             u_agent = unknown_agent.choose_target_state.main_agent.visible_agents[unknown_agent.index]
         else:
-            visible_agents = unknown_agent.choose_target_state.main_agent.visible_agents
-            for v_a in visible_agents:
-                if v_a.index == unknown_agent.index:
-                    u_agent = v_a
+            memory_agents = unknown_agent.choose_target_state.main_agent.agent_memory
+            for m_a in memory_agents:
+                if m_a.index == unknown_agent.index:
+                    u_agent = m_a
                     break
 
         # 2. Creating the agents for simulation
@@ -919,7 +919,9 @@ class ParameterEstimation:
                     # Runs a simulator object
                     tmp_agent = tmp_sim.move_a_agent(tmp_agent)
                     action_prob = tmp_agent.get_action_probability(unknown_agent.next_action)
-
+                    if action_prob is None:
+                        action_prob = 0.2
+                    print action_prob
                     # ii. testing the generated particle and updating the estimation
                     # TYPE L1 ------------------ 
                     if selected_type == 'l1':

@@ -113,10 +113,10 @@ class TrainData:
         if not po:
             u_agent = unknown_agent.choose_target_state.main_agent.visible_agents[unknown_agent.index]
         else:
-            visible_agents = unknown_agent.choose_target_state.main_agent.visible_agents
-            for v_a in visible_agents:
-                if v_a.index == unknown_agent.index:
-                    u_agent = v_a
+            memory_agents = unknown_agent.choose_target_state.main_agent.agent_memory
+            for m_a in memory_agents:
+                if m_a.index == unknown_agent.index:
+                    u_agent = m_a
                     break
 
 
@@ -273,10 +273,10 @@ class TrainData:
         if not po:
             cts_agent = unknown_agent.choose_target_state.main_agent.visible_agents[unknown_agent.index]
         else:
-            visible_agents = unknown_agent.choose_target_state.main_agent.visible_agents
-            for v_a in visible_agents:
-                if v_a.index == unknown_agent.index:
-                    cts_agent = v_a
+            memory_agents = unknown_agent.choose_target_state.main_agent.agent_memory
+            for m_a in memory_agents:
+                if m_a.index == unknown_agent.index:
+                    cts_agent = m_a
                     break
 
         # 2. Increasing the load count

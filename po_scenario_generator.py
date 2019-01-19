@@ -9,8 +9,8 @@ from numpy import pi
 
 # (1) CONFIG.CSV - INFORMATION
 # Defining the parameter estimation modes and
-max_depth_set = ['20']
-iteration_max_set = ['20']
+max_depth_set = ['50']
+iteration_max_set = ['50']
 
 # (2) SIM.CSV - INFORMATION
 # Defining the parameter of simulation file

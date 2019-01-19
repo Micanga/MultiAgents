@@ -1,6 +1,7 @@
 # Python Imports
 from collections import defaultdict
-from copy import deepcopy
+from copy import copy,deepcopy
+from random import sample
 import datetime
 import gc
 import matplotlib.pyplot as plt
@@ -213,21 +214,28 @@ while main_sim.items_left() > 0:
     main_sim.draw_map()
     log.write_map(log_file,main_sim)
 
-    # 6. Estimating
-    log_file.write('6) Estimating')
-    if do_estimation:
-        main_sim.main_agent.estimation(time_step,main_sim,enemy_action_prob,types,actions)
+    # 7. Updating
+    log_file.write('6) Updating the belief state')
+    search_tree = uct.update_belief_state(main_sim,search_tree)
+    
+    if len(main_sim.main_agent.uct.belief_state) > 0:
+        current_belief_state = copy((sample(main_sim.main_agent.uct.belief_state,1)[0]).simulator)
+    else:
+        current_belief_state = None
     log_file.write(' - OK\n')
+
+    # 6. Estimating
+    log_file.write('7) Estimating')
+    if do_estimation:
+        main_sim.main_agent.estimation(time_step,main_sim,enemy_action_prob,\
+            types,actions,current_belief_state)
+    log_file.write(' - OK\n')
+
     time_step += 1
+    gc.collect()
 
     if main_sim.items_left() == 0:
         break
-
-    # 7. Updating
-    log_file.write('7) Updating the belief state')
-    search_tree = uct.update_belief_state(main_sim,search_tree)
-    log_file.write(' - OK\n')
-    gc.collect()
 
     log_file.write("left items: "+str(main_sim.items_left())+'\n')
     log_file.write('*********************\n')
