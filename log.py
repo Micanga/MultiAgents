@@ -4,7 +4,8 @@ import pickle
 from random import randint
 
 def get_input_folder():
-    return ""
+    # return
+    return "inputs/FO_O_MIN/"
 
 def create_output_folder():
     # 1. Getting the experiment time

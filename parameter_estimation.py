@@ -856,7 +856,10 @@ class ParameterEstimation:
                 unknown_agent.choose_target_state = copy(current_state)
                 type_probability = train_data.update_data_set(unknown_agent,self.actions_to_reach_target,po)
                 # b. Generating
-                train_data.generate_data(unknown_agent)
+            else:
+                train_data.generate_data(unknown_agent,selected_type ,
+                                         self.actions_to_reach_target,
+                                         self.action_history)
 
         else:
             self.data = train_data.\

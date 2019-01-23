@@ -181,44 +181,57 @@ class TrainData:
         return x_train, y_train
 
     ###################################################################################################################
-    def generate_data(self, unknown_agent):
+    def generate_data(self, unknown_agent,selected_type ,actions_to_reach_target,action_history):
+
+        last_action = action_history[-1]
+
         if self.data_set == [] or len(self.data_set) == 0:
             tmp_sim = copy(unknown_agent.choose_target_state)
             self.initialise_particle_data_set(unknown_agent, tmp_sim)
 
         # 1. Generating data (particles)
-        previous_particles = [i for i in range(0,len(self.data_set))]
+
         none_count, none_thereshold = 0, self.generated_data_number
         while len(self.data_set) < self.generated_data_number:
             # a. Sampling a particle
             particle = {}
-            if none_count < none_thereshold:
-                particle = self.data_set[random.choice(previous_particles)]
-                [tmp_level, tmp_radius, tmp_angle] = particle['parameter']
+            if none_count < (8/10)*none_thereshold:
+                tmp_radius = random.choice(self.radius_pool)
+                tmp_angle = random.choice(self.angle_pool)
+                tmp_level = random.choice(self.level_pool)
+
+               # if [tmp_level, tmp_radius, tmp_angle] not in self.false_data_set:
+            elif  none_count < (2/10)*none_thereshold:
+                tmp_radius = random.uniform(radius_min, radius_max)  # 'radius'
+                tmp_angle = random.uniform(angle_min, angle_max)  # 'angle'
+                tmp_level = random.uniform(level_min, level_max)  # 'level'
             else:
                 break
 
             # b. Simulating and Filtering the particle
             # i. creating the new particle
             x,y,direction = unknown_agent.position[0], unknown_agent.position[1], unknown_agent.direction
-            tmp_agent = agent.Agent(x,y,direction, self.type, -1)
+            tmp_agent = agent.Agent(x,y,direction, selected_type, -1)
             tmp_agent.set_parameters(unknown_agent.choose_target_state, tmp_level, tmp_radius, tmp_angle)
 
             # ii. defining route
             tmp_sim = copy(unknown_agent.choose_target_state)
             tmp_agent = tmp_sim.move_a_agent(tmp_agent)  # f(p)
             target = tmp_agent.get_memory()
+            p_action = tmp_agent.get_action_probability(last_action)
             route_actions = tmp_agent.route_actions
 
             # iii. filtering
-            if route_actions is not None and route_actions != []:
-                #if p_action > self.PF_add_threshold:
-                particle['target'] = target
-                particle['parameter'] = [tmp_level, tmp_radius, tmp_angle]
-                particle['route'] = tmp_agent.route_actions
-                particle['succeeded_steps'] = 1
-                particle['total_steps'] = 0
-                self.data_set.append(particle)
+            if route_actions is not None and route_actions != [] :
+               #route_actions[0:len(actions_to_reach_target)] == actions_to_reach_target:
+                self.PF_add_threshold = 0.8
+                if p_action > self.PF_add_threshold:
+                    particle['target'] = target
+                    particle['parameter'] = [tmp_level, tmp_radius, tmp_angle]
+                    particle['route'] = tmp_agent.route_actions
+                    particle['succeeded_steps'] = 1
+                    particle['total_steps'] = 0
+                    self.data_set.append(particle)
             else:
                 none_count += 1
 
@@ -269,7 +282,7 @@ class TrainData:
     ###################################################################################################################
     def update_data_set(self, unknown_agent, actions_to_reach_target,po):
         # 1. Getting the agent to update
-        cts_agent = None 
+        cts_agent = None
         if not po:
             cts_agent = unknown_agent.choose_target_state.main_agent.visible_agents[unknown_agent.index]
         else:
@@ -337,3 +350,143 @@ class TrainData:
         particle_sum = sum([particle['succeeded_steps'] for particle in self.data_set])
         type_prob = float(particle_sum+1)/float(self.generated_data_number)
         return type_prob
+
+
+    # def update_data_set(self, unknown_agent, actions_to_reach_target, selected_type, po=False):
+    #     if po:
+    #         cts_agent = unknown_agent.choose_target_state.main_agent.agent_memory[unknown_agent.index]
+    #     else:
+    #         cts_agent = unknown_agent.choose_target_state.main_agent.visible_agents[unknown_agent.index]
+    #
+    #     remove_pf = []
+    #
+    #     self.load_count += 1
+    #     seq = [x['succeeded_steps'] for x in self.data_set]
+    #
+    #     if seq != []:
+    #         max_succeeded_steps = max(seq)
+    #     else:
+    #         max_succeeded_steps = 0
+    #
+    #     # for ds in self.data_set:
+    #     #     print ds
+    #     print '--------------------------------------------'
+    #     print actions_to_reach_target
+    #     if unknown_agent.choose_target_state.items_left() != 0:
+    #         for ds in self.data_set:
+    #
+    #             print ds
+    #             tmp_agent = agent.Agent(cts_agent.position[0], cts_agent.position[1], cts_agent.direction,
+    #                                     selected_type, -1)
+    #
+    #             [tmp_level, tmp_radius, tmp_angle] = ds['parameter']
+    #
+    #             tmp_agent.set_parameters(unknown_agent.choose_target_state, tmp_level, tmp_radius, tmp_angle)
+    #             if self.compare_actions(ds['route'], actions_to_reach_target) or \
+    #                     ds['succeeded_steps'] > (2 / 3) * self.load_count:
+    #                 # and                     ds['succeeded_steps'] == max_succeeded_steps:
+    #
+    #                 self.level_pool.append(tmp_level)
+    #                 self.angle_pool.append(tmp_angle)
+    #                 self.radius_pool.append(tmp_radius)
+    #                 tmp_agent = unknown_agent.choose_target_state.move_a_agent(tmp_agent)  # f(p)
+    #                 target = tmp_agent.get_memory()
+    #
+    #                 if tmp_agent.route_actions is not None:
+    #
+    #                     ds['route'] = tmp_agent.route_actions
+    #                     ds['target'] = target
+    #                     # ds['reward'] = 0
+    #                     ds['succeeded_steps'] += 1
+    #
+    #                 else:
+    #                     remove_pf.append(ds)
+    #             else:
+    #                 self.false_data_set.append(ds)
+    #                 remove_pf.append(ds)
+    #
+    #     for d in remove_pf:
+    #         self.data_set.remove(d)
+    #
+    #     seq = [x['succeeded_steps'] for x in self.data_set]
+    #
+    #     if seq != []:
+    #         max_succeeded_steps = max(seq)
+    #     else:
+    #         max_succeeded_steps = 0
+    #
+    #     count_max_succeed = seq.count(max_succeeded_steps)
+    #     # print '========================================================================================================'
+    #     # print 'selected type: ', selected_type , 'max succeeded steps:', max_succeeded_steps ,'count:',count_max_succeed
+    #     # print 'false count:', len(remove_pf)
+    #
+    #     # for ds in self.data_set:
+    #     #      print ds
+    #     print '--------------------------------------------'
+    #
+    #     return float(max_succeeded_steps) / float(self.load_count)
+    #     # ##################################################################################################################
+
+
+    # def generate_data(self, unknown_agent, action_history,
+    #                   actions_to_reach_target, selected_type):
+    #     last_action = action_history[-1]
+    #
+    #     cts_agent = None
+    #     vis_agents = unknown_agent.choose_target_state.main_agent.visible_agents
+    #
+    #     for v_a in vis_agents:
+    #         if v_a.index == unknown_agent.index:
+    #             cts_agent = v_a
+    #
+    #     if cts_agent == None:
+    #         return 0
+    #
+    #     i = 0
+    #     new_data_count = self.generated_data_number - len(self.data_set)
+    #     # while i < new_data_count:
+    #     for i in range(new_data_count):
+    #         particle_filter = {}
+    #
+    #         if self.angle_pool == []:
+    #             tmp_radius = random.uniform(radius_min, radius_max)  # 'radius'
+    #             tmp_angle = random.uniform(angle_min, angle_max)  # 'angle'
+    #             tmp_level = random.uniform(level_min, level_max)  # 'level'
+    #         else:
+    #             tmp_radius = random.choice(self.radius_pool)
+    #             tmp_angle = random.choice(self.angle_pool)
+    #             tmp_level = random.choice(self.level_pool)
+    #
+    #         if [tmp_level, tmp_radius, tmp_angle] not in self.false_data_set:
+    #
+    #             tmp_agent = agent.Agent(cts_agent.position[0], cts_agent.position[1],
+    #                                     cts_agent.direction, selected_type, -1)
+    #             tmp_agent.set_parameters(unknown_agent.choose_target_state, tmp_level, tmp_radius, tmp_angle)
+    #
+    #             tmp_agent = unknown_agent.choose_target_state.move_a_agent(tmp_agent)  # f(p)
+    #             target = tmp_agent.get_memory()
+    #             p_action = tmp_agent.get_action_probability(last_action)
+    #             route_actions = tmp_agent.route_actions
+    #
+    #             if route_actions is not None:
+    #                 if p_action > self.PF_add_threshold and \
+    #                         route_actions[0:len(actions_to_reach_target)] == actions_to_reach_target:
+    #                     particle_filter['target'] = target
+    #                     particle_filter['parameter'] = [tmp_level, tmp_radius, tmp_angle]
+    #                     particle_filter['route'] = tmp_agent.route_actions
+    #                     particle_filter['succeeded_steps'] = 1
+    #                     self.data_set.append(particle_filter)
+    #                     i += 1
+    #
+    #     seq = [x['succeeded_steps'] for x in self.data_set]
+    #
+    #     if seq != []:
+    #         max_succeeded_steps = max(seq)
+    #     else:
+    #         max_succeeded_steps = 0
+    #
+    #     if self.load_count == 0:
+    #         type_prob = 1
+    #     else:
+    #         type_prob = float(max_succeeded_steps) / float(self.load_count)
+    #     return type_prob
