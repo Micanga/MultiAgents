@@ -8,14 +8,14 @@ from numpy import pi
 
 # 0. General Settings
 map_count       = 0
-number_of_tests = 5
+number_of_tests = 2
 
 square_grid_size    = ['10']
 number_of_agents    = ['1']#'2','3','5','7','10'
 number_of_items     = ['10']#,'20','25']
 
 # 1. Defining the experiment type
-experiment_type_set = ['MIN']
+experiment_type_set = ['MIN','AGA','ABU']
 
 # 2. Starting the experiment
 test_number = 0
@@ -42,7 +42,7 @@ while test_number < number_of_tests:
                     # b. openning the target dir
                     print '- Starting the process'
                     sub_dir = 'FO_O_' + experiment
-                    experiment_dir = "inputs/" + sub_dir + '/'
+                    experiment_dir = "inputs/" + sub_dir +'/'
                     filename = 'sim.csv'
                     experiment_run = 'python run_world.py '+ experiment_dir + ' ' + filename
                     print experiment_run

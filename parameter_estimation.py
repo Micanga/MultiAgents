@@ -43,7 +43,7 @@ class Parameter:
 
 ########################################################################################################################
 class TypeEstimation:
-    def __init__(self, a_type, generated_data_number, PF_add_threshold, train_mode, uknown_agent, sim):
+    def __init__(self, a_type, generated_data_number, PF_add_threshold, train_mode, mutation_rate,unknown_agent, sim):
         self.type = a_type  # Type for which we are doing estimation
         self.type_probability = 0
         self.type_probabilities = []
@@ -51,7 +51,8 @@ class TypeEstimation:
         self.action_probabilities = []
         self.internal_state = None
         self.train_mode = train_mode
-        self.train_data = train_data.TrainData(generated_data_number, PF_add_threshold, train_mode, a_type, uknown_agent, sim)
+        self.train_data = train_data.TrainData(generated_data_number, PF_add_threshold, train_mode, a_type,
+                                               mutation_rate, unknown_agent, sim)
 
     ####################################################################################################################
     def add_estimation_history(self, probability, level, angle, radius):
@@ -101,17 +102,18 @@ class TypeEstimation:
 ########################################################################################################################
 class ParameterEstimation:
 
-    def __init__(self,  generated_data_number, PF_add_threshold, train_mode, apply_adversary, uknown_agent, sim):
+    def __init__(self,  generated_data_number, PF_add_threshold, train_mode, apply_adversary,
+                  mutation_rate, uknown_agent, sim):
 
         # P(teta|H)
         self.apply_adversary = apply_adversary
         if self.apply_adversary:
-            self.w_estimation = TypeEstimation('w', generated_data_number, PF_add_threshold, train_mode, uknown_agent, sim)
+            self.w_estimation = TypeEstimation('w', generated_data_number, PF_add_threshold, train_mode, mutation_rate, uknown_agent, sim)
 
-        self.l1_estimation = TypeEstimation('l1',  generated_data_number, PF_add_threshold, train_mode, uknown_agent, sim)
-        self.l2_estimation = TypeEstimation('l2',  generated_data_number, PF_add_threshold, train_mode, uknown_agent, sim)
-        self.f1_estimation = TypeEstimation('f1',  generated_data_number, PF_add_threshold, train_mode, uknown_agent, sim)
-        self.f2_estimation = TypeEstimation('f2',  generated_data_number, PF_add_threshold, train_mode, uknown_agent, sim)
+        self.l1_estimation = TypeEstimation('l1',  generated_data_number, PF_add_threshold, train_mode, mutation_rate, uknown_agent, sim)
+        self.l2_estimation = TypeEstimation('l2',  generated_data_number, PF_add_threshold, train_mode, mutation_rate, uknown_agent, sim)
+        self.f1_estimation = TypeEstimation('f1',  generated_data_number, PF_add_threshold, train_mode, mutation_rate, uknown_agent, sim)
+        self.f2_estimation = TypeEstimation('f2',  generated_data_number, PF_add_threshold, train_mode, mutation_rate, uknown_agent, sim)
 
 
         self.action_history = []
@@ -131,10 +133,11 @@ class ParameterEstimation:
     ####################################################################################################################
     # Initialisation random values for parameters of each type and probability of actions in time step 0
 
-    def estimation_configuration(self, type_selection_mode, parameter_estimation_mode, polynomial_degree):
+    def estimation_configuration(self, type_selection_mode, parameter_estimation_mode, polynomial_degree, type_estimation_mode):
 
         self.type_selection_mode = type_selection_mode
         self.parameter_estimation_mode = parameter_estimation_mode
+        self.type_estimation_mode = type_estimation_mode
         self.polynomial_degree = polynomial_degree
 
     ####################################################################################################################
@@ -932,8 +935,14 @@ class ParameterEstimation:
                             if unknown_agent.next_action != 'L':
                                 self.l1_estimation.type_probability = action_prob * self.l1_estimation.get_last_type_probability()
                             else:
-                                #pf_type_probability = self.l1_estimation.get_last_type_probability()
-                                self.l1_estimation.type_probability = pf_type_probability * self.l1_estimation.get_last_type_probability()
+
+                                if self.type_estimation_mode == 'BTE':
+                                    self.l1_estimation.type_probability = action_prob * self.l1_estimation.get_last_type_probability()
+                                if self.type_estimation_mode == 'BPTE':
+                                    self.l1_estimation.type_probability = pf_type_probability * self.l1_estimation.get_last_type_probability()
+                                if self.type_estimation_mode == 'PTE':
+                                    self.l1_estimation.type_probability = pf_type_probability
+
                         else:
                             self.l1_estimation.type_probability = action_prob * self.l1_estimation.get_last_type_probability()
                         self.l1_estimation.update_estimation(new_parameters_estimation, action_prob)
@@ -943,8 +952,13 @@ class ParameterEstimation:
                             if unknown_agent.next_action != 'L':
                                 self.l2_estimation.type_probability = action_prob * self.l2_estimation.get_last_type_probability()
                             else:
-                                #pf_type_probability = self.l2_estimation.get_last_type_probability()
-                                self.l2_estimation.type_probability = pf_type_probability * self.l2_estimation.get_last_type_probability()
+
+                                if self.type_estimation_mode == 'BTE':
+                                    self.l2_estimation.type_probability = action_prob * self.l2_estimation.get_last_type_probability()
+                                if self.type_estimation_mode == 'BPTE':
+                                    self.l2_estimation.type_probability = pf_type_probability * self.l2_estimation.get_last_type_probability()
+                                if self.type_estimation_mode == 'PTE':
+                                    self.l2_estimation.type_probability = pf_type_probability
                         else:
                             self.l2_estimation.type_probability = action_prob * self.l2_estimation.get_last_type_probability()
                         self.l2_estimation.update_estimation(new_parameters_estimation, action_prob)
@@ -954,8 +968,13 @@ class ParameterEstimation:
                             if unknown_agent.next_action != 'L':
                                 self.f1_estimation.type_probability = action_prob * self.f1_estimation.get_last_type_probability()
                             else:
-                                #pf_type_probability = self.f1_estimation.get_last_type_probability()
-                                self.f1_estimation.type_probability = pf_type_probability * self.f1_estimation.get_last_type_probability()
+
+                                if self.type_estimation_mode == 'BTE':
+                                    self.f1_estimation.type_probability = action_prob * self.f1_estimation.get_last_type_probability()
+                                if self.type_estimation_mode == 'BPTE':
+                                    self.f1_estimation.type_probability = pf_type_probability * self.f1_estimation.get_last_type_probability()
+                                if self.type_estimation_mode == 'PTE':
+                                    self.f1_estimation.type_probability = pf_type_probability
                         else:
                             self.f1_estimation.type_probability = action_prob * self.f1_estimation.get_last_type_probability()
                         self.f1_estimation.update_estimation(new_parameters_estimation, action_prob)
@@ -965,8 +984,12 @@ class ParameterEstimation:
                             if unknown_agent.next_action != 'L':
                                 self.f2_estimation.type_probability = action_prob * self.f2_estimation.get_last_type_probability()
                             else:
-                                #pf_type_probability = self.f2_estimation.get_last_type_probability()
-                                self.f2_estimation.type_probability = pf_type_probability * self.f2_estimation.get_last_type_probability()
+                                if self.type_estimation_mode == 'BTE':
+                                    self.f2_estimation.type_probability = action_prob * self.f2_estimation.get_last_type_probability()
+                                if self.type_estimation_mode == 'BPTE':
+                                    self.f2_estimation.type_probability = pf_type_probability * self.f2_estimation.get_last_type_probability()
+                                if self.type_estimation_mode == 'PTE':
+                                    self.f2_estimation.type_probability = pf_type_probability
                         else:
                             self.f2_estimation.type_probability = action_prob * self.f2_estimation.get_last_type_probability()
                         self.f2_estimation.update_estimation(new_parameters_estimation, action_prob)

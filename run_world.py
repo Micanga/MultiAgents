@@ -88,8 +88,14 @@ for k, v in info.items():
     if 'parameter_estimation_mode' in k:
         parameter_estimation_mode = str(v[0][0]).strip()
 
+    if 'type_estimation_mode' in k:
+        type_estimation_mode = str(v[0][0]).strip()
+
     if 'generated_data_number' in k:
         generated_data_number = int(v[0][0])
+
+    if 'mutation_rate' in k:
+        mutation_rate = float(v[0][0])
 
     if 'reuseTree' in k:
         reuse_tree = v[0][0]
@@ -117,6 +123,8 @@ sim_configuration = {'sim_path':sim_path,\
     'iteration_max':iteration_max,'max_depth':max_depth,\
     'do_estimation':do_estimation,'train_mode':train_mode,\
     'parameter_estimation_mode':parameter_estimation_mode,\
+    'type_estimation_mode':type_estimation_mode,\
+    'mutation_rate':mutation_rate,\
     'generated_data_number':generated_data_number,\
     'reuse_tree':reuse_tree,'mcts_mode':mcts_mode,\
     'PF_add_threshold':PF_add_threshold,\
@@ -151,7 +159,8 @@ if main_sim.main_agent is not None:
     search_tree = None
 
     main_sim.main_agent.initialise_visible_agents(main_sim,generated_data_number, PF_add_threshold, train_mode,
-                                              type_selection_mode, parameter_estimation_mode, polynomial_degree,apply_adversary)
+                                                  type_selection_mode, parameter_estimation_mode, polynomial_degree,
+                                                  apply_adversary,type_estimation_mode,mutation_rate)
     uct = UCT.UCT(iteration_max, max_depth, do_estimation, mcts_mode, apply_adversary,enemy=False)
     main_sim.main_agent.initialise_uct(uct)
 
@@ -160,7 +169,8 @@ if apply_adversary:
     enemy_search_tree = None
     if main_sim.enemy_agent is not None:
         main_sim.enemy_agent.initialise_visible_agents(main_sim,generated_data_number, PF_add_threshold, train_mode,
-                                                  type_selection_mode, parameter_estimation_mode, polynomial_degree,apply_adversary)
+                                                       type_selection_mode, parameter_estimation_mode, polynomial_degree,
+                                                       apply_adversary, type_estimation_mode, mutation_rate)
         enemy_uct = UCT.UCT(iteration_max, max_depth, do_estimation, mcts_mode,apply_adversary, enemy=True )
         main_sim.enemy_agent.initialise_uct(enemy_uct)
 
@@ -236,4 +246,5 @@ log.print_result(main_sim,  time_step, begin_time, end_time,\
     mcts_mode, parameter_estimation_mode, type_selection_mode,\
     iteration_max,max_depth, generated_data_number,reuse_tree,\
     PF_add_threshold, PF_weight,\
+    type_estimation_mode,mutation_rate ,\
     end_cpu_time, memory_usage,log_file,output_folder)

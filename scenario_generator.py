@@ -38,6 +38,9 @@ def create_config_file(current_folder,parameter_estimation_mode,mcts_mode,train_
 		writer.writerows([['PF_add_threshold', '0.9']])
 		writer.writerows([['PF_del_threshold', '0.9']])
 		writer.writerows([['PF_weight', '1.2']])
+		writer.writerows([['type_estimation_mode', 'BTE']]) # BTE:Bayesian Type Estimation, PTE:Particle Type Estimation,
+														   #  BPTE:Bayesian Particle Type Estimation
+		writer.writerows([['mutation_rate', '0.3']])
 		writer.writerows([['iteration_max', iteration_max_set[0]]])
 		writer.writerows([['max_depth', max_depth_set[0]]])
 		writer.writerows([['sim_path', 'sim.csv']])
