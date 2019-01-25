@@ -33,7 +33,8 @@ class POAgent(Agent, object):
         self.history = list()
 
     def initialise_visible_agents(self, sim, generated_data_number, PF_add_threshold, train_mode , type_selection_mode,
-                                  parameter_estimation_mode, polynomial_degree,apply_adversary):
+                                  parameter_estimation_mode, polynomial_degree,apply_adversary,
+                                  type_estimation_mode, mutation_rate):
         self.apply_adversary = apply_adversary
 
         # 1. getting the map empty positions
@@ -86,9 +87,10 @@ class POAgent(Agent, object):
         # 4. starting the param estimation
         for unknown_a in self.agent_memory:
             param_estim = parameter_estimation.ParameterEstimation(generated_data_number, PF_add_threshold, train_mode,
+                                                                   mutation_rate,
                                                                    apply_adversary,unknown_a,sim)
             param_estim.estimation_initialisation()
-            param_estim.estimation_configuration(type_selection_mode, parameter_estimation_mode, polynomial_degree)
+            param_estim.estimation_configuration(type_selection_mode, parameter_estimation_mode, polynomial_degree,type_estimation_mode)
             
             unknown_a.agents_parameter_estimation = param_estim
 

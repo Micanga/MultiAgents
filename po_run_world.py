@@ -33,13 +33,18 @@ type_selection_mode = None
 iteration_max = None
 max_depth = None
 
+generated_data_number = None
+mutation_rate = None
+
 do_estimation = True
 train_mode = None
 parameter_estimation_mode = None
 
-generated_data_number = None
-reuse_tree = None
 
+type_estimation_mode = None
+mutation_rate = None
+
+reuse_tree = None
 mcts_mode = None
 PF_add_threshold = None
 PF_del_threshold = None
@@ -92,6 +97,12 @@ for k, v in info.items():
 
     if 'generated_data_number' in k:
         generated_data_number = int(v[0][0])
+
+    if 'type_estimation_mode' in k:
+        type_estimation_mode = str(v[0][0]).strip()
+
+    if 'mutation_rate' in k:
+        mutation_rate = float(v[0][0])
 
     if 'reuseTree' in k:
         reuse_tree = v[0][0]
@@ -153,7 +164,8 @@ if main_sim.main_agent is not None:
     search_tree = None
 
     main_sim.main_agent.initialise_visible_agents(main_sim,generated_data_number, PF_add_threshold, train_mode,
-                                              type_selection_mode, parameter_estimation_mode, polynomial_degree,apply_adversary)
+                                                  type_selection_mode, parameter_estimation_mode, polynomial_degree,
+                                                  apply_adversary,type_estimation_mode,mutation_rate)
     uct = POUCT.POUCT(iteration_max, max_depth, do_estimation, mcts_mode, apply_adversary,enemy=False)
     main_sim.main_agent.initialise_uct(uct)
 
@@ -162,7 +174,8 @@ if apply_adversary:
     enemy_search_tree = None
     if main_sim.enemy_agent is not None:
         main_sim.enemy_agent.initialise_visible_agents(main_sim,generated_data_number, PF_add_threshold, train_mode,
-                                                  type_selection_mode, parameter_estimation_mode, polynomial_degree,apply_adversary)
+                                                       type_selection_mode, parameter_estimation_mode, polynomial_degree,
+                                                       apply_adversary,type_estimation_mode,mutation_rate)
         enemy_uct = POUCT.POUCT(iteration_max, max_depth, do_estimation, mcts_mode,apply_adversary, enemy=True )
         main_sim.enemy_agent.initialise_uct(enemy_uct)
 

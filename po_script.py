@@ -14,11 +14,11 @@ square_grid_size    = ['10']
 number_of_agents    = ['2']#'2','3','5','7','10'
 number_of_items     = ['10']#,'20','25']
 
-radius_set          = ['3','5','7']
+radius_set          = ['3']
 angle_set           = [2*pi]
 
 # 1. Defining the experiment type
-experiment_type_set = ['AGA','ABU','MIN']
+experiment_type_set = ['MIN']
 
 # 2. Starting the experiment
 test_number = 0

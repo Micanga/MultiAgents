@@ -315,29 +315,24 @@ class TrainData:
                 target = tmp_agent.get_memory()
 
                 # d. Filtering the particle
-                if self.compare_actions(particle['route'], actions_to_reach_target):
+                if self.compare_actions(particle['route'], actions_to_reach_target) or particle['succeeded_steps'] > (
+                        2 / 3) * self.load_count:
+                    # and                     ds['succeeded_steps'] == max_succeeded_steps:
+
                     self.level_pool.append(tmp_level)
                     self.angle_pool.append(tmp_angle)
                     self.radius_pool.append(tmp_radius)
-
-                    if tmp_agent.route_actions is not None:
-                        particle['route'] = tmp_agent.route_actions
-                        particle['target'] = target
-                        particle['succeeded_steps'] += 1
-                        particle['total_steps'] += 1
-
-                elif particle['succeeded_steps'] > float((2/3) * particle['total_steps']):
-                    self.level_pool.append(tmp_level)
-                    self.angle_pool.append(tmp_angle)
-                    self.radius_pool.append(tmp_radius)
-
-                    tmp_agent = unknown_agent.choose_target_state.move_a_agent(tmp_agent)
+                    tmp_agent = unknown_agent.choose_target_state.move_a_agent(tmp_agent)  # f(p)
                     target = tmp_agent.get_memory()
 
                     if tmp_agent.route_actions is not None:
+
                         particle['route'] = tmp_agent.route_actions
                         particle['target'] = target
-                        particle['total_steps'] += 1
+                        particle['succeeded_steps'] += 1
+
+                    else:
+                        remove_pf.append(particle)
                 else:
                     self.false_data_set.append(particle)
                     remove_pf.append(particle)
@@ -347,9 +342,16 @@ class TrainData:
             if marked_particle in self.data_set:
                 self.data_set.remove(marked_particle)
 
+        seq = [x['succeeded_steps'] for x in self.data_set]
+
+        if seq != []:
+            max_succeeded_steps = max(seq)
+        else:
+            max_succeeded_steps = 0
+
         # 5. Updating the succeeded steps
-        particle_sum = sum([particle['succeeded_steps'] for particle in self.data_set])
-        type_prob = float(particle_sum+1)/float(self.generated_data_number)
+        succeeded_sum = sum([particle['succeeded_steps'] for particle in self.data_set])
+        type_prob = float(succeeded_sum+1)/float(self.load_count)
         return type_prob
 
 

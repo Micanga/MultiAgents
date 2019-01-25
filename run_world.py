@@ -35,6 +35,9 @@ do_estimation = True
 train_mode = None
 parameter_estimation_mode = None
 
+type_estimation_mode = None
+mutation_rate = None
+
 generated_data_number = None
 reuse_tree = None
 
@@ -88,11 +91,13 @@ for k, v in info.items():
     if 'parameter_estimation_mode' in k:
         parameter_estimation_mode = str(v[0][0]).strip()
 
-    if 'type_estimation_mode' in k:
-        type_estimation_mode = str(v[0][0]).strip()
+
 
     if 'generated_data_number' in k:
         generated_data_number = int(v[0][0])
+
+    if 'type_estimation_mode' in k:
+        type_estimation_mode = str(v[0][0]).strip()
 
     if 'mutation_rate' in k:
         mutation_rate = float(v[0][0])
