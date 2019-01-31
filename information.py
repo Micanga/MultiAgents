@@ -96,19 +96,21 @@ class Information:
 		return True
 
 	def normalise(self):
+		max_len = max(self.AGA_max_len_hist,self.ABU_max_len_hist,self.PF_max_len_hist)
+		print 'max_len', max_len
 		self.AGA_mean_len_hist, self.AGA_std_len_hist, self.AGA_ci_len_hist = self.calc_mean_len_hist(self.AGA_errors,'AGA')
-		self.AGA_errors = self.normalise_arrays(self.AGA_max_len_hist,self.AGA_errors)
-		self.AGA_typeProbHistory = self.normalise_arrays(self.AGA_max_len_hist,self.AGA_typeProbHistory)
+		self.AGA_errors = self.normalise_arrays(max_len,self.AGA_errors)
+		self.AGA_typeProbHistory = self.normalise_arrays(max_len,self.AGA_typeProbHistory)
 		print '*** AGA data = ',len(self.AGA_errors),'/AGA avg len = ', self.AGA_mean_len_hist,' ***'
 
 		self.ABU_mean_len_hist, self.ABU_std_len_hist, self.ABU_ci_len_hist = self.calc_mean_len_hist(self.ABU_errors,'ABU')
-		self.ABU_errors = self.normalise_arrays(self.ABU_max_len_hist,self.ABU_errors)
-		self.ABU_typeProbHistory = self.normalise_arrays(self.ABU_max_len_hist,self.ABU_typeProbHistory)
+		self.ABU_errors = self.normalise_arrays(max_len,self.ABU_errors)
+		self.ABU_typeProbHistory = self.normalise_arrays(max_len,self.ABU_typeProbHistory)
 		print '*** ABU data = ',len(self.ABU_errors),'/ABU avg len = ', self.ABU_mean_len_hist, " ***"
 
 		self.PF_mean_len_hist, self.PF_std_len_hist, self.PF_ci_len_hist = self.calc_mean_len_hist(self.PF_errors,'PF')
-		self.PF_errors = self.normalise_arrays(self.PF_max_len_hist,self.PF_errors)
-		self.PF_typeProbHistory  = self.normalise_arrays(self.PF_max_len_hist,self.PF_typeProbHistory)
+		self.PF_errors = self.normalise_arrays(max_len,self.PF_errors)
+		self.PF_typeProbHistory  = self.normalise_arrays(max_len,self.PF_typeProbHistory)
 		print '*** PF data  = ',len(self.PF_errors),'/PF avg len  = ', self.PF_mean_len_hist,' ***'
 
 	def calc_mean_len_hist(self,errors_list,te):
@@ -182,36 +184,36 @@ class Information:
 		for error_history in error_histories:
 			error = []
 			for e in error_history:
-				error.append(e[ parameter ])
+				error.append(e[parameter])
 			parameter_history.append(error)
 
 		# b. normalizing
 		errors=np.array(parameter_history)
 		errors=errors.mean(axis=0).tolist()
 
-		# 2. Standard Deviation
-		# b. extracting the std dev
+		# # 2. Standard Deviation
+		# # b. extracting the std dev
 		std_dev_hist = []
 		for error_history in error_histories:
 			error = []
 			for i in range(len(error_history)):
 				error.append((errors[i]-error_history[i][ parameter ])**2)
 			std_dev_hist.append(error)
-
+		#
 		std_dev=np.array(std_dev_hist)
 		std_dev=std_dev.mean(axis=0).tolist()
 
 		for i in range(len(std_dev)):
 			std_dev[i] = sqrt(std_dev[i])
 
-		# 3. Confidence Interval
+		# # 3. Confidence Interval
 		ci_hist = []
 		for error_history in error_histories:
 			ci = []
 			for e_h in error_history:
 				ci.append(e_h[ parameter ])
 			ci_hist.append(ci)
-
+		#
 		conf_int = np.zeros(len(ci_hist[0]))
 		ci_hist=np.array(ci_hist)
 

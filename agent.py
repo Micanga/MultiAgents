@@ -14,7 +14,7 @@ class Agent:
         self.co_radius = None
         self.angle = None
         self.co_angle = None
-
+        self.last_loaded_item_pos = None
         if isinstance(direction, basestring):
             self.direction = self.convert_direction(direction)
         else:

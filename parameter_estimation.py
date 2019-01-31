@@ -848,7 +848,8 @@ class ParameterEstimation:
     ####################################################################################################################
     def update_train_data(self, u_a, previous_state, current_state, selected_type, po):
         # 1. Copying the selected type train data
-        unknown_agent = deepcopy(u_a)
+        # unknown_agent = deepcopy(u_a)
+        unknown_agent = (u_a)
         train_data = self.get_train_data(selected_type)
         
         # 2. Updating th Particles
@@ -856,8 +857,25 @@ class ParameterEstimation:
         if self.train_mode == 'history_based':
             if unknown_agent.next_action == 'L':
                 # a. Evaluating the particles
+                if unknown_agent.choose_target_state != None:
+                    hist = {}
+                    hist['pos'] = unknown_agent.choose_target_pos
+                    hist['direction'] = unknown_agent.choose_target_direction
+                    hist['state'] = unknown_agent.choose_target_state  #todo: replace it with items and agents position instead of whole state!
+                    hist['loaded_item'] = unknown_agent.last_loaded_item_pos
+                    unknown_agent.choose_target_history.append(hist)
+
+
                 unknown_agent.choose_target_state = copy(current_state)
-                type_probability = train_data.update_data_set(unknown_agent,self.actions_to_reach_target,po)
+                unknown_agent.choose_target_pos = unknown_agent.get_position()
+                unknown_agent.choose_target_direction =unknown_agent.direction
+
+
+                type_probability = train_data.update_data_set(unknown_agent,current_state,po)
+                train_data.generate_data(unknown_agent, selected_type,
+                                         self.actions_to_reach_target,
+                                         self.action_history)
+
                 # b. Generating
             else:
                 train_data.generate_data(unknown_agent,selected_type ,

@@ -50,9 +50,9 @@ class Agent:
             self.visible_agents.append(a)
 
         for unknown_a in self.visible_agents:
+
             param_estim = parameter_estimation.ParameterEstimation(generated_data_number, PF_add_threshold, train_mode,
-                                                                    mutation_rate,
-                                                                   apply_adversary,unknown_a, sim)
+                                                                   apply_adversary,mutation_rate,unknown_a, sim)
             param_estim.estimation_initialisation()
             param_estim.estimation_configuration(type_selection_mode, parameter_estimation_mode, polynomial_degree,type_estimation_mode)
 
@@ -73,8 +73,12 @@ class Agent:
         enemy_index = 0
         for i in range(len(sim.agents)):
             self.visible_agents[i].next_action = sim.agents[i].next_action
-            self.visible_agents[i].direction  =sim.agents[i].direction
+            self.visible_agents[i].direction = sim.agents[i].direction
             self.visible_agents[i].position = sim.agents[i].position
+            if sim.agents[i].next_action == 'L':
+                self.visible_agents[i].last_loaded_item_pos = sim.agents[i].last_loaded_item_pos
+                self.visible_agents[i].item_to_load = sim.agents[i].item_to_load #todo wrong
+
 
         enemy_index = i + 1
 

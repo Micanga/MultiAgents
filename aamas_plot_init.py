@@ -84,9 +84,14 @@ def extract_information(results,name,radius=None):
     info = Information(name)
 
     for result in results:
+        # print len(result['typeProbHistory'])
+        # print (len(result['historyParameters']))
+        # print info.AGA_max_len_hist
+        # print info.ABU_max_len_hist
+        # print info.PF_max_len_hist
         if result['estimationMode'] == 'AGA':
-            if len(result['historyParameters']) > info.AGA_max_len_hist:
-                info.AGA_max_len_hist = len(result['historyParameters'])
+            if len(result['typeProbHistory']) > info.AGA_max_len_hist:
+                info.AGA_max_len_hist = len(result['typeProbHistory'])
 
             info.AGA_estimationHist.append(result['historyParameters'])
             info.AGA_typeProbHistory.append(result['typeProbHistory'])
@@ -94,8 +99,8 @@ def extract_information(results,name,radius=None):
             info.AGA_errors.append(calculate_error(result['trueParameters'], result['historyParameters']))
 
         if result['estimationMode'] == 'ABU':
-            if len(result['historyParameters']) > info.ABU_max_len_hist:
-                info.ABU_max_len_hist = len(result['historyParameters'])
+            if len(result['typeProbHistory']) > info.ABU_max_len_hist:
+                info.ABU_max_len_hist = len(result['typeProbHistory'])
 
             info.ABU_estimationHist.append(result['historyParameters'])
             info.ABU_typeProbHistory.append(result['typeProbHistory'])
@@ -106,16 +111,16 @@ def extract_information(results,name,radius=None):
             if radius != None:
                 print radius, result['mainAgentRadius'], radius == result['mainAgentRadius']
                 if radius == result['mainAgentRadius']:
-                    if len(result['historyParameters']) > info.PF_max_len_hist:
-                        info.PF_max_len_hist = len(result['historyParameters'])
+                    if len(result['typeProbHistory']) > info.PF_max_len_hist:
+                        info.PF_max_len_hist = len(result['typeProbHistory'])
 
                     info.PF_typeProbHistory.append(result['typeProbHistory'])
                     info.PF_estimationHist.append(result['historyParameters'])
                     info.PF_trueParameter.append(result['trueParameters'])
                     info.PF_errors.append(calculate_error(result['trueParameters'], result['historyParameters']))
             else:
-                if len(result['historyParameters']) > info.PF_max_len_hist:
-                    info.PF_max_len_hist = len(result['historyParameters'])
+                if len(result['typeProbHistory']) > info.PF_max_len_hist:
+                    info.PF_max_len_hist = len(result['typeProbHistory'])
 
                 info.PF_typeProbHistory.append(result['typeProbHistory'])
                 info.PF_estimationHist.append(result['historyParameters'])

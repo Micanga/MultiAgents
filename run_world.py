@@ -38,6 +38,7 @@ parameter_estimation_mode = None
 type_estimation_mode = None
 mutation_rate = None
 
+
 generated_data_number = None
 reuse_tree = None
 
@@ -181,7 +182,9 @@ if apply_adversary:
 
 
 for v_a in main_sim.main_agent.visible_agents:
-    v_a.choose_target_state = deepcopy(main_sim)
+    v_a.choose_target_state = deepcopy(main_sim) #todo: remove deepcopy and add just agents and items location
+    v_a.choose_target_pos = v_a.get_position()
+    v_a.choose_target_direction = v_a.direction
 
 # ============= Start Simulation ==================
 time_step = 0
@@ -231,6 +234,7 @@ while main_sim.items_left() > 0:
     if do_estimation:
         main_sim.main_agent.estimation(time_step,main_sim,enemy_action_prob,types)
     log_file.write(' - OK\n')
+
     time_step += 1
 
     if main_sim.items_left() == 0:

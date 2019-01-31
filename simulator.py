@@ -461,6 +461,7 @@ class Simulator:
         (agent_x, agent_y) = agent.get_position()
         self.items[destination_item_index].remove_agent(agent_x, agent_y)
         agent.last_loaded_item = copy(agent.item_to_load)
+        agent.last_loaded_item_pos = self.items[destination_item_index].get_position()
         agent.item_to_load = -1
         agent.reset_memory()
 
@@ -586,6 +587,7 @@ class Simulator:
             if agents_total_level >= item.level and item.agents_load_item !=[]:
                 item.loaded = True
                 for agent in item.agents_load_item:
+                    self.agents[agent.index].last_loaded_item_pos = item.get_position()
                     self.agents[agent.index].reset_memory()
                     #print '2'
                 item.agents_load_item = list()

@@ -400,7 +400,7 @@ class POAgent(Agent, object):
                     previous_state = self.generate_previous_state(unknown_agent,next_action,current_state)
 
                     unknown_agent.next_action = next_action
-                    unknown_agent.choose_target_state = copy(current_state)
+
 
                     #parameter_estimation.unseen_parameter_estimation_not_update(unknown_agent,selected_types)
                     parameter_estimation.process_parameter_estimations(unknown_agent,\

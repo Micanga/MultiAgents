@@ -32,7 +32,7 @@ RADIUS 		= ['3.0','5.0','7.0']
 			##		  ##	   ##	  ##	 ##		     ## 
 			##		  ##	   ##	  ##	 ##	   ##    ## 
 			##		  ########  #######	     ##	    ######  
-############################################################################################
+############################# ###############################################################
 def plot_type_probability(aga_tp, abu_tp, pf_tp, threshold, plotname):
 	aga_tp = np.array(aga_tp)
 	abu_tp = np.array(abu_tp)
@@ -46,10 +46,12 @@ def plot_type_probability(aga_tp, abu_tp, pf_tp, threshold, plotname):
 	# 2. Normalizing TP
 	aga_tp = np.array(aga_tp)
 	aga_error = aga_tp.mean(axis=0)#.tolist()
-
+	# for pf in abu_tp:
+	# 	print len(pf)
 	abu_tp = np.array(abu_tp)
 	abu_error = abu_tp.mean(axis=0)#.tolist()
-
+	for pf in pf_tp:
+		print len(pf)
 	pf_tp = np.array(pf_tp)
 	pf_error = pf_tp.mean(axis=0)#.tolist()
 
@@ -209,7 +211,7 @@ for root in ROOT_DIRS:
 							info = init.extract_information(results[-1],'POMCP_s'+sz+'_a'+na+'_i'+ni+'_r'+ra)
 							print info.name
 							info.normalise()
-							info.extract()
+							# info.extract()
 							info.threshold = min([info.AGA_max_len_hist,info.ABU_max_len_hist,info.PF_max_len_hist])
 							informations.append(info)
 
