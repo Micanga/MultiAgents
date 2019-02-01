@@ -17,7 +17,7 @@ iteration_max_set = ['50']
 possible_directions = ['N','S','E','W']
 agent_types 		= ['l1','l2']#,'f1','f2']
 selected_types 		= [False,False]
-apply_adversary = True
+apply_adversary = False
 
 experiment_type_set = ['ABU', 'AGA']#, 'MIN']
 type_estimation_mode_set = ['PTE']#,'PTE','BTE']

@@ -405,10 +405,13 @@ class UCT:
                     break
 
             if next_node is None:
-                if node.enemy:
-                    next_node = node.add_child(next_state, False)
+                if self.apply_adversary:
+                    if node.enemy:
+                        next_node = node.add_child(next_state, False)
+                    else:
+                        next_node = node.add_child(next_state, True)
                 else:
-                    next_node = node.add_child(next_state, True)
+                    next_node = node.add_child(next_state, node.enemy)
 
         elif self.mcts_mode == 'UCTH':
             for child in node.childNodes:
@@ -418,10 +421,13 @@ class UCT:
                     break
 
             if next_node is None:
-                if node.enemy:
-                    next_node = node.add_child_one_state(action, next_state, False, +1)
+                if self.apply_adversary:
+                    if node.enemy:
+                        next_node = node.add_child_one_state(action, next_state, False, +1)
+                    else:
+                        next_node = node.add_child_one_state(action, next_state, True , -1)
                 else:
-                    next_node = node.add_child_one_state(action, next_state, True , -1)
+                    next_node = node.add_child_one_state(action, next_state, node.enemy , node.delta)
 
         # 4. Updating the Q-Value
         discount_factor = 0.95
