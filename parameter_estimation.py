@@ -23,8 +23,6 @@ angle_min = 0.1
 level_max = 1
 level_min = 0
 
-types = ['l1', 'l2']#, 'f1', 'f2', 'w']
-
 ########################################################################################################################
 class Parameter:
     def __init__(self, level, angle, radius):
@@ -945,7 +943,7 @@ class ParameterEstimation:
                     action_prob = tmp_agent.get_action_probability(unknown_agent.next_action)
                     if action_prob is None:
                         action_prob = 0.2
-                    print action_prob
+                        
                     # ii. testing the generated particle and updating the estimation
                     # TYPE L1 ------------------ 
                     if selected_type == 'l1':
@@ -1025,8 +1023,12 @@ class ParameterEstimation:
 
         # e. Normalising the type probabilities
         self.normalize_type_probabilities()
-        print '>>> %d) %.4lf %.4lf %.4lf %.4lf' %(unknown_agent.index,self.l1_estimation.type_probability,self.l2_estimation.type_probability,\
-        self.f1_estimation.type_probability,self.f2_estimation.type_probability)
+        if 'w' not in types:
+            print '>>> %d) %.4lf %.4lf %.4lf %.4lf' %(unknown_agent.index,self.l1_estimation.type_probability,self.l2_estimation.type_probability,\
+            self.f1_estimation.type_probability,self.f2_estimation.type_probability)
+        else:
+            print '>>> %d) %.4lf %.4lf %.4lf %.4lf %.4lf' %(unknown_agent.index,self.l1_estimation.type_probability,self.l2_estimation.type_probability,\
+            self.f1_estimation.type_probability,self.f2_estimation.type_probability,self.w_estimation.type_probability)
 
     ####################################################################################################################
     def unseen_parameter_estimation_not_update(self,unknown_agent,types):
@@ -1065,8 +1067,12 @@ class ParameterEstimation:
                 self.w_estimation.update_estimation(new_parameters_estimation, enemy_action_prob)
         # 2. Appending type probabilities
         self.normalize_type_probabilities()
-        print '>>> %d) %.4lf %.4lf %.4lf %.4lf' %(unknown_agent.index,self.l1_estimation.type_probability,self.l2_estimation.type_probability,\
-        self.f1_estimation.type_probability,self.f2_estimation.type_probability)
+        if 'w' not in types:
+            print '>>> %d) %.4lf %.4lf %.4lf %.4lf' %(unknown_agent.index,self.l1_estimation.type_probability,self.l2_estimation.type_probability,\
+            self.f1_estimation.type_probability,self.f2_estimation.type_probability)
+        else:
+            print '>>> %d) %.4lf %.4lf %.4lf %.4lf %.4lf' %(unknown_agent.index,self.l1_estimation.type_probability,self.l2_estimation.type_probability,\
+            self.f1_estimation.type_probability,self.f2_estimation.type_probability,self.w_estimation.type_probability)
 
     ####################################################################################################################
     def unseen_parameter_estimation_particle_evaluation(self,state,u_a,types):
@@ -1119,7 +1125,6 @@ class ParameterEstimation:
                 action_prob = tmp_agent.get_action_probability(tmp_agent.next_action)
             else:
                 action_prob = 0.2
-            print '>>>>',action_prob
 
             # TYPE L1 ------------------ 
             if selected_type == 'l1':
@@ -1149,5 +1154,9 @@ class ParameterEstimation:
         
         # 2. Appending type probabilities
         self.normalize_type_probabilities()
-        print '>>> %d) %.4lf %.4lf %.4lf %.4lf' %(u_a.index,self.l1_estimation.type_probability,self.l2_estimation.type_probability,\
-        self.f1_estimation.type_probability,self.f2_estimation.type_probability)
+        if 'w' not in types:
+            print '>>> %d) %.4lf %.4lf %.4lf %.4lf' %(u_a.index,self.l1_estimation.type_probability,self.l2_estimation.type_probability,\
+            self.f1_estimation.type_probability,self.f2_estimation.type_probability)
+        else:
+            print '>>> %d) %.4lf %.4lf %.4lf %.4lf %.4lf' %(u_a.index,self.l1_estimation.type_probability,self.l2_estimation.type_probability,\
+            self.f1_estimation.type_probability,self.f2_estimation.type_probability,self.w_estimation.type_probability)

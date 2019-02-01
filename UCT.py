@@ -376,38 +376,41 @@ class UCT:
         return next_state, total_reward
 
     ################################################################################################################
-    @staticmethod
-    def find_new_root(previous_root, current_state, enemy):
-
+    #@staticmethod
+    def find_new_root(self,previous_root, current_state, enemy):
         # Initialise with new node, just in case the child was not yet expanded
-        root_node = Node(depth=previous_root.depth + 1, state=current_state ,
-                         enemy=enemy,
-                         delta = -1 * previous_root.delta)
+        new_root_node = Node(depth = previous_root.depth + 1, state =current_state ,
+                         enemy = enemy,
+                         delta = previous_root.delta)
 
-        for child in previous_root.childNodes:
-            if child.state.equals(current_state):
-                root_node = child
-                break
+        if self.apply_adversary:
+            for enemyNode in previous_root.childNodes:
+                for child in enemyNode.childNodes:
+                    if child.state.equals(current_state):
+                        new_root_node = child
+                        break
+        else:
+            for child in previous_root.childNodes:
+                if child.state.equals(current_state):
+                    new_root_node = child
+                    break
 
-        return root_node
+        return new_root_node
 
     ################################################################################################################
     def search(self, main_time_step, node):
-
+        # 1. Defining and evaluating the current
+        # simulation state
         state = node.state
-
-        if self.terminal(state):
+        if self.terminal(state) or self.leaf(main_time_step, node):
             return 0
 
-        if self.leaf(main_time_step, node):
-            return 0
-
+        # 2. Defining the simulation action and
+        # calculating its reward
         action = self.select_action(node)
-
         (next_state, reward) = self.simulate_action(node.state, action,node.enemy)
-        # print 'Is it enemy : ',node.enemy
-        # print 'Selected Action for ',action
-        # next_state.simulator.draw_map()
+
+        # 3. Adding/Getting the action node
         next_node = None
         if self.mcts_mode == 'UCT':
             for child in node.childNodes:
@@ -432,49 +435,55 @@ class UCT:
                 if self.apply_adversary:
                     next_node = node.add_child_one_state(action, next_state, not node.enemy, -1 * node.delta)
                 else:
-                    next_node = node.add_child_one_state(action, next_state,  node.enemy,1)
+                    next_node = node.add_child_one_state(action, next_state,  node.enemy, 1)
 
+        # 4. Updating the current node
         discount_factor = 0.95
         q = node.delta * reward + discount_factor *  self.search(main_time_step, next_node)
-
+        
         node.update(action, q)
         node.visits += 1
-
         return q
 
     ####################################################################################################################
     # @TODO: make the enemy agent not estimate the main agents actions or not guess who the enemy agent is
     def monte_carlo_planning(self, main_time_step, search_tree, simulator,  enemy):
         global root
-        #print 'Is it enemy ? ',self.planning_for_enemy
+
+        # 1. Defining the current state
         current_state = State(simulator)
 
+        # 2. Defining the current root
         if search_tree is None:
             root_node = Node(depth=0, state=current_state, enemy=enemy,delta = 1)
         else:
             root_node = self.find_new_root(search_tree, current_state, enemy)
 
-        time_step = 0
-
+        # 3. Updating the root
         node = root_node
         root = node
 
+        # 4. Running the search over the current node
+        time_step = 0
         while time_step < self.iteration_max:
+            # a. creating a temporary simulation
             tmp_sim = simulator.copy()
             node.state.simulator = tmp_sim
 
+            # b. perform the search process
             self.search(main_time_step, node)
-            # self.print_search_tree(time_step)
-            # self.print_Q_table(node)
             time_step += 1
 
+        # 5. Selecting the best action
         best_selected_action = self.best_action(node)
+
+        # 6. Evaluating the enemy
         enemy_probabilities = None
         if self.apply_adversary and not self.planning_for_enemy:
             enemy_probabilities = self.best_enemy_action(node, best_selected_action)
 
-
         return best_selected_action, enemy_probabilities, node
+
     ####################################################################################################################
     def agent_planning(self, time_step, search_tree, sim,  enemy):
         global totalItems

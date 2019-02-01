@@ -7,6 +7,10 @@ mcts_mode,UCTH
 PF_add_threshold,0.9
 PF_del_threshold,0.9
 PF_weight,1.2
+type_estimation_mode,PTE
+apply_adversary,True
+types,l1,l2,w
+mutation_rate,0.2
 iteration_max,50
 max_depth,50
 sim_path,sim.csv

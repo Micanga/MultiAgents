@@ -25,7 +25,7 @@ memory_usage = 0
 # Simulation Configuration
 sim_path = None
 
-types = ['l1', 'l2']#, 'f1', 'f2']
+types = []
 type_selection_mode = None
 
 iteration_max = None
@@ -67,6 +67,9 @@ with open(input_folder+'config.csv') as info_read:
 
 # 2. Getting the parameters
 for k, v in info.items():
+
+    if 'types' in k:
+        types = [str(v[0][i]).strip() for i in range(len(v[0]))]
 
     if 'sim_path' in k:
         sim_path = input_folder + str(v[0][0]).strip()
@@ -124,6 +127,7 @@ for k, v in info.items():
         else:
             apply_adversary = True
 
+print 'types',types
 sim_configuration = {'sim_path':sim_path,\
     'types':types,'type_selection_mode':type_selection_mode,\
     'iteration_max':iteration_max,'max_depth':max_depth,\
@@ -135,7 +139,8 @@ sim_configuration = {'sim_path':sim_path,\
     'reuse_tree':reuse_tree,'mcts_mode':mcts_mode,\
     'PF_add_threshold':PF_add_threshold,\
     'PF_del_threshold':PF_del_threshold,\
-    'PF_weight':PF_weight,'apply_adversary':apply_adversary}
+    'PF_weight':PF_weight,\
+    'apply_adversary':apply_adversary}
 
 # ============= Set Simulation and Log File ============
 main_sim = simulator.Simulator()
@@ -206,9 +211,9 @@ while main_sim.items_left() > 0:
     for i in range(len(main_sim.agents)):
         log_file.write('2) Move Common Agent '+str(i))
         main_sim.agents[i] = main_sim.move_a_agent(main_sim.agents[i])
-        print i,':',main_sim.agents[i].index,main_sim.agents[i].agent_type,
         log_file.write(' - OK\ntarget: '+str(main_sim.agents[i].get_memory())+'\n')
     print
+
     # 3. Move Main Agent
     if main_sim.main_agent is not None:
         log_file.write('3) Move Main Agent ')

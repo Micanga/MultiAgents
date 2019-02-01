@@ -46,7 +46,6 @@ class Agent:
         if sim.enemy_agent is not None:
             x, y = sim.enemy_agent.get_position()
             a = unknown_agent.Agent(x, y, sim.enemy_agent.direction,agent_index)
-
             self.visible_agents.append(a)
 
         for unknown_a in self.visible_agents:
@@ -81,7 +80,6 @@ class Agent:
 
 
         enemy_index = i + 1
-
         if self.apply_adversary:
             self.visible_agents[enemy_index].next_action = sim.enemy_agent.next_action
             self.visible_agents[enemy_index].direction = sim.enemy_agent.direction
@@ -90,10 +88,6 @@ class Agent:
     ####################################################################################################################
     def move(self,reuse_tree,main_sim,search_tree, time_step):
         next_action,guess_move, search_tree = self.uct_planning(reuse_tree,main_sim,search_tree, time_step)
-        #if self.uct.planning_for_enemy:
-            #print 'action for enemy : ', next_action
-        #else:
-            #print 'action for main : ', next_action
         reward = self.uct.do_move(main_sim, next_action,  real=True)
         return reward , guess_move,search_tree
 
@@ -331,6 +325,7 @@ class Agent:
                         parameter_estimation.actions_to_reach_target.append(unknown_agent.next_action)
 
                 # 3. Estimating
+                print unknown_agent.index,unknown_agent.next_action
                 if unknown_agent.next_action is not None:
                     tmp_sim = copy(main_sim)
                     tmp_previous_state = copy(self.previous_state)
