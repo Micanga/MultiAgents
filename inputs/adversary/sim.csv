@@ -2,9 +2,9 @@
 
 grid,10,10
 main,1,1,N,m,1
-enemy,1,9,S,w,1
-agent1,0,0,N,l1, 1, 0.18,0.12
-#agent2,6,7,N,l1, 1, 0.78,0.72
+enemy,7,1,9,S,w,1
+agent0,0,0,0,N,l1, 1, 0.18,0.12
+#agent1,1,6,7,N,l1, 1, 0.78,0.72
 item1,5,7,0.8
 obstacle3,4,6,0.1
 obstacle4,4,7,0.1

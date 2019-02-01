@@ -261,4 +261,4 @@ log.print_result(main_sim,  time_step, begin_time, end_time,\
     iteration_max,max_depth, generated_data_number,reuse_tree,\
     PF_add_threshold, PF_weight,\
     type_estimation_mode,mutation_rate ,\
-    end_cpu_time, memory_usage,log_file,output_folder)
+    end_cpu_time, memory_usage,log_file,output_folder,types)

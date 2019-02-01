@@ -2,8 +2,8 @@
 
 grid,6,6
 main,4,4,N,m,1
-enemy,1,3,S,w,1
-agent1,4,1,N,l1, 1, 0.01,0.01
+enemy,7,1,3,S,w,1
+agent1,1,4,1,N,l1, 1, 0.01,0.01
 item1,2,1,1
 obstacle3,1,0,1
 obstacle4,1,1,1

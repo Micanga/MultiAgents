@@ -196,7 +196,7 @@ class ParameterEstimation:
         return selected_type
 
     ####################################################################################################################
-    def get_highest_type_probability(self):
+    def get_highest_type_probability(self,types):
 
         highest_probability = -1
         selected_type = ''

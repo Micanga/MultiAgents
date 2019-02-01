@@ -88,8 +88,8 @@ class Agent:
     ####################################################################################################################
     def move(self,reuse_tree,main_sim,search_tree, time_step):
         next_action,guess_move, search_tree = self.uct_planning(reuse_tree,main_sim,search_tree, time_step)
-        reward = self.uct.do_move(main_sim, next_action,  real=True)
-        return reward , guess_move,search_tree
+        reward = self.uct.do_move(main_sim, next_action, self.is_enemy, True)
+        return reward, guess_move, search_tree
 
     ####################################################################################################################
 
