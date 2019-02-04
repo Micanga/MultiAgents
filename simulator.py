@@ -169,6 +169,7 @@ class Simulator:
                 copy_agent = agent.Agent(x, y, cagent.direction, cagent.agent_type, cagent.index)
                 copy_agent.level = cagent.level
                 copy_agent.radius = cagent.radius
+                copy_agent.index = cagent.index
                 copy_agent.angle = cagent.angle
                 copy_agent.co_radius = cagent.co_radius
                 copy_agent.co_angle = cagent.co_angle

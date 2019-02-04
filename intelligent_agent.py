@@ -140,6 +140,19 @@ class Agent:
 
         copy_agent.next_action = self.next_action
 
+        copy_agents = list()
+
+        for cagent in self.visible_agents:
+
+            (x, y) = cagent.get_position()
+
+            copy_unknown_agent = unknown_agent.Agent(x, y, cagent.direction,  cagent.index)
+
+            copy_unknown_agent.index = cagent.index
+            copy_agents.append(copy_unknown_agent)
+
+        copy_agent.visible_agents = copy_agents
+
         return copy_agent
 
     ################################################################################################################

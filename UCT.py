@@ -351,16 +351,17 @@ class UCT:
         # Run the A agent to get the actions probabilities
         tmp_main_agent = sim.main_agent
         for u_a in tmp_main_agent.visible_agents:
-            selected_type = u_a.get_sampled_probability()
-            if selected_type != 'w':
-                x, y = u_a.get_position()
-                agents_estimated_values = u_a.estimated_parameter.get_parameters_for_selected_type (selected_type)
-                tmp_agent = agent.Agent(x, y, u_a.direction, selected_type, '-1')
-                tmp_agent.set_parameters(sim, agents_estimated_values.level,
-                                              agents_estimated_values.radius,
-                                              agents_estimated_values.angle)
+            if  u_a.agents_parameter_estimation != None:
+                selected_type = u_a.agents_parameter_estimation.get_sampled_probability()
+                if selected_type != 'w':
+                    x, y = u_a.get_position()
+                    agents_estimated_values = u_a.estimated_parameter.get_parameters_for_selected_type (selected_type)
+                    tmp_agent = agent.Agent(x, y, u_a.direction, selected_type, '-1')
+                    tmp_agent.set_parameters(sim, agents_estimated_values.level,
+                                                  agents_estimated_values.radius,
+                                                  agents_estimated_values.angle)
 
-                sim.move_a_agent(tmp_agent)
+                    sim.move_a_agent(tmp_agent)
 
         m_reward = self.do_move(sim, action,enemy)
 

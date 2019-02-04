@@ -41,7 +41,7 @@ class TrainData:
         tmp_agent.set_parameters(sim, sim.agents[0].level, sim.agents[0].radius, sim.agents[0].angle)
 
         # 4. Defining route
-        tmp_sim = deepcopy(sim)
+        tmp_sim = sim.copy(True)
         tmp_agent = tmp_sim.move_a_agent(tmp_agent)
         target = tmp_agent.get_memory()
         route_actions = tmp_agent.route_actions
@@ -74,7 +74,7 @@ class TrainData:
             tmp_agent.set_parameters(sim, tmp_level, tmp_radius, tmp_angle)
 
             # 4. Defining route
-            tmp_sim = deepcopy(sim)
+            tmp_sim = sim.copy(True)
             tmp_agent = tmp_sim.move_a_agent(tmp_agent)
             target = tmp_agent.get_memory()
             route_actions = tmp_agent.route_actions
@@ -141,7 +141,7 @@ class TrainData:
         for hist in unknown_agent.choose_target_history:
             (x, y) = hist['pos']
             print hist
-            old_state = deepcopy(hist['state'])
+            old_state = hist['state'].copy(True)
             tmp_agent = agent.Agent(x, y, hist['direction'], selected_type, -1)
 
             tmp_agent.set_parameters(old_state, level, radius, angle)
@@ -240,7 +240,7 @@ class TrainData:
             max_index = 1
         particle_count = max_index
         if self.data_set == [] or len(self.data_set) == 0:
-            tmp_sim = deepcopy(unknown_agent.choose_target_state)
+            tmp_sim = unknown_agent.choose_target_state.copy(True)
             self.initialise_particle_data_set(unknown_agent, tmp_sim)
 
         # 1. Generating data (particles)
@@ -271,7 +271,7 @@ class TrainData:
             if self.check_history(unknown_agent,tmp_level,tmp_radius,tmp_angle,selected_type) > 0:
 
                 # ii. defining route
-                tmp_sim = deepcopy(unknown_agent.choose_target_state)
+                tmp_sim = unknown_agent.choose_target_state.copy(True)
                 tmp_agent = tmp_sim.move_a_agent(tmp_agent)  # f(p)
                 target = tmp_agent.get_memory()
                 particle['target'] = target
@@ -334,7 +334,7 @@ class TrainData:
         # 1. Getting the agent to update
         cts_agent = None
         if not po:
-            cts_agent = deepcopy(current_state.main_agent.visible_agents[unknown_agent.index])
+            cts_agent = copy(current_state.main_agent.visible_agents[unknown_agent.index])
         else:
             memory_agents = current_state.main_agent.agent_memory
             for m_a in memory_agents:
@@ -377,10 +377,9 @@ class TrainData:
                     tmp_agent.set_parameters(current_state, tmp_level, tmp_radius, tmp_angle)
 
                     # c. Simulating the selected particle
-                    copy_state = deepcopy(current_state)
+                    copy_state = current_state.copy(True)
                     tmp_agent = copy_state.move_a_agent(tmp_agent)
                     target = tmp_agent.get_memory()
-
 
                     if tmp_agent.route_actions is not None or current_state.items_left() == 0:
                         print 'new target',target
@@ -388,7 +387,7 @@ class TrainData:
                         particle['target'] = target
 
                         particle['succeeded_steps'] = self.check_history(unknown_agent,tmp_level, tmp_radius, tmp_angle,self.type) + 1
-                        print 'succeeded_steps', particle['succeeded_steps']
+
                         particle['failed_steps'] = 0
                         print 'after', particle
                     else:

@@ -1017,12 +1017,12 @@ class ParameterEstimation:
                 hist['pos'] = copy(unknown_agent.choose_target_pos)
                 hist['direction'] = unknown_agent.choose_target_direction
 
-                hist['state'] = deepcopy(unknown_agent.choose_target_state)  # todo: replace it with items and agents position instead of whole state!
+                hist['state'] = unknown_agent.choose_target_state.copy(True)  # todo: replace it with items and agents position instead of whole state!
                 hist['loaded_item'] = copy(unknown_agent.last_loaded_item_pos)
                 unknown_agent.choose_target_history.append(hist)
 
 
-            unknown_agent.choose_target_state = deepcopy(current_state)
+            unknown_agent.choose_target_state = current_state.copy(True)
             unknown_agent.choose_target_pos = unknown_agent.get_position()
             unknown_agent.choose_target_direction = unknown_agent.direction
 
