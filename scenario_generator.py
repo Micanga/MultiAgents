@@ -17,11 +17,11 @@ iteration_max_set = ['50']
 possible_directions = ['N','S','E','W']
 agent_types 		= ['l1','l2']#,'f1','f2']
 selected_types 		= [False,False]
-apply_adversary = False
 
-experiment_type_set = ['ABU', 'AGA']#, 'MIN']
+experiment_type_set = ['ABU', 'AGA', 'MIN']
 type_estimation_mode_set = ['PTE']#,'PTE','BTE']
 mutation_rate_set = ['0.2']#,'0.3','0.5','0.7','0.9']
+apply_adversary = False
 
 def random_pick(set_):
 	return set_[randint(0,len(set_)-1)]
@@ -44,16 +44,6 @@ def create_config_file(current_folder,parameter_estimation_mode,mcts_mode,train_
 		writer.writerows([['type_estimation_mode', type_estimation_mode]]) # BTE:Bayesian Type Estimation, PTE:Particle Type Estimation,
 														   #  BPTE:Bayesian Particle Type Estimation
 		writer.writerows([['apply_adversary', apply_adversary]])
-		
-		types = ['types'] 
-		for t in agent_types:
-			types.append(t)
-
-		if apply_adversary == True:
-			types.append('w')
-
-		writer.writerows([types])
-
 		writer.writerows([['mutation_rate', mutation_rate]])
 		writer.writerows([['iteration_max', iteration_max_set[0]]])
 		writer.writerows([['max_depth', max_depth_set[0]]])
@@ -126,19 +116,7 @@ def main():
 		agentRadius = round(random.uniform(0.5,1), 3)
 		agentAngle = round(random.uniform(0.5,1), 3)
 		AGENTS.append(['agent'+ str(agent_idx),str(agent_idx),agentx,agenty,agentDirection,agentType,agentLevel,agentRadius,agentAngle])
-	
-	# e. defining the enemy agent
-	ENEMY = None
-	if apply_adversary:
-		agentx,agenty,grid = generateRandomNumber(grid,grid_size)
-		agentDirection = choice(possible_directions)
-		agentType = 'w'
-		agentLevel = round(random.uniform(0.9,1), 3)
-		agentRadius = round(random.uniform(0.5,1), 3)
-		agentAngle = round(random.uniform(0.5,1), 3)
-		ENEMY = (['enemy',str(agent_idx+1),agentx,agenty,agentDirection,agentType,agentLevel,agentRadius,agentAngle])
 
-	# g. defububg tge items
 	ITEMS = []
 	for item_idx in range(nitems):
 		itemx,itemy,grid = generateRandomNumber(grid,grid_size)
@@ -188,11 +166,7 @@ def main():
 					for agent_idx in range(nagents):
 						writer.writerows([AGENTS[agent_idx]])
 
-					# iv. enemy
-					if apply_adversary:
-						writer.writerows([ENEMY])
-
-					# v. items
+					# iv. items
 					for item_idx in range(nitems):
 						writer.writerows([ITEMS[item_idx]])
 
@@ -210,11 +184,7 @@ def main():
 					for agent_idx in range(nagents):
 						writer.writerows([AGENTS[agent_idx]])
 
-					# iv. enemy
-					if apply_adversary:
-						writer.writerows([ENEMY])
-
-					# v. items
+					# iv. items
 					for item_idx in range(nitems):
 						writer.writerows([ITEMS[item_idx]])
 

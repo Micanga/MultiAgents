@@ -34,6 +34,7 @@ class Agent:
     def initialise_visible_agents(self, sim, generated_data_number, PF_add_threshold, train_mode , type_selection_mode,
                                   parameter_estimation_mode, polynomial_degree, apply_adversary,
                                   type_estimation_mode, mutation_rate):
+
         agent_index = 0
         self.apply_adversary = apply_adversary
         for agent in sim.agents:
@@ -46,17 +47,21 @@ class Agent:
         if sim.enemy_agent is not None:
             x, y = sim.enemy_agent.get_position()
             a = unknown_agent.Agent(x, y, sim.enemy_agent.direction,agent_index)
+
             self.visible_agents.append(a)
 
         for unknown_a in self.visible_agents:
 
             param_estim = parameter_estimation.ParameterEstimation(generated_data_number, PF_add_threshold, train_mode,
                                                                    apply_adversary,mutation_rate,unknown_a, sim)
+
             param_estim.estimation_initialisation()
+
             param_estim.estimation_configuration(type_selection_mode, parameter_estimation_mode, polynomial_degree,type_estimation_mode)
 
             unknown_a.agents_parameter_estimation = param_estim
 
+        return
     ####################################################################################################################
     def update_unknown_agents(self, sim):
         enemy_index = 0
@@ -80,6 +85,7 @@ class Agent:
 
 
         enemy_index = i + 1
+
         if self.apply_adversary:
             self.visible_agents[enemy_index].next_action = sim.enemy_agent.next_action
             self.visible_agents[enemy_index].direction = sim.enemy_agent.direction
@@ -88,8 +94,12 @@ class Agent:
     ####################################################################################################################
     def move(self,reuse_tree,main_sim,search_tree, time_step):
         next_action,guess_move, search_tree = self.uct_planning(reuse_tree,main_sim,search_tree, time_step)
-        reward = self.uct.do_move(main_sim, next_action, self.is_enemy, True)
-        return reward, guess_move, search_tree
+        #if self.uct.planning_for_enemy:
+            #print 'action for enemy : ', next_action
+        #else:
+            #print 'action for main : ', next_action
+        reward = self.uct.do_move(main_sim, next_action,  real=True)
+        return reward , guess_move,search_tree
 
     ####################################################################################################################
 
@@ -325,7 +335,6 @@ class Agent:
                         parameter_estimation.actions_to_reach_target.append(unknown_agent.next_action)
 
                 # 3. Estimating
-                print unknown_agent.index,unknown_agent.next_action
                 if unknown_agent.next_action is not None:
                     tmp_sim = copy(main_sim)
                     tmp_previous_state = copy(self.previous_state)

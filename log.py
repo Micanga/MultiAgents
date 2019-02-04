@@ -64,7 +64,7 @@ def write_map(file, sim):
 def print_result(main_sim,  time_steps, begin_time, end_time,mcts_mode, parameter_estimation_mode,\
  type_selection_mode, iteration_max, max_depth, generated_data_number,\
  reuse_tree, PF_add_threshold, PF_weight, type_estimation_mode,mutation_rate ,end_cpu_time, memory_usage,log_file, current_folder,\
- types,po=False):
+ po=False):
 
     pickleFile = open(current_folder + "/pickleResults.txt", 'wb')
     dataList = []
@@ -106,7 +106,7 @@ def print_result(main_sim,  time_steps, begin_time, end_time,mcts_mode, paramete
         trueParameters = [main_sim.agents[i].level,main_sim.agents[i].radius,main_sim.agents[i].angle]
         agentData['trueParameters'] = trueParameters
 
-        agentData['maxProbability'] = u_a.agents_parameter_estimation.get_highest_type_probability(types)
+        agentData['maxProbability'] = u_a.agents_parameter_estimation.get_highest_type_probability()
 
         l1EstimationHistory = u_a.agents_parameter_estimation.l1_estimation.get_estimation_history()
         agentData['l1EstimationHistory'] = l1EstimationHistory

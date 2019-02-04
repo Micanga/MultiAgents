@@ -23,6 +23,8 @@ angle_min = 0.1
 level_max = 1
 level_min = 0
 
+types = ['l1', 'l2']#, 'f1', 'f2', 'w']
+
 ########################################################################################################################
 class Parameter:
     def __init__(self, level, angle, radius):
@@ -196,7 +198,7 @@ class ParameterEstimation:
         return selected_type
 
     ####################################################################################################################
-    def get_highest_type_probability(self,types):
+    def get_highest_type_probability(self):
 
         highest_probability = -1
         selected_type = ''
@@ -466,6 +468,8 @@ class ParameterEstimation:
     ####################################################################################################################
     def normalize_type_probabilities(self):
         # 1. Defining the values
+        print 'Normalizing:',self.l1_estimation.type_probability , self.l2_estimation.type_probability,self.f1_estimation.type_probability, self.f2_estimation.type_probability
+
         l1_update_belief_value = self.l1_estimation.type_probability
         l2_update_belief_value = self.l2_estimation.type_probability
         f1_update_belief_value = self.f1_estimation.type_probability
@@ -705,15 +709,18 @@ class ParameterEstimation:
     ####################################################################################################################
     def mean_estimation(self, x_train,y_train):# y_train is weight of parameters which are equal to
         a_data_set = np.transpose(np.array(x_train))
-        
+        # print y_train
         if a_data_set != []:
             a_weights = np.array(y_train)
             levels = a_data_set[0, :]
-            ave_level = np.average(levels, weights=a_weights)
+            # ave_level = np.average(levels, weights=a_weights)
+            ave_level = np.average(levels)
             angle = a_data_set[1, :]
-            ave_angle = np.average(angle, weights=a_weights)
+            # ave_angle = np.average(angle, weights=a_weights)
+            ave_angle = np.average(angle)
             radius = a_data_set[2, :]
-            ave_radius = np.average(radius, weights=a_weights)
+            # ave_radius = np.average(radius, weights=a_weights)
+            ave_radius = np.average(radius)
             new_parameter = Parameter(ave_level, ave_angle, ave_radius)
 
         # if a_data_set != []:
@@ -855,20 +862,6 @@ class ParameterEstimation:
         if self.train_mode == 'history_based':
             if unknown_agent.next_action == 'L':
                 # a. Evaluating the particles
-                if unknown_agent.choose_target_state != None:
-                    hist = {}
-                    hist['pos'] = unknown_agent.choose_target_pos
-                    hist['direction'] = unknown_agent.choose_target_direction
-                    hist['state'] = unknown_agent.choose_target_state  #todo: replace it with items and agents position instead of whole state!
-                    hist['loaded_item'] = unknown_agent.last_loaded_item_pos
-                    unknown_agent.choose_target_history.append(hist)
-
-
-                unknown_agent.choose_target_state = copy(current_state)
-                unknown_agent.choose_target_pos = unknown_agent.get_position()
-                unknown_agent.choose_target_direction =unknown_agent.direction
-
-
                 type_probability = train_data.update_data_set(unknown_agent,current_state,po)
                 train_data.generate_data(unknown_agent, selected_type,
                                          self.actions_to_reach_target,
@@ -926,7 +919,7 @@ class ParameterEstimation:
             if new_parameters_estimation is not None:
                 # i. generating the particle for the selected type
                 if selected_type != 'w':
-                    tmp_sim = previous_state.copy()
+                    tmp_sim = deepcopy(previous_state)
 
                     x = unknown_agent.previous_agent_status.position[0] 
                     y = unknown_agent.previous_agent_status.position[1]
@@ -943,7 +936,7 @@ class ParameterEstimation:
                     action_prob = tmp_agent.get_action_probability(unknown_agent.next_action)
                     if action_prob is None:
                         action_prob = 0.2
-                        
+                    # print action_prob
                     # ii. testing the generated particle and updating the estimation
                     # TYPE L1 ------------------ 
                     if selected_type == 'l1':
@@ -1018,17 +1011,25 @@ class ParameterEstimation:
                     self.w_estimation.update_estimation(new_parameters_estimation, enemy_action_prob)
 
         # d. If a load action was performed, restart the estimation process
-        if unknown_agent.next_action == 'L':
-            self.actions_to_reach_target = []
+        if unknown_agent.next_action == 'L' and unknown_agent.is_item_nearby(current_state.items) != -1:
+            if unknown_agent.choose_target_state != None:
+                hist = {}
+                hist['pos'] = copy(unknown_agent.choose_target_pos)
+                hist['direction'] = unknown_agent.choose_target_direction
+
+                hist['state'] = deepcopy(unknown_agent.choose_target_state)  # todo: replace it with items and agents position instead of whole state!
+                hist['loaded_item'] = copy(unknown_agent.last_loaded_item_pos)
+                unknown_agent.choose_target_history.append(hist)
+
+
+            unknown_agent.choose_target_state = deepcopy(current_state)
+            unknown_agent.choose_target_pos = unknown_agent.get_position()
+            unknown_agent.choose_target_direction = unknown_agent.direction
 
         # e. Normalising the type probabilities
         self.normalize_type_probabilities()
-        if 'w' not in types:
-            print '>>> %d) %.4lf %.4lf %.4lf %.4lf' %(unknown_agent.index,self.l1_estimation.type_probability,self.l2_estimation.type_probability,\
-            self.f1_estimation.type_probability,self.f2_estimation.type_probability)
-        else:
-            print '>>> %d) %.4lf %.4lf %.4lf %.4lf %.4lf' %(unknown_agent.index,self.l1_estimation.type_probability,self.l2_estimation.type_probability,\
-            self.f1_estimation.type_probability,self.f2_estimation.type_probability,self.w_estimation.type_probability)
+        print '>>> %d) %.4lf %.4lf %.4lf %.4lf' %(unknown_agent.index,self.l1_estimation.type_probability,self.l2_estimation.type_probability,\
+        self.f1_estimation.type_probability,self.f2_estimation.type_probability)
 
     ####################################################################################################################
     def unseen_parameter_estimation_not_update(self,unknown_agent,types):
@@ -1067,12 +1068,8 @@ class ParameterEstimation:
                 self.w_estimation.update_estimation(new_parameters_estimation, enemy_action_prob)
         # 2. Appending type probabilities
         self.normalize_type_probabilities()
-        if 'w' not in types:
-            print '>>> %d) %.4lf %.4lf %.4lf %.4lf' %(unknown_agent.index,self.l1_estimation.type_probability,self.l2_estimation.type_probability,\
-            self.f1_estimation.type_probability,self.f2_estimation.type_probability)
-        else:
-            print '>>> %d) %.4lf %.4lf %.4lf %.4lf %.4lf' %(unknown_agent.index,self.l1_estimation.type_probability,self.l2_estimation.type_probability,\
-            self.f1_estimation.type_probability,self.f2_estimation.type_probability,self.w_estimation.type_probability)
+        print '>>> %d) %.4lf %.4lf %.4lf %.4lf' %(unknown_agent.index,self.l1_estimation.type_probability,self.l2_estimation.type_probability,\
+        self.f1_estimation.type_probability,self.f2_estimation.type_probability)
 
     ####################################################################################################################
     def unseen_parameter_estimation_particle_evaluation(self,state,u_a,types):
@@ -1125,6 +1122,7 @@ class ParameterEstimation:
                 action_prob = tmp_agent.get_action_probability(tmp_agent.next_action)
             else:
                 action_prob = 0.2
+            # print '>>>>',action_prob
 
             # TYPE L1 ------------------ 
             if selected_type == 'l1':
@@ -1154,9 +1152,5 @@ class ParameterEstimation:
         
         # 2. Appending type probabilities
         self.normalize_type_probabilities()
-        if 'w' not in types:
-            print '>>> %d) %.4lf %.4lf %.4lf %.4lf' %(u_a.index,self.l1_estimation.type_probability,self.l2_estimation.type_probability,\
-            self.f1_estimation.type_probability,self.f2_estimation.type_probability)
-        else:
-            print '>>> %d) %.4lf %.4lf %.4lf %.4lf %.4lf' %(u_a.index,self.l1_estimation.type_probability,self.l2_estimation.type_probability,\
-            self.f1_estimation.type_probability,self.f2_estimation.type_probability,self.w_estimation.type_probability)
+        print '>>> %d) %.4lf %.4lf %.4lf %.4lf' %(u_a.index,self.l1_estimation.type_probability,self.l2_estimation.type_probability,\
+        self.f1_estimation.type_probability,self.f2_estimation.type_probability)

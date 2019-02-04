@@ -25,7 +25,7 @@ memory_usage = 0
 # Simulation Configuration
 sim_path = None
 
-types = []
+types = ['l1', 'l2']#, 'f1', 'f2']
 type_selection_mode = None
 
 iteration_max = None
@@ -68,9 +68,6 @@ with open(input_folder+'config.csv') as info_read:
 # 2. Getting the parameters
 for k, v in info.items():
 
-    if 'types' in k:
-        types = [str(v[0][i]).strip() for i in range(len(v[0]))]
-
     if 'sim_path' in k:
         sim_path = input_folder + str(v[0][0]).strip()
 
@@ -94,8 +91,6 @@ for k, v in info.items():
 
     if 'parameter_estimation_mode' in k:
         parameter_estimation_mode = str(v[0][0]).strip()
-
-
 
     if 'generated_data_number' in k:
         generated_data_number = int(v[0][0])
@@ -127,7 +122,6 @@ for k, v in info.items():
         else:
             apply_adversary = True
 
-print 'types',types
 sim_configuration = {'sim_path':sim_path,\
     'types':types,'type_selection_mode':type_selection_mode,\
     'iteration_max':iteration_max,'max_depth':max_depth,\
@@ -139,8 +133,7 @@ sim_configuration = {'sim_path':sim_path,\
     'reuse_tree':reuse_tree,'mcts_mode':mcts_mode,\
     'PF_add_threshold':PF_add_threshold,\
     'PF_del_threshold':PF_del_threshold,\
-    'PF_weight':PF_weight,\
-    'apply_adversary':apply_adversary}
+    'PF_weight':PF_weight,'apply_adversary':apply_adversary}
 
 # ============= Set Simulation and Log File ============
 main_sim = simulator.Simulator()
@@ -172,6 +165,7 @@ if main_sim.main_agent is not None:
     main_sim.main_agent.initialise_visible_agents(main_sim,generated_data_number, PF_add_threshold, train_mode,
                                                   type_selection_mode, parameter_estimation_mode, polynomial_degree,
                                                   apply_adversary,type_estimation_mode,mutation_rate)
+
     uct = UCT.UCT(iteration_max, max_depth, do_estimation, mcts_mode, apply_adversary,enemy=False)
     main_sim.main_agent.initialise_uct(uct)
 
@@ -191,8 +185,11 @@ for v_a in main_sim.main_agent.visible_agents:
     v_a.choose_target_pos = v_a.get_position()
     v_a.choose_target_direction = v_a.direction
 
+print 'unknown_agent.choose_target_state.draw_map()'
+main_sim.main_agent.visible_agents[0].choose_target_state.draw_map()
 # ============= Start Simulation ==================
 time_step = 0
+
 while main_sim.items_left() > 0:
     progress = 100 * (len(main_sim.items) - main_sim.items_left())/len(main_sim.items)
     sys.stdout.write("Experiment progress: %d%% | step: %d   \r" % (progress,time_step) )
@@ -211,9 +208,9 @@ while main_sim.items_left() > 0:
     for i in range(len(main_sim.agents)):
         log_file.write('2) Move Common Agent '+str(i))
         main_sim.agents[i] = main_sim.move_a_agent(main_sim.agents[i])
+        print i,':',main_sim.agents[i].index,main_sim.agents[i].agent_type,
         log_file.write(' - OK\ntarget: '+str(main_sim.agents[i].get_memory())+'\n')
     print
-
     # 3. Move Main Agent
     if main_sim.main_agent is not None:
         log_file.write('3) Move Main Agent ')
@@ -261,4 +258,4 @@ log.print_result(main_sim,  time_step, begin_time, end_time,\
     iteration_max,max_depth, generated_data_number,reuse_tree,\
     PF_add_threshold, PF_weight,\
     type_estimation_mode,mutation_rate ,\
-    end_cpu_time, memory_usage,log_file,output_folder,types)
+    end_cpu_time, memory_usage,log_file,output_folder)
