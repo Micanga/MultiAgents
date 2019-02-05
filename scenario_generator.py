@@ -19,7 +19,7 @@ agent_types 		= ['l1','l2']#,'f1','f2']
 selected_types 		= [False,False]
 
 experiment_type_set = ['ABU', 'AGA', 'MIN']
-type_estimation_mode_set = ['BPTE']#,'PTE','BTE']
+type_estimation_mode_set = ['BTE']#,'PTE','BTE']
 mutation_rate_set = ['0.2']#,'0.3','0.5','0.7','0.9']
 apply_adversary = False
 
@@ -112,7 +112,7 @@ def main():
 		agentx,agenty,grid = generateRandomNumber(grid,grid_size)
 		agentDirection = choice(possible_directions)
 		agentType = selectType()
-		agentLevel = round(random.uniform(0.5,1), 3)
+		agentLevel = round(random.uniform(0.99,1), 3)
 		agentRadius = round(random.uniform(0.5,1), 3)
 		agentAngle = round(random.uniform(0.5,1), 3)
 		AGENTS.append(['agent'+ str(agent_idx),str(agent_idx),agentx,agenty,agentDirection,agentType,agentLevel,agentRadius,agentAngle])

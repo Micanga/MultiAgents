@@ -41,7 +41,7 @@ class TrainData:
         tmp_agent.set_parameters(sim, sim.agents[0].level, sim.agents[0].radius, sim.agents[0].angle)
 
         # 4. Defining route
-        tmp_sim = sim.copy(True)
+        tmp_sim = sim.copy()
         tmp_agent = tmp_sim.move_a_agent(tmp_agent)
         target = tmp_agent.get_memory()
         route_actions = tmp_agent.route_actions
@@ -74,7 +74,7 @@ class TrainData:
             tmp_agent.set_parameters(sim, tmp_level, tmp_radius, tmp_angle)
 
             # 4. Defining route
-            tmp_sim = sim.copy(True)
+            tmp_sim = sim.copy()
             tmp_agent = tmp_sim.move_a_agent(tmp_agent)
             target = tmp_agent.get_memory()
             route_actions = tmp_agent.route_actions
@@ -141,7 +141,7 @@ class TrainData:
         for hist in unknown_agent.choose_target_history:
             (x, y) = hist['pos']
             print hist
-            old_state = hist['state'].copy(True)
+            old_state = hist['state'].copy()
             tmp_agent = agent.Agent(x, y, hist['direction'], selected_type, -1)
 
             tmp_agent.set_parameters(old_state, level, radius, angle)
@@ -240,7 +240,7 @@ class TrainData:
             max_index = 1
         particle_count = max_index
         if self.data_set == [] or len(self.data_set) == 0:
-            tmp_sim = unknown_agent.choose_target_state.copy(True)
+            tmp_sim = unknown_agent.choose_target_state.copy()
             self.initialise_particle_data_set(unknown_agent, tmp_sim)
 
         # 1. Generating data (particles)
@@ -271,7 +271,7 @@ class TrainData:
             if self.check_history(unknown_agent,tmp_level,tmp_radius,tmp_angle,selected_type) > 0:
 
                 # ii. defining route
-                tmp_sim = unknown_agent.choose_target_state.copy(True)
+                tmp_sim = unknown_agent.choose_target_state.copy()
                 tmp_agent = tmp_sim.move_a_agent(tmp_agent)  # f(p)
                 target = tmp_agent.get_memory()
                 particle['target'] = target
@@ -377,7 +377,7 @@ class TrainData:
                     tmp_agent.set_parameters(current_state, tmp_level, tmp_radius, tmp_angle)
 
                     # c. Simulating the selected particle
-                    copy_state = current_state.copy(True)
+                    copy_state = current_state.copy()
                     tmp_agent = copy_state.move_a_agent(tmp_agent)
                     target = tmp_agent.get_memory()
 
@@ -423,7 +423,10 @@ class TrainData:
         #type_prob = float(max_succeeded_steps)/float(self.load_count+1)
         print 'type_prob',len(self.data_set) , max_succeeded_steps, self.generated_data_number , self.load_count
         # type_prob = float(len(self.data_set) * max_succeeded_steps)  / float(self.generated_data_number * (self.load_count ))
-        type_prob = float( max_succeeded_steps) / float(self.load_count)
+        if float(self.load_count) == 0.0:
+            type_prob = 0.0
+        else:
+            type_prob = float( max_succeeded_steps) / float(self.load_count)
         print '*************************************************************************************************'
         return type_prob
 

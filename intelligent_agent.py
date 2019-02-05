@@ -91,6 +91,7 @@ class Agent:
             self.visible_agents[enemy_index].direction = sim.enemy_agent.direction
             self.visible_agents[enemy_index].position = sim.enemy_agent.position
 
+
     ####################################################################################################################
     def move(self,reuse_tree,main_sim,search_tree, time_step):
         next_action,guess_move, search_tree = self.uct_planning(reuse_tree,main_sim,search_tree, time_step)

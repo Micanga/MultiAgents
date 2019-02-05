@@ -5,9 +5,9 @@ from random import randint
 
 def get_input_folder():
     # return
-    return "inputs/FO_O_MIN/"
+    return "inputs/test/"
 
-def create_output_folder():
+def create_output_folder(run_type = 'FO'):
     # 1. Getting the experiment time
     now = datetime.datetime.now()
 
@@ -16,7 +16,11 @@ def create_output_folder():
     + "-" + str(randint(0,now.day+now.hour+now.minute))
     
     # 3. Verifing the current folder
-    current_folder = "outputs/" + sub_dir + '/'
+    if run_type == 'PO':
+        current_folder = "po_outputs/" + sub_dir + '/'
+    else:
+        current_folder = "outputs/" + sub_dir + '/'
+
     if not os.path.exists(current_folder):
         os.mkdir(current_folder, 0755)
     else:

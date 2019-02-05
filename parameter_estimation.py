@@ -919,7 +919,7 @@ class ParameterEstimation:
             if new_parameters_estimation is not None:
                 # i. generating the particle for the selected type
                 if selected_type != 'w':
-                    tmp_sim = deepcopy(previous_state)
+                    tmp_sim = previous_state.copy()
 
                     x = unknown_agent.previous_agent_status.position[0] 
                     y = unknown_agent.previous_agent_status.position[1]
@@ -1017,12 +1017,12 @@ class ParameterEstimation:
                 hist['pos'] = copy(unknown_agent.choose_target_pos)
                 hist['direction'] = unknown_agent.choose_target_direction
 
-                hist['state'] = unknown_agent.choose_target_state.copy(True)  # todo: replace it with items and agents position instead of whole state!
+                hist['state'] = unknown_agent.choose_target_state.copy()  # todo: replace it with items and agents position instead of whole state!
                 hist['loaded_item'] = copy(unknown_agent.last_loaded_item_pos)
                 unknown_agent.choose_target_history.append(hist)
 
 
-            unknown_agent.choose_target_state = current_state.copy(True)
+            unknown_agent.choose_target_state = current_state.copy()
             unknown_agent.choose_target_pos = unknown_agent.get_position()
             unknown_agent.choose_target_direction = unknown_agent.direction
 

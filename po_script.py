@@ -8,10 +8,10 @@ from numpy import pi
 
 # 0. General Settings
 map_count       = 0
-number_of_tests = 1
+number_of_tests = 3
 
 square_grid_size    = ['10']
-number_of_agents    = ['2']#'2','3','5','7','10'
+number_of_agents    = ['1']#'2','3','5','7','10'
 number_of_items     = ['10']#,'20','25']
 
 radius_set          = ['3']

@@ -253,11 +253,14 @@ class POAgent(Agent, object):
             for vis_ag in self.visible_agents:
                 if sim_ag.index == vis_ag.index:
                     vis_ag.position = copy(sim_ag.position)
-                    vis_ag.direction  = sim_ag.direction
+                    vis_ag.direction = sim_ag.direction
 
                     vis_ag.next_action = sim_ag.next_action
                     vis_ag.previous_agent_status = sim_ag
-                    vis_ag.choose_target_state = copy(sim)
+                    vis_ag.choose_target_state = sim.copy()
+                    if vis_ag.next_action == 'L':
+                        vis_ag.last_loaded_item_pos = sim_ag.last_loaded_item_pos
+                        vis_ag.item_to_load = sim_ag.item_to_load  # todo wrong
 
                     for mem_ag in self.agent_memory:
                         if mem_ag.index == vis_ag.index:
@@ -266,7 +269,10 @@ class POAgent(Agent, object):
 
                             mem_ag.next_action = vis_ag.next_action
                             mem_ag.previous_agent_status = sim_ag
-                            mem_ag.choose_target_state = copy(sim)
+                            mem_ag.choose_target_state = sim.copy()
+                            if vis_ag.next_action == 'L':
+                                mem_ag.last_loaded_item_pos = sim_ag.last_loaded_item_pos
+                                mem_ag.item_to_load = sim_ag.item_to_load  # todo wrong
 
                             break
 

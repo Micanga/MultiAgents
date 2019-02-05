@@ -57,7 +57,7 @@ if len(sys.argv) > 1:
     input_folder = sys.argv[1]
 else:
     input_folder = log.get_input_folder()
-output_folder = log.create_output_folder()
+output_folder = log.create_output_folder('PO')
 
 # ============= Read Configuration ============
 # 1. Reading the sim configuration file
@@ -181,7 +181,9 @@ if apply_adversary:
 
 
 for v_a in main_sim.main_agent.visible_agents:
-    v_a.choose_target_state = deepcopy(main_sim)
+    v_a.choose_target_state = main_sim.copy()
+    v_a.choose_target_pos = v_a.get_position()
+    v_a.choose_target_direction = v_a.direction
 
 # ============= Start Simulation ==================
 time_step = 0
