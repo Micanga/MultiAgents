@@ -185,8 +185,7 @@ for v_a in main_sim.main_agent.visible_agents:
     v_a.choose_target_pos = v_a.get_position()
     v_a.choose_target_direction = v_a.direction
 
-print 'unknown_agent.choose_target_state.draw_map()'
-main_sim.main_agent.visible_agents[0].choose_target_state.draw_map()
+
 # ============= Start Simulation ==================
 time_step = 0
 

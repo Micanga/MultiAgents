@@ -19,7 +19,7 @@ agent_types 		= ['l1','l2']#,'f1','f2']
 selected_types 		= [False,False]
 
 experiment_type_set = ['ABU', 'AGA', 'MIN']
-type_estimation_mode_set = ['BTE']#,'PTE','BTE']
+type_estimation_mode_set = ['LPTE']#,'PTE','BTE']
 mutation_rate_set = ['0.2']#,'0.3','0.5','0.7','0.9']
 apply_adversary = False
 

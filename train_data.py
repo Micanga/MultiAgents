@@ -137,10 +137,10 @@ class TrainData:
     def check_history(self, unknown_agent,level, radius, angle, selected_type):
 
         success_count = 0
-        print 'begin history ---------------------------------------------'
+        # print 'begin history ---------------------------------------------'
         for hist in unknown_agent.choose_target_history:
             (x, y) = hist['pos']
-            print hist
+            # print hist
             old_state = hist['state'].copy()
             tmp_agent = agent.Agent(x, y, hist['direction'], selected_type, -1)
 
@@ -150,10 +150,11 @@ class TrainData:
             tmp_agent = old_state.move_a_agent(tmp_agent)
             target = tmp_agent.get_memory()
 
-            print target, hist['loaded_item']
+
             if target == hist['loaded_item']:
+                print target, hist['loaded_item']
                 success_count +=1
-        print 'end history ---------------------------------------------'
+        # print 'end history ---------------------------------------------'
         return success_count
 
 
@@ -349,7 +350,7 @@ class TrainData:
         remove_pf = []
         print '*************************************************************************************************'
         print 'type', self.type
-        print 'last_loaded_item_pos',unknown_agent.last_loaded_item_pos
+        # print 'last_loaded_item_pos',unknown_agent.last_loaded_item_pos
         # if unknown_agent.choose_target_state.items_left() != 0 and\
         if unknown_agent.is_item_nearby(current_state.items) != -1:
             self.load_count += 1
@@ -359,7 +360,7 @@ class TrainData:
                 # d. Filtering the particle
                 if particle['target'] == unknown_agent.last_loaded_item_pos:
                     # and                     ds['succeeded_steps'] == max_succeeded_steps:
-                    print 'before', particle
+                    # print 'before', particle
                     particle['total_steps'] += 1
                     [tmp_level, tmp_radius, tmp_angle] = particle['parameter']
 
@@ -382,7 +383,7 @@ class TrainData:
                     target = tmp_agent.get_memory()
 
                     if tmp_agent.route_actions is not None or current_state.items_left() == 0:
-                        print 'new target',target
+                        # print 'new target',target
                         particle['route'] = tmp_agent.route_actions
                         particle['target'] = target
 
@@ -420,13 +421,19 @@ class TrainData:
 
         # 5. Updating the succeeded steps
         succeeded_sum = sum([particle['succeeded_steps'] for particle in self.data_set])
+
+        # for particle in self.data_set:
+
+
         #type_prob = float(max_succeeded_steps)/float(self.load_count+1)
-        print 'type_prob',len(self.data_set) , max_succeeded_steps, self.generated_data_number , self.load_count
+        print 'type_prob',self.type ,succeeded_sum, len(self.data_set) , max_succeeded_steps, self.generated_data_number , self.load_count
         # type_prob = float(len(self.data_set) * max_succeeded_steps)  / float(self.generated_data_number * (self.load_count ))
         if float(self.load_count) == 0.0:
             type_prob = 0.0
         else:
-            type_prob = float( max_succeeded_steps) / float(self.load_count)
+            type_prob = succeeded_sum #float( max_succeeded_steps) / float(self.load_count)
+            # type_prob = float(len(self.data_set) * max_succeeded_steps) / float(
+            #     self.generated_data_number * (self.load_count))
         print '*************************************************************************************************'
         return type_prob
 
