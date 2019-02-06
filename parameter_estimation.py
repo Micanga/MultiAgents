@@ -1082,23 +1082,25 @@ class ParameterEstimation:
             unknown_agent.choose_target_direction = unknown_agent.direction
 
         # e. Normalising the type probabilities
+        if self.train_mode == 'history_based':
+            if self.type_estimation_mode == 'BPTE':
+                self.l1_estimation.type_probability = self.normalize_type_probability('l1') * self.l1_estimation.get_last_type_probability()
+                self.l1_estimation.type_probability = self.normalize_type_probability('l2') * self.l2_estimation.get_last_type_probability()
+                self.l1_estimation.type_probability = self.normalize_type_probability('f1') * self.f1_estimation.get_last_type_probability()
+                self.l1_estimation.type_probability = self.normalize_type_probability('f2') * self.f2_estimation.get_last_type_probability()
+            self.alpha = 0.1
+            if self.type_estimation_mode == 'LPTE':
+                self.l1_estimation.type_probability = self.alpha *  self.normalize_type_probability('l1') + \
+                                                      (1-self.alpha) * self.l1_estimation.get_last_type_probability()
+                self.l1_estimation.type_probability = self.alpha *  self.normalize_type_probability('l2') + \
+                                                      (1-self.alpha) * self.l2_estimation.get_last_type_probability()
+                self.l1_estimation.type_probability = self.alpha *  self.normalize_type_probability('f1') + \
+                                                      (1-self.alpha) * self.f1_estimation.get_last_type_probability()
+                self.l1_estimation.type_probability = self.alpha *  self.normalize_type_probability('f2') + \
+                                                      (1-self.alpha) * self.f2_estimation.get_last_type_probability()
         self.normalize_type_probabilities()
-        if self.type_estimation_mode == 'BPTE':
-            self.l1_estimation.type_probability = self.normalize_type_probability('l1') * self.l1_estimation.get_last_type_probability()
-            self.l1_estimation.type_probability = self.normalize_type_probability('l2') * self.l2_estimation.get_last_type_probability()
-            self.l1_estimation.type_probability = self.normalize_type_probability('f1') * self.f1_estimation.get_last_type_probability()
-            self.l1_estimation.type_probability = self.normalize_type_probability('f2') * self.f2_estimation.get_last_type_probability()
-        self.alpha = 0.1
-        if self.type_estimation_mode == 'LPTE':
-            self.l1_estimation.type_probability = self.alpha *  self.normalize_type_probability('l1') + \
-                                                  (1-self.alpha) * self.l1_estimation.get_last_type_probability()
-            self.l1_estimation.type_probability = self.alpha *  self.normalize_type_probability('l2') + \
-                                                  (1-self.alpha) * self.l2_estimation.get_last_type_probability()
-            self.l1_estimation.type_probability = self.alpha *  self.normalize_type_probability('f1') + \
-                                                  (1-self.alpha) * self.f1_estimation.get_last_type_probability()
-            self.l1_estimation.type_probability = self.alpha *  self.normalize_type_probability('f2') + \
-                                                  (1-self.alpha) * self.f2_estimation.get_last_type_probability()
-        print '>>> %d) %.4lf %.4lf %.4lf %.4lf' %(unknown_agent.index,self.l1_estimation.type_probability,self.l2_estimation.type_probability,\
+        print '>>> %d) %.4lf %.4lf %.4lf %.4lf' %(unknown_agent.index,self.l1_estimation.type_probability,self.l2_estimation.type_probability, \
+
         self.f1_estimation.type_probability,self.f2_estimation.type_probability)
 
     ####################################################################################################################
