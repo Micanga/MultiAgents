@@ -110,6 +110,37 @@ class Simulator:
         self.update_the_map()
 
     ################################################################################################################
+
+    def recreate_items(self):
+
+        for item in self.items:
+            item.loaded = False
+            for agent in self.agents:
+                if agent.get_position() == item.get_position():
+                    x,y = self.move_to_empty_place()
+                    item.set_position(x,y)
+
+            if self.main_agent is not None:
+                if self.main_agent.get_position() == item.get_position():
+                    x,y = self.move_to_empty_place()
+                    item.set_position(x,y)
+
+            if self.enemy_agent is not None:
+                if self.enemy_agent.get_position() == item.get_position():
+                    x,y = self.move_to_empty_place()
+                    item.set_position(x,y)
+
+        return
+
+    ################################################################################################################
+    def move_to_empty_place(self):
+        while True :
+            testXValue = randint(0, self.dim_w - 1)
+            testYValue = randint(0, self.dim_h - 1)
+            if self.position_is_empty( testXValue, testYValue):
+                return testXValue, testYValue
+
+    ################################################################################################################
     def get_agents_and_enemy(self):
         agents = []
         for i in range(len(self.agents)):

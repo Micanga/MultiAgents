@@ -28,6 +28,10 @@ class item:
     def get_position(self):
         return (self.position.x, self.position.y)
 
+    def set_position (self , x,y):
+        self.position.x = x
+        self.position.y = y
+
     def copy(self):
         (x, y) = self.get_position()
 

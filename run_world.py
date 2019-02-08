@@ -37,7 +37,7 @@ parameter_estimation_mode = None
 
 type_estimation_mode = None
 mutation_rate = None
-
+round_count = None
 
 generated_data_number = None
 reuse_tree = None
@@ -103,6 +103,10 @@ for k, v in info.items():
 
     if 'reuseTree' in k:
         reuse_tree = v[0][0]
+
+    if 'round_count' in k:
+        round_count = int(v[0][0])
+
 
     if 'mcts_mode' in k:
         mcts_mode = str(v[0][0]).strip()
@@ -188,61 +192,67 @@ for v_a in main_sim.main_agent.visible_agents:
 
 # ============= Start Simulation ==================
 time_step = 0
+round = 1
+while round <= round_count:
+    while main_sim.items_left() > 0:
+        progress = 100 * (len(main_sim.items) - main_sim.items_left())/len(main_sim.items)
+        sys.stdout.write("Experiment progress: %d%% | step: %d   \r" % (progress,time_step) )
+        sys.stdout.flush()
 
-while main_sim.items_left() > 0:
-    progress = 100 * (len(main_sim.items) - main_sim.items_left())/len(main_sim.items)
-    sys.stdout.write("Experiment progress: %d%% | step: %d   \r" % (progress,time_step) )
-    sys.stdout.flush()
+        log_file.write('***** Iteration #'+str(time_step)+' *****\n')
 
-    log_file.write('***** Iteration #'+str(time_step)+' *****\n')
+        # 1. Updating Unkown Agents
+        if main_sim.main_agent is not None:
+            log_file.write('1) Updating Unknown Agents for Main Agent ')
+            main_sim.main_agent.previous_state = main_sim.copy()
+            main_sim.main_agent.update_unknown_agents(main_sim)
+            log_file.write('- OK\n')
 
-    # 1. Updating Unkown Agents
-    if main_sim.main_agent is not None:
-        log_file.write('1) Updating Unknown Agents for Main Agent ')
-        main_sim.main_agent.previous_state = main_sim.copy()
-        main_sim.main_agent.update_unknown_agents(main_sim)
-        log_file.write('- OK\n')
+        # 2. Move Common Agent
+        for i in range(len(main_sim.agents)):
+            log_file.write('2) Move Common Agent '+str(i))
+            main_sim.agents[i] = main_sim.move_a_agent(main_sim.agents[i])
+            print i,':',main_sim.agents[i].index,main_sim.agents[i].agent_type,
+            log_file.write(' - OK\ntarget: '+str(main_sim.agents[i].get_memory())+'\n')
+        print
+        # 3. Move Main Agent
+        if main_sim.main_agent is not None:
+            log_file.write('3) Move Main Agent ')
+            r,enemy_action_prob,search_tree = main_sim.main_agent.move(reuse_tree, main_sim, search_tree, time_step)
+            log_file.write(' - OK\n')
 
-    # 2. Move Common Agent
-    for i in range(len(main_sim.agents)):
-        log_file.write('2) Move Common Agent '+str(i))
-        main_sim.agents[i] = main_sim.move_a_agent(main_sim.agents[i])
-        print i,':',main_sim.agents[i].index,main_sim.agents[i].agent_type,
-        log_file.write(' - OK\ntarget: '+str(main_sim.agents[i].get_memory())+'\n')
-    print
-    # 3. Move Main Agent
-    if main_sim.main_agent is not None:
-        log_file.write('3) Move Main Agent ')
-        r,enemy_action_prob,search_tree = main_sim.main_agent.move(reuse_tree, main_sim, search_tree, time_step)
+        # 4. Move Adversary
+        if main_sim.enemy_agent is not None:
+            log_file.write('4) Move Adversary Agent ')
+            r, main_action_prob,enemy_search_tree = main_sim.enemy_agent.move(reuse_tree, main_sim, enemy_search_tree, time_step)
+            log_file.write(' - OK\n')
+
+        # 5. Updating the Map
+        log_file.write('5) Updating Map\n')
+        main_sim.update_all_A_agents(False)
+        main_sim.do_collaboration()
+        main_sim.main_agent.update_unknown_agents_status(main_sim)
+        main_sim.draw_map()
+        log.write_map(log_file,main_sim)
+
+        # 6. Estimating
+        log_file.write('6) Estimating')
+        if do_estimation:
+            main_sim.main_agent.estimation(time_step,main_sim,enemy_action_prob,types)
         log_file.write(' - OK\n')
 
-    # 4. Move Adversary
-    if main_sim.enemy_agent is not None:
-        log_file.write('4) Move Adversary Agent ')
-        r, main_action_prob,enemy_search_tree = main_sim.enemy_agent.move(reuse_tree, main_sim, enemy_search_tree, time_step)
-        log_file.write(' - OK\n')
+        time_step += 1
 
-    # 5. Updating the Map
-    log_file.write('5) Updating Map\n')
-    main_sim.update_all_A_agents(False)
-    main_sim.do_collaboration()
-    main_sim.main_agent.update_unknown_agents_status(main_sim)
-    main_sim.draw_map()
-    log.write_map(log_file,main_sim)
+        if main_sim.items_left() == 0:
+            break
 
-   	# 6. Estimating
-    log_file.write('6) Estimating')
-    if do_estimation:
-        main_sim.main_agent.estimation(time_step,main_sim,enemy_action_prob,types)
-    log_file.write(' - OK\n')
+        log_file.write("left items: "+str(main_sim.items_left())+'\n')
+        log_file.write('*********************\n')
 
-    time_step += 1
+    round +=1
+    main_sim.recreate_items()
 
-    if main_sim.items_left() == 0:
-        break
 
-    log_file.write("left items: "+str(main_sim.items_left())+'\n')
-    log_file.write('*********************\n')
 progress = 100 * (len(main_sim.items) - main_sim.items_left())/len(main_sim.items)
 sys.stdout.write("Experiment progress: %d%% | step: %d   \n" % (progress,time_step) )
 
@@ -257,4 +267,4 @@ log.print_result(main_sim,  time_step, begin_time, end_time,\
     iteration_max,max_depth, generated_data_number,reuse_tree,\
     PF_add_threshold, PF_weight,\
     type_estimation_mode,mutation_rate ,\
-    end_cpu_time, memory_usage,log_file,output_folder)
+    end_cpu_time, memory_usage,log_file,output_folder,round_count)

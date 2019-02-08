@@ -151,7 +151,7 @@ class TrainData:
             target = tmp_agent.get_memory()
 
             if target == hist['loaded_item']:
-                print target, hist['loaded_item']
+                #print target, hist['loaded_item']
                 success_count +=1
         # print 'end history ---------------------------------------------'
         return success_count
@@ -412,28 +412,13 @@ class TrainData:
             if marked_particle in self.data_set:
                 self.data_set.remove(marked_particle)
 
-        seq = [x['succeeded_steps'] for x in self.data_set]
-
-        if seq != []:
-            max_succeeded_steps = max(seq)
-        else:
-            max_succeeded_steps = 0
-
         # 5. Updating the succeeded steps
         succeeded_sum = sum([particle['succeeded_steps'] for particle in self.data_set])
 
-        # for particle in self.data_set:
-
-
-        #type_prob = float(max_succeeded_steps)/float(self.load_count+1)
-        print 'type_prob',self.type ,succeeded_sum, len(self.data_set) , max_succeeded_steps, self.generated_data_number , self.load_count
-        type_prob = float(len(self.data_set) * max_succeeded_steps)  / float(self.generated_data_number * (self.load_count ))
         if float(self.load_count) == 0.0:
             type_prob = 0.0
         else:
-            type_prob = succeeded_sum #float( max_succeeded_steps) / float(self.load_count)
-            # type_prob = float(len(self.data_set) * max_succeeded_steps) / float(
-            #     self.generated_data_number * (self.load_count))
+            type_prob = succeeded_sum
         print '*************************************************************************************************'
         return type_prob
 

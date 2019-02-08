@@ -67,8 +67,8 @@ def write_map(file, sim):
 
 def print_result(main_sim,  time_steps, begin_time, end_time,mcts_mode, parameter_estimation_mode,\
  type_selection_mode, iteration_max, max_depth, generated_data_number,\
- reuse_tree, PF_add_threshold, PF_weight, type_estimation_mode,mutation_rate ,end_cpu_time, memory_usage,log_file, current_folder,\
- po=False):
+ reuse_tree, PF_add_threshold, PF_weight, type_estimation_mode,mutation_rate ,end_cpu_time, memory_usage,log_file, current_folder, \
+                 round_count,po=False):
 
     pickleFile = open(current_folder + "/pickleResults.txt", 'wb')
     dataList = []
@@ -93,7 +93,7 @@ def print_result(main_sim,  time_steps, begin_time, end_time,mcts_mode, paramete
     systemDetails['generatedDataNumber'] = generated_data_number
     systemDetails['reuseTree'] = reuse_tree
     systemDetails['mcts_mode'] = mcts_mode
-
+    systemDetails['round_count'] = round_count
     systemDetails['PF_add_threshold'] = PF_add_threshold
     systemDetails['PF_weight'] = PF_weight
 
