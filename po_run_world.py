@@ -27,24 +27,22 @@ memory_usage = 0
 # Simulation Configuration
 sim_path = None
 
-types = ['l1', 'l2']#, 'f1', 'f2']
+types = []
 type_selection_mode = None
 
 iteration_max = None
 max_depth = None
 
-generated_data_number = None
-mutation_rate = None
-
 do_estimation = True
 train_mode = None
 parameter_estimation_mode = None
 
-
 type_estimation_mode = None
 mutation_rate = None
 
+generated_data_number = None
 reuse_tree = None
+
 mcts_mode = None
 PF_add_threshold = None
 PF_del_threshold = None
@@ -57,7 +55,7 @@ if len(sys.argv) > 1:
     input_folder = sys.argv[1]
 else:
     input_folder = log.get_input_folder()
-output_folder = log.create_output_folder('PO')
+output_folder = log.create_output_folder()
 
 # ============= Read Configuration ============
 # 1. Reading the sim configuration file
@@ -70,6 +68,9 @@ with open(input_folder+'poconfig.csv') as info_read:
 
 # 2. Getting the parameters
 for k, v in info.items():
+
+    if 'types' in k:
+        types = [str(v[0][i]).strip() for i in range(len(v[0]))]
 
     if 'sim_path' in k:
         sim_path = input_folder + str(v[0][0]).strip()
@@ -125,16 +126,20 @@ for k, v in info.items():
         else:
             apply_adversary = True
 
+print 'types',types
 sim_configuration = {'sim_path':sim_path,\
     'types':types,'type_selection_mode':type_selection_mode,\
     'iteration_max':iteration_max,'max_depth':max_depth,\
     'do_estimation':do_estimation,'train_mode':train_mode,\
     'parameter_estimation_mode':parameter_estimation_mode,\
+    'type_estimation_mode':type_estimation_mode,\
+    'mutation_rate':mutation_rate,\
     'generated_data_number':generated_data_number,\
     'reuse_tree':reuse_tree,'mcts_mode':mcts_mode,\
     'PF_add_threshold':PF_add_threshold,\
     'PF_del_threshold':PF_del_threshold,\
-    'PF_weight':PF_weight,'apply_adversary':apply_adversary}
+    'PF_weight':PF_weight,\
+    'apply_adversary':apply_adversary}
 
 # ============= Set Simulation and Log File ============
 main_sim = posimulator.POSimulator()
@@ -181,7 +186,7 @@ if apply_adversary:
 
 
 for v_a in main_sim.main_agent.visible_agents:
-    v_a.choose_target_state = main_sim.copy()
+    v_a.choose_target_state = deepcopy(main_sim) #todo: remove deepcopy and add just agents and items location
     v_a.choose_target_pos = v_a.get_position()
     v_a.choose_target_direction = v_a.direction
 
@@ -206,9 +211,8 @@ while main_sim.items_left() > 0:
         log_file.write('2) Move Common Agent '+str(i))
         main_sim.agents[i] = main_sim.move_a_agent(main_sim.agents[i])
         main_sim.main_agent.update_unknown_agents(main_sim)
-        print i,':',main_sim.agents[i].index,main_sim.agents[i].agent_type,
         log_file.write(' - OK\ntarget: '+str(main_sim.agents[i].get_memory())+'\n')
-    print
+
     # 3. Move Main Agent
     if main_sim.main_agent is not None:
         log_file.write('3) Move Main Agent ')
@@ -229,7 +233,7 @@ while main_sim.items_left() > 0:
     main_sim.draw_map()
     log.write_map(log_file,main_sim)
 
-    # 7. Updating
+    # 6. Updating the PO-MCT and the current belief state
     log_file.write('6) Updating the belief state')
     search_tree = uct.update_belief_state(main_sim,search_tree)
     
@@ -239,7 +243,7 @@ while main_sim.items_left() > 0:
         current_belief_state = None
     log_file.write(' - OK\n')
 
-    # 6. Estimating
+    # 7. Estimating
     log_file.write('7) Estimating')
     if do_estimation:
         main_sim.main_agent.estimation(time_step,main_sim,enemy_action_prob,\
@@ -267,4 +271,5 @@ log.print_result(main_sim,  time_step, begin_time, end_time,\
     mcts_mode, parameter_estimation_mode, type_selection_mode,\
     iteration_max,max_depth, generated_data_number,reuse_tree,\
     PF_add_threshold, PF_weight,\
+    type_estimation_mode,mutation_rate ,\
     end_cpu_time, memory_usage,log_file,output_folder,True)

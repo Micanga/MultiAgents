@@ -9,6 +9,7 @@ from intelligent_agent import Agent
 import parameter_estimation
 import position
 import UCT
+from UCT import State
 import unknown_agent
 import sensor
 
@@ -220,32 +221,55 @@ class POAgent(Agent, object):
                     break
     
     def update_unknown_agents(self, sim):
+        # 1. Sampling a belief state
+        if len(self.uct.belief_state) > 0:
+            state = sample(self.uct.belief_state,1)[0]
+        else:
+            state = State(sim.uniform_sim_sample())
+
+        # 2. Updating the unknown agents
         for sim_ag in sim.agents:
             for vis_ag in self.visible_agents:
                 if sim_ag.index == vis_ag.index:
+                    # a. the visible
+                    vis_ag.previous_agent_status = sim_ag
+
                     vis_ag.position = copy(sim_ag.position)
                     vis_ag.direction  = sim_ag.direction
-
                     vis_ag.next_action = sim_ag.next_action
-                    vis_ag.previous_agent_status = sim_ag
                     vis_ag.choose_target_state = copy(sim)
 
+                    # b. and the memory visible agents
                     for mem_ag in self.agent_memory:
                         if mem_ag.index == vis_ag.index:
+                            mem_ag.previous_agent_status = sim_ag
+
                             mem_ag.position = copy(sim_ag.position)
                             mem_ag.direction  = sim_ag.direction
-
                             mem_ag.next_action = vis_ag.next_action
-                            mem_ag.previous_agent_status = sim_ag
                             mem_ag.choose_target_state = copy(sim)
-
                             break
 
+        for sim_ag in state.simulator.agents:
             for inv_ag in self.invisible_agents:
                 if sim_ag.index == inv_ag.index:
+                    # a. the visible
+                    inv_ag.previous_agent_status = sim_ag
+
+                    inv_ag.position = copy(sim_ag.position)
+                    inv_ag.direction  = sim_ag.direction
+                    inv_ag.next_action = sim_ag.next_action
+                    inv_ag.choose_target_state = copy(sim)
+
+                    # b. and the memory visible agents
                     for mem_ag in self.agent_memory:
                         if mem_ag.index == inv_ag.index:
-                            inv_ag.previous_agent_status = mem_ag
+                            mem_ag.previous_agent_status = sim_ag
+
+                            mem_ag.position = copy(sim_ag.position)
+                            mem_ag.direction  = sim_ag.direction
+                            mem_ag.next_action = inv_ag.next_action
+                            mem_ag.choose_target_state = copy(sim)
                             break
 
     def update_unknown_agents_status(self, sim):

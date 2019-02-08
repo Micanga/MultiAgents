@@ -9,21 +9,24 @@ from numpy import pi
 
 # (1) CONFIG.CSV - INFORMATION
 # Defining the parameter estimation modes and
-max_depth_set = ['50']
-iteration_max_set = ['50']
+max_depth_set = ['10']
+iteration_max_set = ['10']
 
 # (2) SIM.CSV - INFORMATION
 # Defining the parameter of simulation file
 possible_directions = ['N','S','E','W']
 agent_types 		= ['l1','l2']#,'f1','f2']
 selected_types 		= [False,False]
+apply_adversary = False
 
 experiment_type_set = ['ABU', 'AGA', 'MIN']
+type_estimation_mode_set = ['PTE']#,'PTE','BTE']
+mutation_rate_set = ['0.2']#,'0.3','0.5','0.7','0.9']
 
 def random_pick(set_):
 	return set_[randint(0,len(set_)-1)]
 
-def create_config_file(current_folder,parameter_estimation_mode,mcts_mode,train_mode):
+def create_config_file(current_folder,parameter_estimation_mode,mcts_mode,train_mode,mutation_rate,type_estimation_mode):
 
 	filename = current_folder + 'poconfig.csv'
 	with open(filename, 'wb+') as file:
@@ -38,10 +41,20 @@ def create_config_file(current_folder,parameter_estimation_mode,mcts_mode,train_
 		writer.writerows([['PF_add_threshold', '0.9']])
 		writer.writerows([['PF_del_threshold', '0.9']])
 		writer.writerows([['PF_weight', '1.2']])
-		writer.writerows([['type_estimation_mode','BPTE']])  # BTE:Bayesian Type Estimation, PTE:Particle Type Estimation,
-		#  BPTE:Bayesian Particle Type Estimation
-		writer.writerows([['apply_adversary', 'False']])
-		writer.writerows([['mutation_rate', '0.2']])
+		writer.writerows([['type_estimation_mode', type_estimation_mode]]) # BTE:Bayesian Type Estimation, PTE:Particle Type Estimation,
+														   #  BPTE:Bayesian Particle Type Estimation
+		writer.writerows([['apply_adversary', apply_adversary]])
+		
+		types = ['types'] 
+		for t in agent_types:
+			types.append(t)
+
+		if apply_adversary == True:
+			types.append('w')
+
+		writer.writerows([types])
+
+		writer.writerows([['mutation_rate', mutation_rate]])
 		writer.writerows([['iteration_max', iteration_max_set[0]]])
 		writer.writerows([['max_depth', max_depth_set[0]]])
 		writer.writerows([['sim_path', 'posim.csv']])
@@ -117,6 +130,18 @@ def main():
 		agentAngle = round(random.uniform(0.1,1), 3)
 		AGENTS.append(['agent'+ str(agent_idx),str(agent_idx),agentx,agenty,agentDirection,agentType,agentLevel,agentRadius,agentAngle])
 
+	# e. defining the enemy agent
+	ENEMY = None
+	if apply_adversary:
+		agentx,agenty,grid = generateRandomNumber(grid,grid_size)
+		agentDirection = choice(possible_directions)
+		agentType = 'w'
+		agentLevel = round(random.uniform(0.9,1), 3)
+		agentRadius = round(random.uniform(0.5,1), 3)
+		agentAngle = round(random.uniform(0.5,1), 3)
+		ENEMY = (['enemy',str(agent_idx+1),agentx,agenty,agentDirection,agentType,agentLevel,agentRadius,agentAngle])
+
+	# g. defining the items
 	ITEMS = []
 	for item_idx in range(nitems):
 		itemx,itemy,grid = generateRandomNumber(grid,grid_size)
@@ -126,64 +151,75 @@ def main():
 	# 3. Creating the possible configuration files
 	# a. choosing the parameter estimation mode
 	for experiment in experiment_type_set:
-		if experiment == 'MIN':
-			train_mode = 'history_based'
-		else:
-			train_mode = 'none_history_based'
+		for tem in type_estimation_mode_set:
+			for mutation_rate in mutation_rate_set:
+				
+				if experiment == 'MIN':
+					train_mode = 'history_based'
+				else:
+					train_mode = 'none_history_based'
 
-		# b. choosing the mcts mode
-		mcts_mode = 'UCTH'
-		MC_type = 'O'
+				# b. choosing the mcts mode
+				mcts_mode = 'UCTH'
+				MC_type = 'O'
 
-		# c. creating the necessary folder
-		sub_dir = 'PO_'+ MC_type + '_' + experiment
-		current_folder = "po_inputs/" + sub_dir + '/'
-		if not os.path.exists(current_folder):
-			os.mkdir(current_folder, 0755)
+				# c. creating the necessary folder
+				sub_dir = 'PO_'+ MC_type + '_' + experiment
+				current_folder = "po_inputs/" + sub_dir + '/'
+				if not os.path.exists(current_folder):
+					os.mkdir(current_folder, 0755)
 
-		# d. creating the config files
-		create_config_file(current_folder, experiment, mcts_mode,train_mode)
+				# d. creating the config files
+				create_config_file(current_folder, experiment, mcts_mode,train_mode,mutation_rate, tem)
 
-		# 4. Creating the files
-		# a. setting the file name
-		filename = current_folder + 'posim.csv'
-		print filename
+				# 4. Creating the files
+				# a. setting the file name
+				filename = current_folder + 'posim.csv'
+				print filename
 
-		# b. creating the a csv file
-		with open(filename,'wb+') as file:
-			writer = csv.writer(file,delimiter = ',')
+				# b. creating the a csv file
+				with open(filename,'wb+') as file:
+					writer = csv.writer(file,delimiter = ',')
 
-			# i. grid
-			writer.writerows([GRID])
+					# i. grid
+					writer.writerows([GRID])
 
-			# ii. main agent
-			writer.writerows([MAIN])
+					# ii. main agent
+					writer.writerows([MAIN])
 
-			# iii. commum agents
-			for agent_idx in range(nagents):
-				writer.writerows([AGENTS[agent_idx]])
+					# iii. commum agents
+					for agent_idx in range(nagents):
+						writer.writerows([AGENTS[agent_idx]])
 
-			# iv. items
-			for item_idx in range(nitems):
-				writer.writerows([ITEMS[item_idx]])
+					# iv. enemy
+					if apply_adversary:
+						writer.writerows([ENEMY])
 
-		# c. saving map
-		with open('maps/'+map_count+'.csv','wb+') as file:
-			writer = csv.writer(file,delimiter = ',')
+					# v. items
+					for item_idx in range(nitems):
+						writer.writerows([ITEMS[item_idx]])
 
-			# i. grid
-			writer.writerows([GRID])
+				# c. saving map
+				with open('maps/'+map_count+'.csv','wb+') as file:
+					writer = csv.writer(file,delimiter = ',')
 
-			# ii. main agent
-			writer.writerows([MAIN])
+					# i. grid
+					writer.writerows([GRID])
 
-			# iii. commum agents
-			for agent_idx in range(nagents):
-				writer.writerows([AGENTS[agent_idx]])
+					# ii. main agent
+					writer.writerows([MAIN])
 
-			# iv. items
-			for item_idx in range(nitems):
-				writer.writerows([ITEMS[item_idx]])
+					# iii. commum agents
+					for agent_idx in range(nagents):
+						writer.writerows([AGENTS[agent_idx]])
+
+					# iv. enemy
+					if apply_adversary:
+						writer.writerows([ENEMY])
+
+					# v. items
+					for item_idx in range(nitems):
+						writer.writerows([ITEMS[item_idx]])
 
 if __name__ == '__main__':
     main()
