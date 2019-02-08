@@ -97,8 +97,6 @@ class TypeEstimation:
     def update_estimation(self, estimation, action_probability):
         self.estimation_history.append(estimation)
         self.action_probabilities.append(action_probability)
-
-
 ########################################################################################################################
 class ParameterEstimation:
 
@@ -996,35 +994,25 @@ class ParameterEstimation:
                     # TYPE L1 ------------------ 
                     if selected_type == 'l1':
                         if self.train_mode == 'history_based':
-                            # if unknown_agent.next_action != 'L':
-                            #     self.l1_estimation.type_probability = action_prob * self.l1_estimation.get_last_type_probability()
-                            # else:
-
-
                             if self.type_estimation_mode == 'BTE':
                                 self.l1_estimation.type_probability = action_prob * self.l1_estimation.get_last_type_probability()
 
                             if self.type_estimation_mode == 'PTE' or self.type_estimation_mode == 'BPTE':
                                 self.l1_estimation.type_probability = pf_type_probability
-
                         else:
                             self.l1_estimation.type_probability = action_prob * self.l1_estimation.get_last_type_probability()
+
                         self.l1_estimation.update_estimation(new_parameters_estimation, action_prob)
                     # TYPE L2 ------------------ 
                     elif selected_type == 'l2':
                         if self.train_mode == 'history_based':
-                            # if unknown_agent.next_action != 'L':
-                            #     self.l2_estimation.type_probability = action_prob * self.l2_estimation.get_last_type_probability()
-                            # else:
-
                             if self.type_estimation_mode == 'BTE':
                                 self.l2_estimation.type_probability = action_prob * self.l2_estimation.get_last_type_probability()
-                            if self.type_estimation_mode == 'BPTE':
-                                self.l2_estimation.type_probability = pf_type_probability * self.l2_estimation.get_last_type_probability()
-                            if self.type_estimation_mode == 'PTE':
+                            if self.type_estimation_mode == 'PTE' or self.type_estimation_mode == 'BPTE':
                                 self.l2_estimation.type_probability = pf_type_probability
                         else:
                             self.l2_estimation.type_probability = action_prob * self.l2_estimation.get_last_type_probability()
+
                         self.l2_estimation.update_estimation(new_parameters_estimation, action_prob)
                     # TYPE F1 ------------------ 
                     elif selected_type == 'f1':
@@ -1032,12 +1020,9 @@ class ParameterEstimation:
                             if unknown_agent.next_action != 'L':
                                 self.f1_estimation.type_probability = action_prob * self.f1_estimation.get_last_type_probability()
                             else:
-
                                 if self.type_estimation_mode == 'BTE':
                                     self.f1_estimation.type_probability = action_prob * self.f1_estimation.get_last_type_probability()
-                                if self.type_estimation_mode == 'BPTE':
-                                    self.f1_estimation.type_probability = pf_type_probability * self.f1_estimation.get_last_type_probability()
-                                if self.type_estimation_mode == 'PTE':
+                                if self.type_estimation_mode == 'PTE' or self.type_estimation_mode == 'BPTE':
                                     self.f1_estimation.type_probability = pf_type_probability
                         else:
                             self.f1_estimation.type_probability = action_prob * self.f1_estimation.get_last_type_probability()
@@ -1050,9 +1035,7 @@ class ParameterEstimation:
                             else:
                                 if self.type_estimation_mode == 'BTE':
                                     self.f2_estimation.type_probability = action_prob * self.f2_estimation.get_last_type_probability()
-                                if self.type_estimation_mode == 'BPTE':
-                                    self.f2_estimation.type_probability = pf_type_probability * self.f2_estimation.get_last_type_probability()
-                                if self.type_estimation_mode == 'PTE':
+                                if self.type_estimation_mode == 'PTE' or self.type_estimation_mode == 'BPTE':
                                     self.f2_estimation.type_probability = pf_type_probability
                         else:
                             self.f2_estimation.type_probability = action_prob * self.f2_estimation.get_last_type_probability()
