@@ -253,15 +253,15 @@ class POAgent(Agent, object):
         for sim_ag in state.simulator.agents:
             for inv_ag in self.invisible_agents:
                 if sim_ag.index == inv_ag.index:
-                    # a. the visible
+                    # a. the invisible
                     inv_ag.previous_agent_status = sim_ag
 
                     inv_ag.position = copy(sim_ag.position)
                     inv_ag.direction  = sim_ag.direction
                     inv_ag.next_action = sim_ag.next_action
-                    inv_ag.choose_target_state = copy(sim)
+                    inv_ag.choose_target_state = copy(state.simulator)
 
-                    # b. and the memory visible agents
+                    # b. and the memory invisible agents
                     for mem_ag in self.agent_memory:
                         if mem_ag.index == inv_ag.index:
                             mem_ag.previous_agent_status = sim_ag
@@ -269,7 +269,7 @@ class POAgent(Agent, object):
                             mem_ag.position = copy(sim_ag.position)
                             mem_ag.direction  = sim_ag.direction
                             mem_ag.next_action = inv_ag.next_action
-                            mem_ag.choose_target_state = copy(sim)
+                            mem_ag.choose_target_state = copy(state.simulator)
                             break
 
     def update_unknown_agents_status(self, sim):
@@ -414,23 +414,24 @@ class POAgent(Agent, object):
                         parameter_estimation.actions_to_reach_target.append(unknown_agent.next_action)
 
                 # 3. Estimating
-                print unknown_agent.next_action
+                # a. if the agent is visible
                 if self.agent_is_visible(unknown_agent) and unknown_agent.next_action is not None:
                     tmp_sim = copy(main_sim)
                     tmp_previous_state = copy(self.previous_state)
                     parameter_estimation.process_parameter_estimations(unknown_agent,\
                         tmp_previous_state, tmp_sim, enemy_action_prob, selected_types,True)
+
+                # b. if the agent is not visible
                 elif current_state is not None:
-                    
+                    # - updating the agent's next action based on the main agent's belief
                     for agent in current_state.agents:
                         if agent.index == unknown_agent.index:
                             next_action = agent.next_action
                             break
 
+                    # - generating the previous state based on the beliefs of main agent
                     previous_state = self.generate_previous_state(unknown_agent,next_action,current_state)
-
                     unknown_agent.next_action = next_action
-
 
                     #parameter_estimation.unseen_parameter_estimation_not_update(unknown_agent,selected_types)
                     parameter_estimation.process_parameter_estimations(unknown_agent,\
