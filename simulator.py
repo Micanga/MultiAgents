@@ -5,9 +5,8 @@ import item
 import obstacle
 import position
 import a_star
-
+from random import randint
 from copy import copy
-
 from numpy.random import choice
 from collections import defaultdict
 
