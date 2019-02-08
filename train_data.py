@@ -150,7 +150,6 @@ class TrainData:
             tmp_agent = old_state.move_a_agent(tmp_agent)
             target = tmp_agent.get_memory()
 
-
             if target == hist['loaded_item']:
                 print target, hist['loaded_item']
                 success_count +=1
@@ -240,6 +239,7 @@ class TrainData:
         else:
             max_index = 1
         particle_count = max_index
+
         if self.data_set == [] or len(self.data_set) == 0:
             tmp_sim = unknown_agent.choose_target_state.copy()
             self.initialise_particle_data_set(unknown_agent, tmp_sim)
@@ -427,7 +427,7 @@ class TrainData:
 
         #type_prob = float(max_succeeded_steps)/float(self.load_count+1)
         print 'type_prob',self.type ,succeeded_sum, len(self.data_set) , max_succeeded_steps, self.generated_data_number , self.load_count
-        # type_prob = float(len(self.data_set) * max_succeeded_steps)  / float(self.generated_data_number * (self.load_count ))
+        type_prob = float(len(self.data_set) * max_succeeded_steps)  / float(self.generated_data_number * (self.load_count ))
         if float(self.load_count) == 0.0:
             type_prob = 0.0
         else:
