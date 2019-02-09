@@ -20,8 +20,9 @@ selected_types 		= [False,False]
 
 experiment_type_set = ['ABU', 'AGA', 'MIN']
 type_estimation_mode_set = ['BPTE']#,'PTE','BTE']
-mutation_rate_set = ['0.3']#,'0.3','0.5','0.7','0.9']
+mutation_rate_set = ['0.2']#,'0.3','0.5','0.7','0.9']
 apply_adversary = False
+round_count = 2
 
 def random_pick(set_):
 	return set_[randint(0,len(set_)-1)]
@@ -44,6 +45,7 @@ def create_config_file(current_folder,parameter_estimation_mode,mcts_mode,train_
 		writer.writerows([['type_estimation_mode', type_estimation_mode]]) # BTE:Bayesian Type Estimation, PTE:Particle Type Estimation,
 														   #  BPTE:Bayesian Particle Type Estimation
 		writer.writerows([['apply_adversary', apply_adversary]])
+		writer.writerows([['round_count', round_count]])
 		writer.writerows([['mutation_rate', mutation_rate]])
 		writer.writerows([['iteration_max', iteration_max_set[0]]])
 		writer.writerows([['max_depth', max_depth_set[0]]])

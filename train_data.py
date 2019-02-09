@@ -349,7 +349,7 @@ class TrainData:
         # 3. Running and updating the particle filter method
         remove_pf = []
         print '*************************************************************************************************'
-        print 'type', self.type
+
         # print 'last_loaded_item_pos',unknown_agent.last_loaded_item_pos
         # if unknown_agent.choose_target_state.items_left() != 0 and\
         if unknown_agent.is_item_nearby(current_state.items) != -1:
@@ -360,7 +360,7 @@ class TrainData:
                 # d. Filtering the particle
                 if particle['target'] == unknown_agent.last_loaded_item_pos:
                     # and                     ds['succeeded_steps'] == max_succeeded_steps:
-                    # print 'before', particle
+                    print 'before', particle
                     particle['total_steps'] += 1
                     [tmp_level, tmp_radius, tmp_angle] = particle['parameter']
 
@@ -420,6 +420,7 @@ class TrainData:
         else:
             type_prob = succeeded_sum
         print '*************************************************************************************************'
+        print 'type', self.type, succeeded_sum
         return type_prob
 
 

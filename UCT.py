@@ -371,8 +371,8 @@ class UCT:
             c_reward = float(1)
         else:
             c_reward = 0
-
-        total_reward = float(m_reward + a_reward + c_reward) / totalItems
+        a_reward = 0
+        total_reward = float(m_reward - a_reward + c_reward) / totalItems
 
         return next_state, total_reward
 

@@ -525,37 +525,37 @@ class ParameterEstimation:
 
         l1_update_belief_value = self.l1_estimation.type_probability
         l2_update_belief_value = self.l2_estimation.type_probability
-        f1_update_belief_value = self.f1_estimation.type_probability
-        f2_update_belief_value = self.f2_estimation.type_probability
+        # f1_update_belief_value = self.f1_estimation.type_probability
+        # f2_update_belief_value = self.f2_estimation.type_probability
         if self.apply_adversary:
             w_update_belief_value = self.w_estimation.type_probability
 
         # 2. Summing
-        sum_of_probabilities = l1_update_belief_value + l2_update_belief_value + \
-                               f1_update_belief_value + f2_update_belief_value
+        sum_of_probabilities = l1_update_belief_value + l2_update_belief_value #+ \
+                               # f1_update_belief_value + f2_update_belief_value
         if self.apply_adversary :
             sum_of_probabilities += w_update_belief_value
         belief_factor = 1
 
         # 3. Normalising
         if sum_of_probabilities != 0:
-            belief_factor = 1 / sum_of_probabilities
+            belief_factor = 1 / float(sum_of_probabilities)
 
             w_prob = 0
             l1_prob = l1_update_belief_value * belief_factor
             l2_prob = l2_update_belief_value * belief_factor
-            f1_prob = f1_update_belief_value * belief_factor
-            f2_prob = f2_update_belief_value * belief_factor
+            # f1_prob = f1_update_belief_value * belief_factor
+            # f2_prob = f2_update_belief_value * belief_factor
 
             self.l1_estimation.type_probability = l1_prob
             self.l2_estimation.type_probability = l2_prob
-            self.f1_estimation.type_probability = f1_prob
-            self.f2_estimation.type_probability = f2_prob
+            # self.f1_estimation.type_probability = f1_prob
+            # self.f2_estimation.type_probability = f2_prob
 
             self.l1_estimation.type_probabilities.append(l1_prob)
             self.l2_estimation.type_probabilities.append(l2_prob)
-            self.f1_estimation.type_probabilities.append(f1_prob)
-            self.f2_estimation.type_probabilities.append(f2_prob)
+            # self.f1_estimation.type_probabilities.append(f1_prob)
+            # self.f2_estimation.type_probabilities.append(f2_prob)
 
             if self.apply_adversary:
                 w_prob = w_update_belief_value * belief_factor
@@ -566,14 +566,14 @@ class ParameterEstimation:
 
                 self.l1_estimation.type_probability = 0.2
                 self.l2_estimation.type_probability = 0.2
-                self.f1_estimation.type_probability = 0.2
-                self.f2_estimation.type_probability = 0.2
+                # self.f1_estimation.type_probability = 0.2
+                # self.f2_estimation.type_probability = 0.2
                 self.w_estimation.type_probability = 0.2
 
                 self.l1_estimation.type_probabilities.append(0.2)
                 self.l2_estimation.type_probabilities.append(0.2)
-                self.f1_estimation.type_probabilities.append(0.2)
-                self.f2_estimation.type_probabilities.append(0.2)
+                # self.f1_estimation.type_probabilities.append(0.2)
+                # self.f2_estimation.type_probabilities.append(0.2)
                 self.w_estimation.type_probabilities.append(0.2)
             else:
 
@@ -584,8 +584,8 @@ class ParameterEstimation:
 
                 self.l1_estimation.type_probabilities.append(0.25)
                 self.l2_estimation.type_probabilities.append(0.25)
-                self.f1_estimation.type_probabilities.append(0.25)
-                self.f2_estimation.type_probabilities.append(0.25)
+                # self.f1_estimation.type_probabilities.append(0.25)
+                # self.f2_estimation.type_probabilities.append(0.25)
 
     ####################################################################################################################
     def bayesian_updating(self, x_train, y_train, previous_estimate,  polynomial_degree=2, sampling='average'):
@@ -952,7 +952,7 @@ class ParameterEstimation:
 
     ####################################################################################################################
     def process_parameter_estimations(self, unknown_agent,previous_state,\
-    current_state, enemy_action_prob, types, po = False):
+    current_state, enemy_action_prob, types, po=False):
         # 1. Initialising the parameter variables
         x_train, types_train_data = [], []
         new_parameters_estimation = None
@@ -973,6 +973,8 @@ class ParameterEstimation:
                 # i. generating the particle for the selected type
                 if selected_type != 'w':
                     tmp_sim = previous_state.copy()
+                    print '*********previous state in simulation*******'
+                    tmp_sim.draw_map()
 
                     x = unknown_agent.previous_agent_status.position[0] 
                     y = unknown_agent.previous_agent_status.position[1]
@@ -987,6 +989,8 @@ class ParameterEstimation:
                     # Runs a simulator object
                     tmp_agent = tmp_sim.move_a_agent(tmp_agent)
                     action_prob = tmp_agent.get_action_probability(unknown_agent.next_action)
+                    print selected_type, tmp_agent.memory.get_position(),action_prob
+                    print '*******************************************'
                     if action_prob is None:
                         action_prob = 0.2
                     # print action_prob
@@ -1069,18 +1073,18 @@ class ParameterEstimation:
             if self.type_estimation_mode == 'BPTE':
                 self.l1_estimation.type_probability = self.normalize_type_probability('l1') * self.l1_estimation.get_last_type_probability()
                 self.l2_estimation.type_probability = self.normalize_type_probability('l2') * self.l2_estimation.get_last_type_probability()
-                self.f1_estimation.type_probability = self.normalize_type_probability('f1') * self.f1_estimation.get_last_type_probability()
-                self.f2_estimation.type_probability = self.normalize_type_probability('f2') * self.f2_estimation.get_last_type_probability()
+                # self.f1_estimation.type_probability = self.normalize_type_probability('f1') * self.f1_estimation.get_last_type_probability()
+                # self.f2_estimation.type_probability = self.normalize_type_probability('f2') * self.f2_estimation.get_last_type_probability()
             self.alpha = 0.1
             if self.type_estimation_mode == 'LPTE':
                 self.l1_estimation.type_probability = self.alpha *  self.normalize_type_probability('l1') + \
                                                       (1-self.alpha) * self.l1_estimation.get_last_type_probability()
                 self.l2_estimation.type_probability = self.alpha *  self.normalize_type_probability('l2') + \
                                                       (1-self.alpha) * self.l2_estimation.get_last_type_probability()
-                self.f1_estimation.type_probability = self.alpha *  self.normalize_type_probability('f1') + \
-                                                      (1-self.alpha) * self.f1_estimation.get_last_type_probability()
-                self.f2_estimation.type_probability = self.alpha *  self.normalize_type_probability('f2') + \
-                                                      (1-self.alpha) * self.f2_estimation.get_last_type_probability()
+                # self.f1_estimation.type_probability = self.alpha *  self.normalize_type_probability('f1') + \
+                #                                       (1-self.alpha) * self.f1_estimation.get_last_type_probability()
+                # self.f2_estimation.type_probability = self.alpha *  self.normalize_type_probability('f2') + \
+                #                                       (1-self.alpha) * self.f2_estimation.get_last_type_probability()
         self.normalize_type_probabilities()
         print '>>> %d) %.4lf %.4lf %.4lf %.4lf' %(unknown_agent.index,self.l1_estimation.type_probability,self.l2_estimation.type_probability, \
 

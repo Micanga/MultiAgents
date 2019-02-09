@@ -43,6 +43,7 @@ def plot_type_probability(aga_tp, abu_tp, pf_tp, threshold, plotname):
 	fig = plt.figure(fig_count,figsize=(6.4,2.4))
 	fig_count += 1
 
+
 	# 2. Normalizing TP
 	aga_tp = np.array(aga_tp)
 	aga_error = aga_tp.mean(axis=0)#.tolist()
