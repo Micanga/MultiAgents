@@ -20,7 +20,7 @@ selected_types 		= [False,False]
 apply_adversary = False
 
 experiment_type_set = ['ABU', 'AGA', 'MIN']
-type_estimation_mode_set = ['PTE']#,'PTE','BTE']
+type_estimation_mode_set = ['BPTE']#,'PTE','BTE']
 mutation_rate_set = ['0.2']#,'0.3','0.5','0.7','0.9']
 
 def random_pick(set_):

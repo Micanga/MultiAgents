@@ -64,13 +64,13 @@ def plot_type_probability(aga_tp, abu_tp, pf_tp, threshold, plotname):
 	plt.plot(aga_error,
 			 label='AGA',
 			 color='b',
-			 linestyle=':',			 
+			 linestyle='-',
 			 linewidth=2)
 
 	plt.plot(abu_error,
 			 label='ABU',
 			 color='g',
-			 linestyle='-.',   
+			 linestyle='-',
 			 linewidth=2)
 
 	plt.plot(pf_error,
@@ -160,14 +160,14 @@ def plot_summarised(aga,aga_std,aga_ci,
 	plt.plot(plot_aga,
 			 label='AGA',
 			 color='b',
-			 linestyle=':',			 
+			 linestyle='-',
 			 linewidth=2,
 			 clip_on=False)
 
 	plt.plot(plot_abu,
 			 label='ABU',
 			 color='g',
-			 linestyle='-.',   
+			 linestyle='-',
 			 linewidth=2,
 			 clip_on=False)
 

@@ -192,9 +192,11 @@ for v_a in main_sim.main_agent.visible_agents:
 
 # ============= Start Simulation ==================
 time_step = 0
+
 round = 1
 while round <= round_count:
     while main_sim.items_left() > 0:
+        items_number = main_sim.items_left()
         progress = 100 * (len(main_sim.items) - main_sim.items_left())/len(main_sim.items)
         sys.stdout.write("Experiment progress: %d%% | step: %d   \r" % (progress,time_step) )
         sys.stdout.flush()
@@ -237,6 +239,12 @@ while round <= round_count:
 
         # 6. Estimating
         log_file.write('6) Estimating')
+        loaded_items_number = items_number - main_sim.items_left()
+        if loaded_items_number > 0 :
+            item_loaded = True
+        else :
+            item_loaded = False
+
         if do_estimation:
             main_sim.main_agent.estimation(time_step,main_sim,enemy_action_prob,types)
         log_file.write(' - OK\n')

@@ -40,6 +40,7 @@ class Agent:
         for agent in sim.agents:
             x, y = agent.get_position()
             a = unknown_agent.Agent(x, y, agent.direction,agent_index)
+            a.agent_type = agent.agent_type
 
             self.visible_agents.append(a)
             agent_index +=1
@@ -47,6 +48,7 @@ class Agent:
         if sim.enemy_agent is not None:
             x, y = sim.enemy_agent.get_position()
             a = unknown_agent.Agent(x, y, sim.enemy_agent.direction,agent_index)
+            a.agent_type = 'w'
 
             self.visible_agents.append(a)
 
@@ -330,8 +332,24 @@ class Agent:
         return new_position
 
     ####################################################################################################################
+    def find_loaded_item(self, main_sim):
+
+        loaded_items = []
+        previous_items = self.previous_state.items
+        current_items = main_sim.items
+
+        for i in range (0,len(previous_items)):
+            if current_items[i].loaded != previous_items[i].loaded:
+                loaded_items.append(current_items[i])
+
+        return loaded_items
+
+
+    ####################################################################################################################
     def estimation(self,time_step,main_sim,enemy_action_prob, types):
         # For the unkown agents, estimating the parameters and types
+
+        loaded_items_list = self.find_loaded_item(main_sim)
         for unknown_agent in self.visible_agents:
             if unknown_agent is not None:
                 # 1. Selecting the types
@@ -353,4 +371,4 @@ class Agent:
                     tmp_sim = copy(main_sim)
                     tmp_previous_state = copy(self.previous_state)
                     parameter_estimation.process_parameter_estimations(unknown_agent,\
-                        tmp_previous_state, tmp_sim, enemy_action_prob, selected_types)
+                        tmp_previous_state, tmp_sim, enemy_action_prob, selected_types,loaded_items_list)

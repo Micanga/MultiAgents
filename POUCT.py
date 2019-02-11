@@ -408,7 +408,7 @@ class POUCT(UCT,object):
                 break
 
         # b. action node --- go to ---> observation node
-        print 'o',observation
+        # print 'o',observation
         for obs_child in search_tree.childNodes:
             print 'c',obs_child.observation
             if self.observation_is_equal(observation,obs_child.observation):
@@ -416,9 +416,9 @@ class POUCT(UCT,object):
                 break
 
         # c. sampling the new particles
-        print 'n',search_tree.observation
+        # print 'n',search_tree.observation
 
-        print '********* Updating the belief state **********'
+        # print '********* Updating the belief state **********'
         non_child = False
         if search_tree.observation == None:
             non_child = True

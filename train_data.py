@@ -331,7 +331,51 @@ class TrainData:
             return False
 
     ###################################################################################################################
-    def update_data_set(self, unknown_agent,current_state, po):
+    def update_data_set(self,unknown_agent,loaded_items_list,current_state, po):
+        # 1. Getting the agent to update
+        cts_agent = None
+        if not po:
+            cts_agent = copy(current_state.main_agent.visible_agents[unknown_agent.index])
+        else:
+            memory_agents = current_state.main_agent.agent_memory
+            for m_a in memory_agents:
+                if m_a.index == unknown_agent.index:
+                    cts_agent = m_a
+                    break
+
+
+        for particle in self.data_set:
+            # print particle['target'], unknown_agent.last_loaded_item_pos
+
+            for item in loaded_items_list:
+
+                if particle['target'] == item.get_position():
+
+                    [tmp_level, tmp_radius, tmp_angle] = particle['parameter']
+
+                    x, y = cts_agent.position[0], cts_agent.position[1]
+                    direction = cts_agent.direction
+                    tmp_agent = agent.Agent(x, y, direction, self.type, -1)
+
+                    # b. Getting and setting the parameters data
+
+                    tmp_agent.set_parameters(current_state, tmp_level, tmp_radius, tmp_angle)
+
+                    # c. Simulating the selected particle
+                    copy_state = current_state.copy()
+                    tmp_agent = copy_state.move_a_agent(tmp_agent)
+                    target = tmp_agent.get_memory()
+
+                    if tmp_agent.route_actions is not None or current_state.items_left() == 0:
+                        particle['target'] = target
+
+
+
+
+
+    ###################################################################################################################
+
+    def evaluate_data_set(self, unknown_agent, current_state, po):
         # 1. Getting the agent to update
         cts_agent = None
         if not po:
@@ -344,7 +388,6 @@ class TrainData:
                     break
 
         # 2. Increasing the load count
-
 
         # 3. Running and updating the particle filter method
         remove_pf = []
@@ -387,7 +430,8 @@ class TrainData:
                         particle['route'] = tmp_agent.route_actions
                         particle['target'] = target
 
-                        particle['succeeded_steps'] = self.check_history(unknown_agent,tmp_level, tmp_radius, tmp_angle,self.type) + 1
+                        particle['succeeded_steps'] = self.check_history(unknown_agent, tmp_level, tmp_radius,
+                                                                         tmp_angle, self.type) + 1
 
                         particle['failed_steps'] = 0
                         print 'after', particle
@@ -397,13 +441,13 @@ class TrainData:
                             remove_pf.append(particle)
                         else:
                             particle['failed_steps'] += 1
-                            particle['succeeded_steps'] -=1
+                            particle['succeeded_steps'] -= 1
                 else:
                     if int(particle['failed_steps']) > 0:
                         self.false_data_set.append(particle)
 
                         remove_pf.append(particle)
-                    else :
+                    else:
                         particle['failed_steps'] += 1
                         particle['succeeded_steps'] -= 1
 

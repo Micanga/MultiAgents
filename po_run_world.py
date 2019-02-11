@@ -55,7 +55,7 @@ if len(sys.argv) > 1:
     input_folder = sys.argv[1]
 else:
     input_folder = log.get_input_folder()
-output_folder = log.create_output_folder()
+output_folder = log.create_output_folder('PO')
 
 # ============= Read Configuration ============
 # 1. Reading the sim configuration file

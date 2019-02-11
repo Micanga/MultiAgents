@@ -394,9 +394,23 @@ class POAgent(Agent, object):
             if v_a.index == unknown_agent.index:
                 return True
         return False
+        ####################################################################################################################
+
+    def find_loaded_item(self, main_sim):
+
+        loaded_items = []
+        previous_items = self.previous_state.items
+        current_items = main_sim.items
+
+        for i in range(0, len(previous_items)):
+            if current_items[i].loaded != previous_items[i].loaded:
+                loaded_items.append(current_items[i])
+
+        return loaded_items
 
     def estimation(self,time_step,main_sim,enemy_action_prob, types, actions,current_state):
         # For the unkown agents, estimating the parameters and types
+        loaded_items_list = self.find_loaded_item(main_sim)
         for unknown_agent in self.agent_memory:
             if unknown_agent is not None:
                 # 1. Selecting the types
@@ -414,12 +428,12 @@ class POAgent(Agent, object):
                         parameter_estimation.actions_to_reach_target.append(unknown_agent.next_action)
 
                 # 3. Estimating
-                print unknown_agent.next_action
+                # print unknown_agent.next_action
                 if self.agent_is_visible(unknown_agent) and unknown_agent.next_action is not None:
                     tmp_sim = copy(main_sim)
                     tmp_previous_state = copy(self.previous_state)
                     parameter_estimation.process_parameter_estimations(unknown_agent,\
-                        tmp_previous_state, tmp_sim, enemy_action_prob, selected_types,True)
+                        tmp_previous_state, tmp_sim, enemy_action_prob, selected_types,loaded_items_list,True)
                 elif current_state is not None:
                     
                     for agent in current_state.agents:
