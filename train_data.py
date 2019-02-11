@@ -246,17 +246,24 @@ class TrainData:
 
         # 1. Generating data (particles)
 
+        if len(self.radius_pool) > 0:
+            random_creation = self.mutation_rate * (self.generated_data_number - len(self.data_set))
+            pool_creation = (1 - self.mutation_rate) * (self.generated_data_number - len(self.data_set))
+        else:
+            random_creation = self.generated_data_number - len(self.data_set)
+            pool_creation = 0
+
         none_count, none_thereshold = 0, self.generated_data_number
         while len(self.data_set) < self.generated_data_number:
             # a. Sampling a particle
             particle = {}
-            if none_count < (1 - self.mutation_rate) * none_thereshold:
+            if none_count < pool_creation:
                 tmp_radius = random.choice(self.radius_pool)
                 tmp_angle = random.choice(self.angle_pool)
                 tmp_level = random.choice(self.level_pool)
 
             # if [tmp_level, tmp_radius, tmp_angle] not in self.false_data_set:
-            elif none_count < self.mutation_rate * none_thereshold:  # Mutation
+            elif none_count < random_creation:  # Mutation
                 tmp_radius = random.uniform(radius_min, radius_max)  # 'radius'
                 tmp_angle = random.uniform(angle_min, angle_max)  # 'angle'
                 tmp_level = random.uniform(level_min, level_max)  # 'level'
