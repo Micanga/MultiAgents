@@ -966,6 +966,7 @@ class ParameterEstimation:
         x_train, types_train_data = [], []
         new_parameters_estimation = None
 
+        print '>>>>>',po
         # 2. Estimating the agent type
         for selected_type in types:
             # a. updating the train data for the current state

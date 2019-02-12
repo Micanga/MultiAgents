@@ -39,6 +39,7 @@ parameter_estimation_mode = None
 
 type_estimation_mode = None
 mutation_rate = None
+round_count = None
 
 generated_data_number = None
 reuse_tree = None
@@ -108,6 +109,9 @@ for k, v in info.items():
     if 'reuseTree' in k:
         reuse_tree = v[0][0]
 
+    if 'round_count' in k:
+        round_count = int(v[0][0])
+        
     if 'mcts_mode' in k:
         mcts_mode = str(v[0][0]).strip()
 
@@ -192,6 +196,8 @@ for v_a in main_sim.main_agent.visible_agents:
 
 # ============= Start Simulation ==================
 time_step = 0
+
+round = 1
 while main_sim.items_left() > 0:
     progress = 100 * (len(main_sim.items) - main_sim.items_left())/len(main_sim.items)
     sys.stdout.write("Experiment progress: %d%% | step: %d   \r" % (progress,time_step) )
@@ -272,4 +278,4 @@ log.print_result(main_sim,  time_step, begin_time, end_time,\
     iteration_max,max_depth, generated_data_number,reuse_tree,\
     PF_add_threshold, PF_weight,\
     type_estimation_mode,mutation_rate ,\
-    end_cpu_time, memory_usage,log_file,output_folder,True)
+    end_cpu_time, memory_usage,log_file,output_folder,round_count,True)

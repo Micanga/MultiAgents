@@ -448,4 +448,4 @@ class POAgent(Agent, object):
 
                     #parameter_estimation.unseen_parameter_estimation_not_update(unknown_agent,selected_types)
                     parameter_estimation.process_parameter_estimations(unknown_agent,\
-                        previous_state, current_state, enemy_action_prob, selected_types,True)
+                        previous_state, current_state, enemy_action_prob, selected_types,loaded_items_list,True)
