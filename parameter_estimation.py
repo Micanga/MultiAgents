@@ -1064,9 +1064,9 @@ class ParameterEstimation:
 
         # d. If a load action was performed, restart the estimation process
         if unknown_agent.next_action == 'L' and unknown_agent.is_item_nearby(current_state.items) != -1:
-            if unknown_agent.choose_target_state != None:
+            if unknown_agent.choose_target_state != None and unknown_agent.choose_target_pos !=None:
                 hist = {}
-                hist['pos'] = copy(unknown_agent.choose_target_pos) if unknown_agent.choose_target_pos is not None else (-1,-1)
+                hist['pos'] = copy(unknown_agent.choose_target_pos)
                 hist['direction'] = unknown_agent.choose_target_direction
 
                 hist['state'] = unknown_agent.choose_target_state.copy()  # todo: replace it with items and agents position instead of whole state!
