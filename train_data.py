@@ -139,21 +139,23 @@ class TrainData:
         success_count = 0
         # print 'begin history ---------------------------------------------'
         for hist in unknown_agent.choose_target_history:
-            (x, y) = hist['pos']
-            # print hist
-            old_state = hist['state'].copy()
-            tmp_agent = agent.Agent(x, y, hist['direction'], selected_type, -1)
+            if hist is not None:
+                print 'hist =',hist
+                (x, y) = hist['pos']
+                # print hist
+                old_state = hist['state'].copy()
+                tmp_agent = agent.Agent(x, y, hist['direction'], selected_type, -1)
 
-            tmp_agent.set_parameters(old_state, level, radius, angle)
+                tmp_agent.set_parameters(old_state, level, radius, angle)
 
-            # find the target with
-            tmp_agent = old_state.move_a_agent(tmp_agent)
-            target = tmp_agent.get_memory()
+                # find the target with
+                tmp_agent = old_state.move_a_agent(tmp_agent)
+                target = tmp_agent.get_memory()
 
-            if target == hist['loaded_item']:
-                #print target, hist['loaded_item']
-                success_count +=1
-        # print 'end history ---------------------------------------------'
+                if target == hist['loaded_item']:
+                    #print target, hist['loaded_item']
+                    success_count +=1
+            # print 'end history ---------------------------------------------'
         return success_count
 
 
