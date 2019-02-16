@@ -88,8 +88,8 @@ class Simulator:
                         self.main_agent.level = val[4]
 
                     elif 'enemy' in key:
-                        self.enemy_agent = intelligent_agent.Agent(val[0], val[1], val[2],True)
-                        self.enemy_agent.level = val[4]
+                        self.enemy_agent = intelligent_agent.Agent(val[1], val[2], val[3],True)
+                        self.enemy_agent.level = val[5]
 
                     elif 'obstacle' in key:
                         self.obstacles.append(obstacle.Obstacle(val[0], val[1]))

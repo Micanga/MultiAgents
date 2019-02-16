@@ -1,14 +1,16 @@
-type_selection_mode , AS
-parameter_estimation_mode , MIN
-train_mode ,history_based
-generated_data_number, 100
-PF_add_threshold , 0.9
-
-PF_weight , 1.5
-reuseTree , False
+type_selection_mode,AS
+parameter_estimation_mode,MIN
+train_mode,history_based
+generated_data_number,100
+reuseTree,False
 mcts_mode,UCTH
-iteration_max , 20
-max_depth , 20
-sim_path,sim.csv
-do_estimation,False
+PF_add_threshold,0.9
+PF_del_threshold,0.9
+PF_weight,1.2
+type_estimation_mode,PTE
 apply_adversary,True
+round_count,2
+mutation_rate,0.2
+iteration_max,50
+max_depth,50
+sim_path,sim.csv

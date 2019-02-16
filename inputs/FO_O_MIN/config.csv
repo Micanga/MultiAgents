@@ -8,7 +8,7 @@ PF_add_threshold,0.9
 PF_del_threshold,0.9
 PF_weight,1.2
 type_estimation_mode,PTE
-apply_adversary,False
+apply_adversary,True
 round_count,2
 mutation_rate,0.2
 iteration_max,50

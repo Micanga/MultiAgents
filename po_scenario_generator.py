@@ -111,7 +111,7 @@ def main():
 	grid = [[0 for col in range(grid_size)] for row in range(grid_size)]
 	GRID = ['grid',grid_size,grid_size]
 
-	# d. defining the main agent parameters
+	# a. defining the main agent parameters
 	mainx,mainy,grid = generateRandomNumber(grid,grid_size)
 	mainDirection    = choice(possible_directions)
 	mainType  = 'm'
@@ -119,7 +119,7 @@ def main():
 	mainRadius, mainAngle = radius, angle
 	MAIN = ['main',mainx,mainy,mainDirection,mainType,mainLevel,mainRadius,mainAngle]
 
-	# e. defining the commum agents
+	# b. defining the commum agents
 	AGENTS = []
 	for agent_idx in range(nagents):
 		agentx,agenty,grid = generateRandomNumber(grid,grid_size)
@@ -130,7 +130,7 @@ def main():
 		agentAngle = round(random.uniform(0.1,1), 3)
 		AGENTS.append(['agent'+ str(agent_idx),str(agent_idx),agentx,agenty,agentDirection,agentType,agentLevel,agentRadius,agentAngle])
 
-	# e. defining the enemy agent
+	# c. defining the enemy agent
 	ENEMY = None
 	if apply_adversary:
 		agentx,agenty,grid = generateRandomNumber(grid,grid_size)
@@ -141,7 +141,7 @@ def main():
 		agentAngle = round(random.uniform(0.5,1), 3)
 		ENEMY = (['enemy',str(agent_idx+1),agentx,agenty,agentDirection,agentType,agentLevel,agentRadius,agentAngle])
 
-	# g. defining the items
+	# d. defining the items
 	ITEMS = []
 	for item_idx in range(nitems):
 		itemx,itemy,grid = generateRandomNumber(grid,grid_size)
