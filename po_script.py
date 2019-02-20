@@ -11,14 +11,14 @@ map_count       = 0
 number_of_tests = 3
 
 square_grid_size    = ['10']
-number_of_agents    = ['1']#'2','3','5','7','10'
+number_of_agents    = ['5']#'2','3','5','7','10'
 number_of_items     = ['10']#,'20','25']
 
-radius_set          = ['3']
+radius_set          = ['3','5','7']
 angle_set           = [2*pi]
 
 # 1. Defining the experiment type
-experiment_type_set = ['MIN','AGA','ABU']
+experiment_type_set = ['ABU','AGA','MIN']
 
 # 2. Starting the experiment
 test_number = 0

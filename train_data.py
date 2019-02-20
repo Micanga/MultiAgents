@@ -140,7 +140,7 @@ class TrainData:
         # print 'begin history ---------------------------------------------'
         for hist in unknown_agent.choose_target_history:
             if hist is not None:
-                print 'hist =',hist
+                #print 'hist =',hist
                 (x, y) = hist['pos']
                 # print hist
                 old_state = hist['state'].copy()
@@ -400,7 +400,7 @@ class TrainData:
 
         # 3. Running and updating the particle filter method
         remove_pf = []
-        print '*************************************************************************************************'
+        #print '*************************************************************************************************'
 
         # print 'last_loaded_item_pos',unknown_agent.last_loaded_item_pos
         # if unknown_agent.choose_target_state.items_left() != 0 and\
@@ -412,7 +412,7 @@ class TrainData:
                 # d. Filtering the particle
                 if particle['target'] == unknown_agent.last_loaded_item_pos:
                     # and                     ds['succeeded_steps'] == max_succeeded_steps:
-                    print 'before', particle
+                    #print 'before', particle
                     particle['total_steps'] += 1
                     [tmp_level, tmp_radius, tmp_angle] = particle['parameter']
 
@@ -443,7 +443,7 @@ class TrainData:
                                                                          tmp_angle, self.type) + 1
 
                         particle['failed_steps'] = 0
-                        print 'after', particle
+                        #print 'after', particle
                     else:
                         if int(particle['failed_steps']) > 0:
                             self.false_data_set.append(particle)
@@ -472,8 +472,8 @@ class TrainData:
             type_prob = 0.0
         else:
             type_prob = succeeded_sum
-        print '*************************************************************************************************'
-        print 'type', self.type, succeeded_sum
+        #print '*************************************************************************************************'
+        #print 'type', self.type, succeeded_sum
         return type_prob
 
 

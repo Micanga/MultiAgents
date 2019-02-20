@@ -21,7 +21,7 @@ import POUCT
 
 # ============= Set Configurations ============
 # System Configuration
-sys.setrecursionlimit(2000)
+sys.setrecursionlimit(10000)
 memory_usage = 0
 
 # Simulation Configuration
@@ -198,72 +198,78 @@ for v_a in main_sim.main_agent.visible_agents:
 time_step = 0
 
 round = 1
-while main_sim.items_left() > 0:
-    progress = 100 * (len(main_sim.items) - main_sim.items_left())/len(main_sim.items)
-    sys.stdout.write("Experiment progress: %d%% | step: %d   \r" % (progress,time_step) )
-    sys.stdout.flush()
+round_count = 2
+while round <= round_count:
+    print 'start round',round,'/',round_count
+    while main_sim.items_left() > 0:
+        progress = 100 * (len(main_sim.items) - main_sim.items_left())/len(main_sim.items)
+        sys.stdout.write("Experiment progress: %d%% | step: %d   \r" % (progress,time_step) )
+        sys.stdout.flush()
 
-    log_file.write('***** Iteration #'+str(time_step)+' *****\n')
+        log_file.write('***** Iteration #'+str(time_step)+' *****\n')
 
-    # 1. Updating Unkown Agents
-    if main_sim.main_agent is not None:
-        log_file.write('1) Updating Unknown Agents for Main Agent ')
-        main_sim.main_agent.previous_state = main_sim.copy()
-        main_sim.main_agent.update_unknown_agents(main_sim)
-        log_file.write('- OK\n')
+        # 1. Updating Unkown Agents
+        if main_sim.main_agent is not None:
+            log_file.write('1) Updating Unknown Agents for Main Agent ')
+            main_sim.main_agent.previous_state = main_sim.copy()
+            main_sim.main_agent.update_unknown_agents(main_sim)
+            log_file.write('- OK\n')
 
-    # 2. Move Common Agent
-    for i in range(len(main_sim.agents)):
-        log_file.write('2) Move Common Agent '+str(i))
-        main_sim.agents[i] = main_sim.move_a_agent(main_sim.agents[i])
-        main_sim.main_agent.update_unknown_agents(main_sim)
-        log_file.write(' - OK\ntarget: '+str(main_sim.agents[i].get_memory())+'\n')
+        # 2. Move Common Agent
+        for i in range(len(main_sim.agents)):
+            log_file.write('2) Move Common Agent '+str(i))
+            main_sim.agents[i] = main_sim.move_a_agent(main_sim.agents[i])
+            main_sim.main_agent.update_unknown_agents(main_sim)
+            log_file.write(' - OK\ntarget: '+str(main_sim.agents[i].get_memory())+'\n')
 
-    # 3. Move Main Agent
-    if main_sim.main_agent is not None:
-        log_file.write('3) Move Main Agent ')
-        r,enemy_action_prob,search_tree = main_sim.main_agent.move(reuse_tree, main_sim, search_tree, time_step)
+        # 3. Move Main Agent
+        if main_sim.main_agent is not None:
+            log_file.write('3) Move Main Agent ')
+            r,enemy_action_prob,search_tree = main_sim.main_agent.move(reuse_tree, main_sim, search_tree, time_step)
+            log_file.write(' - OK\n')
+
+        # 4. Move Adversary
+        if main_sim.enemy_agent is not None:
+            log_file.write('4) Move Adversary Agent ')
+            r, main_action_prob,enemy_search_tree = main_sim.enemy_agent.move(reuse_tree, main_sim, enemy_search_tree, time_step)
+            log_file.write(' - OK\n')
+
+        # 5. Updating the Map
+        log_file.write('5) Updating Map\n')
+        actions = main_sim.update_all_A_agents(False)
+        main_sim.do_collaboration()
+        main_sim.main_agent.update_unknown_agents_status(main_sim)
+        main_sim.draw_map()
+        log.write_map(log_file,main_sim)
+
+        # 6. Updating the PO-MCT and the current belief state
+        log_file.write('6) Updating the belief state')
+        search_tree = uct.update_belief_state(main_sim,search_tree)
+        
+        if len(main_sim.main_agent.uct.belief_state) > 0:
+            current_belief_state = copy((sample(main_sim.main_agent.uct.belief_state,1)[0]).simulator)
+        else:
+            current_belief_state = None
         log_file.write(' - OK\n')
 
-    # 4. Move Adversary
-    if main_sim.enemy_agent is not None:
-        log_file.write('4) Move Adversary Agent ')
-        r, main_action_prob,enemy_search_tree = main_sim.enemy_agent.move(reuse_tree, main_sim, enemy_search_tree, time_step)
+        # 7. Estimating
+        log_file.write('7) Estimating')
+        if do_estimation:
+            main_sim.main_agent.estimation(time_step,main_sim,enemy_action_prob,\
+                types,actions,current_belief_state)
         log_file.write(' - OK\n')
 
-    # 5. Updating the Map
-    log_file.write('5) Updating Map\n')
-    actions = main_sim.update_all_A_agents(False)
-    main_sim.do_collaboration()
-    main_sim.main_agent.update_unknown_agents_status(main_sim)
-    main_sim.draw_map()
-    log.write_map(log_file,main_sim)
+        time_step += 1
+        gc.collect()
 
-    # 6. Updating the PO-MCT and the current belief state
-    log_file.write('6) Updating the belief state')
-    search_tree = uct.update_belief_state(main_sim,search_tree)
-    
-    if len(main_sim.main_agent.uct.belief_state) > 0:
-        current_belief_state = copy((sample(main_sim.main_agent.uct.belief_state,1)[0]).simulator)
-    else:
-        current_belief_state = None
-    log_file.write(' - OK\n')
+        if main_sim.items_left() == 0:
+            break
 
-    # 7. Estimating
-    log_file.write('7) Estimating')
-    if do_estimation:
-        main_sim.main_agent.estimation(time_step,main_sim,enemy_action_prob,\
-            types,actions,current_belief_state)
-    log_file.write(' - OK\n')
+        log_file.write("left items: "+str(main_sim.items_left())+'\n')
+        log_file.write('*********************\n')
 
-    time_step += 1
-    gc.collect()
-
-    if main_sim.items_left() == 0:
-        break
-
-    log_file.write("left items: "+str(main_sim.items_left())+'\n')
-    log_file.write('*********************\n')
+    round +=1
+    main_sim.recreate_items()
 progress = 100 * (len(main_sim.items) - main_sim.items_left())/len(main_sim.items)
 sys.stdout.write("Experiment progress: %d%% | step: %d   \n" % (progress,time_step) )
     

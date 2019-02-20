@@ -506,15 +506,15 @@ class ParameterEstimation:
         else:
             if self.apply_adversary:
 
-                l1_prob = 0.2
-                l2_prob = 0.2
+                l1_prob = 0.33
+                l2_prob = 0.33
                 # f1_prob = 0.2
                 # f2_prob = 0.2
-                w_prob = 0.2
+                w_prob = 0.33
 
             else:
-                l1_prob = 0.25
-                l2_prob = 0.25
+                l1_prob = 0.5
+                l2_prob = 0.5
                 # f1_prob = 0.25
                 # f2_prob = 0.25
         if type =='l1':
@@ -572,26 +572,26 @@ class ParameterEstimation:
         else:
             if self.apply_adversary:
 
-                self.l1_estimation.type_probability = 0.2
-                self.l2_estimation.type_probability = 0.2
+                self.l1_estimation.type_probability = 0.33
+                self.l2_estimation.type_probability = 0.33
                 # self.f1_estimation.type_probability = 0.2
                 # self.f2_estimation.type_probability = 0.2
-                self.w_estimation.type_probability = 0.2
+                self.w_estimation.type_probability = 0.33
 
-                self.l1_estimation.type_probabilities.append(0.2)
-                self.l2_estimation.type_probabilities.append(0.2)
+                self.l1_estimation.type_probabilities.append(0.33)
+                self.l2_estimation.type_probabilities.append(0.33)
                 # self.f1_estimation.type_probabilities.append(0.2)
                 # self.f2_estimation.type_probabilities.append(0.2)
-                self.w_estimation.type_probabilities.append(0.2)
+                self.w_estimation.type_probabilities.append(0.33)
             else:
 
-                self.l1_estimation.type_probability = 0.25
-                self.l2_estimation.type_probability = 0.25
-                self.f1_estimation.type_probability = 0.25
-                self.f2_estimation.type_probability = 0.25
+                self.l1_estimation.type_probability = 0.5
+                self.l2_estimation.type_probability = 0.5
+                #self.f1_estimation.type_probability = 0.25
+                #self.f2_estimation.type_probability = 0.25
 
-                self.l1_estimation.type_probabilities.append(0.25)
-                self.l2_estimation.type_probabilities.append(0.25)
+                self.l1_estimation.type_probabilities.append(0.5)
+                self.l2_estimation.type_probabilities.append(0.5)
                 # self.f1_estimation.type_probabilities.append(0.25)
                 # self.f2_estimation.type_probabilities.append(0.25)
 
@@ -966,7 +966,7 @@ class ParameterEstimation:
         x_train, types_train_data = [], []
         new_parameters_estimation = None
 
-        print '>>>>>',po
+        #print '>>>>>',po
         # 2. Estimating the agent type
         for selected_type in types:
             # a. updating the train data for the current state

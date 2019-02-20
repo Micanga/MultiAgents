@@ -60,7 +60,6 @@ class POSimulator(Simulator,object):
         print path
         with open(path) as info_read:
             for line in info_read:
-                print line
                 if not self.is_comment(line):
                     data = line.strip().split(',')
                     key, val = data[0], data[1:]
