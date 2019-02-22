@@ -199,9 +199,9 @@ time_step = 0
 
 round = 1
 round_count = 2
-while round <= round_count:
+while round <= round_count and time_step < 300:
     print 'start round',round,'/',round_count
-    while main_sim.items_left() > 0:
+    while main_sim.items_left() > 0 and time_step < 300:
         progress = 100 * (len(main_sim.items) - main_sim.items_left())/len(main_sim.items)
         sys.stdout.write("Experiment progress: %d%% | step: %d   \r" % (progress,time_step) )
         sys.stdout.flush()
@@ -272,6 +272,9 @@ while round <= round_count:
     main_sim.recreate_items()
 progress = 100 * (len(main_sim.items) - main_sim.items_left())/len(main_sim.items)
 sys.stdout.write("Experiment progress: %d%% | step: %d   \n" % (progress,time_step) )
+
+if time_step == 300:
+    exit(1)
     
 # ============= Finish Simulation ==================
 end_time = time.time()

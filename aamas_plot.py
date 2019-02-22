@@ -17,11 +17,11 @@ informations = list()
 
 # 1. Defining the Graph Generation Parameters
 ROOT_DIRS = [
-    'outputs']  # ['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
-NAMES = ['MCTS']  # ['POMCP','POMCP','POMCP']#,'POMCP_FO']
+    'po_outputs']  # ['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
+NAMES = ['POMCP']  # ['POMCP','POMCP','POMCP']#,'POMCP_FO']
 
 SIZE = ['10']  # ,'15','20','25']
-NAGENTS = ['1']  # ,'2','3','4','5']
+NAGENTS = ['5']  # ,'2','3','4','5']
 NITEMS = ['10']  # ,'15','20','25']
 RADIUS = ['3.0', '5.0', '7.0']
 
@@ -134,6 +134,7 @@ def plot_summarised(aga, aga_std, aga_ci,
 
     # 2. Normalizing for plot
     x = [t for t in range(threshold)]
+    print threshold, len(aga),len(abu),len(pf)
 
     plot_aga = np.array([aga[t] for t in range(threshold)])
     plot_abu = np.array([abu[t] for t in range(threshold)])
@@ -205,7 +206,7 @@ def plot_summarised(aga, aga_std, aga_ci,
 ######################################################################
 # 1. Reading the files and extracting the results
 for root in ROOT_DIRS:
-    if root == 'Outputs_POMCP':
+    if root == 'po_outputs':
         for sz in SIZE:
             for na in NAGENTS:
                 for ni in NITEMS:
@@ -221,7 +222,7 @@ for root in ROOT_DIRS:
                             info.threshold = min([info.AGA_max_len_hist, info.ABU_max_len_hist, info.PF_max_len_hist])
                             informations.append(info)
 
-                            file = open(filename)
+                            file = open(filename, 'wb')
                             pickle.dump(info, file)
                             file.close()
                         else:
