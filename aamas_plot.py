@@ -52,8 +52,7 @@ def plot_type_probability(aga_tp, abu_tp, pf_tp, threshold, plotname):
     # 	print len(pf)
     abu_tp = np.array(abu_tp)
     abu_error = abu_tp.mean(axis=0)  # .tolist()
-    for pf in pf_tp:
-        print len(pf)
+
     pf_tp = np.array(pf_tp)
     pf_error = pf_tp.mean(axis=0)  # .tolist()
 
@@ -134,7 +133,6 @@ def plot_summarised(aga, aga_std, aga_ci,
 
     # 2. Normalizing for plot
     x = [t for t in range(threshold)]
-    print threshold, len(aga),len(abu),len(pf)
 
     plot_aga = np.array([aga[t] for t in range(threshold)])
     plot_abu = np.array([abu[t] for t in range(threshold)])
@@ -218,7 +216,7 @@ for root in ROOT_DIRS:
                                                             'POMCP_s' + sz + '_a' + na + '_i' + ni + '_r' + ra)
                             print info.name
                             info.normalise()
-                            # info.extract()
+                            info.extract()
                             info.threshold = min([info.AGA_max_len_hist, info.ABU_max_len_hist, info.PF_max_len_hist])
                             informations.append(info)
 
@@ -321,7 +319,7 @@ for info in informations:
 
     plot_run_length_bar(info.AGA_mean_len_hist, info.AGA_ci_len_hist, \
                         info.ABU_mean_len_hist, info.ABU_ci_len_hist, \
-                        info.PF_mean_len_hist, info.PF_ci_len_hist, 'Perform')
+                        info.PF_mean_len_hist, info.PF_ci_len_hist, 'Perform_'+info.name)
 
 # 5. Plotting the type probability
 print '***** type probability performance *****'
