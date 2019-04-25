@@ -9,7 +9,7 @@ from copy import copy, deepcopy
 
 
 class Agent:
-    def __init__(self, x, y, direction, is_enemy = False):
+    def __init__(self, x, y, direction, is_enemy=False):
         self.position = (int(x), int(y))
         if isinstance(direction, basestring):
             self.direction = self.convert_direction(direction)
@@ -21,7 +21,7 @@ class Agent:
         self.uct = None
 
         self.visible_agents = []
-        self.is_enemy =  is_enemy
+        self.is_enemy = is_enemy
 
         self.next_action = None
         self.previous_state = None
@@ -41,6 +41,9 @@ class Agent:
             x, y = agent.get_position()
             a = unknown_agent.Agent(x, y, agent.direction,agent_index)
             a.agent_type = agent.agent_type
+            a.level = agent.level
+            a.radius = agent.radius
+            a.angle = agent.angle
 
             self.visible_agents.append(a)
             agent_index +=1
@@ -67,6 +70,7 @@ class Agent:
     ####################################################################################################################
     def update_unknown_agents(self, sim):
         enemy_index = 0
+        i = 0
         for i in range(len(sim.agents)):
             self.visible_agents[i].previous_agent_status = sim.agents[i]
 
@@ -77,6 +81,7 @@ class Agent:
     ####################################################################################################################
     def update_unknown_agents_status(self, sim):
         enemy_index = 0
+        i = 0
         for i in range(len(sim.agents)):
             self.visible_agents[i].next_action = sim.agents[i].next_action
             self.visible_agents[i].direction = sim.agents[i].direction
@@ -84,7 +89,6 @@ class Agent:
             if sim.agents[i].next_action == 'L':
                 self.visible_agents[i].last_loaded_item_pos = sim.agents[i].last_loaded_item_pos
                 self.visible_agents[i].item_to_load = sim.agents[i].item_to_load #todo wrong
-
 
         enemy_index = i + 1
 
@@ -97,12 +101,12 @@ class Agent:
     ####################################################################################################################
     def move(self,reuse_tree,main_sim,search_tree, time_step):
         next_action,guess_move, search_tree = self.uct_planning(reuse_tree,main_sim,search_tree, time_step)
-        #if self.uct.planning_for_enemy:
-            #print 'action for enemy : ', next_action
-        #else:
-            #print 'action for main : ', next_action
-        reward = self.uct.do_move(main_sim, next_action, self.is_enemy, real=True)
-        return reward , guess_move, search_tree
+        if self.uct.planning_for_enemy:
+            print 'action for enemy : ', next_action
+        else:
+            print 'action for main : ', next_action
+        reward = self.uct.do_move(main_sim, next_action, self.uct.planning_for_enemy, real=True)
+        return reward , guess_move,search_tree
 
     ####################################################################################################################
 
@@ -137,7 +141,6 @@ class Agent:
 
         copy_agent = Agent(x, y, self.direction)
 
-
         copy_agent.direction = self.direction
         copy_agent.level = self.level
 
@@ -146,12 +149,7 @@ class Agent:
         copy_agents = list()
 
         for cagent in self.visible_agents:
-
-            (x, y) = cagent.get_position()
-
-            copy_unknown_agent = unknown_agent.Agent(x, y, cagent.direction,  cagent.index)
-
-            copy_unknown_agent.index = cagent.index
+            copy_unknown_agent = cagent.copy()
             copy_agents.append(copy_unknown_agent)
 
         copy_agent.visible_agents = copy_agents
@@ -370,5 +368,5 @@ class Agent:
                 if unknown_agent.next_action is not None:
                     tmp_sim = copy(main_sim)
                     tmp_previous_state = copy(self.previous_state)
-                    parameter_estimation.process_parameter_estimations(unknown_agent,\
+                    parameter_estimation.process_parameter_estimations(unknown_agent,
                         tmp_previous_state, tmp_sim, enemy_action_prob, selected_types,loaded_items_list)

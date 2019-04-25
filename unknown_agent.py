@@ -19,6 +19,10 @@ class Agent:
         self.item_to_load = -1
         self.next_action = None
         self.agent_type = None
+        self.level = None
+        self.radius = None
+        self.angle = None
+
         self.previous_agent_status = None
         self.choose_target_pos = None
         self.choose_target_direction = None
@@ -69,7 +73,24 @@ class Agent:
 
         (x, y) = self.position
         copy_agent = Agent(x, y, self.direction)
+
+        copy_agent.agents_parameter_estimation = self.agents_parameter_estimation
+        copy_agent.index = self.index
+        copy_agent.last_loaded_item_pos = self.last_loaded_item_pos
+        copy_agent.item_to_load = self.item_to_load
+        copy_agent.next_action = self.next_action
+        copy_agent.agent_type = self.agent_type
+        copy_agent.level = self.level
+        copy_agent.radius = self.radius
+        copy_agent.angle = self.angle
+
+        copy_agent.previous_agent_status = self.previous_agent_status
+        copy_agent.choose_target_pos = self.choose_target_pos
+        copy_agent.choose_target_direction = self.choose_target_direction
+        copy_agent.choose_target_state =self.choose_target_state
+        copy_agent.choose_target_history = self.choose_target_history
         copy_agent.direction = self.direction
+
         return copy_agent
 
     ################################################################################################################

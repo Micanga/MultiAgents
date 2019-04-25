@@ -46,7 +46,7 @@ class POSimulator(Simulator,object):
                 return False
 
     ###############################################################################################################
-    def loader(self, path):
+    def loader(self, path,log_file):
         """
         Takes in a csv file and stores the necessary instances for the simulation object. The file path referenced
         should point to a file of a particular format - an example of which can be found in utils.py txt_generator().
@@ -60,6 +60,8 @@ class POSimulator(Simulator,object):
         print path
         with open(path) as info_read:
             for line in info_read:
+                print line
+                log_file.write(line )
                 if not self.is_comment(line):
                     data = line.strip().split(',')
                     key, val = data[0], data[1:]
@@ -72,7 +74,7 @@ class POSimulator(Simulator,object):
                         self.items.append(item.item(val[0], val[1], val[2], i))
                         i += 1
                     elif 'agent' in key:
-                        #import ipdb; ipdb.set_trace()
+                        # import ipdb; ipdb.set_trace()
                         agnt = agent.Agent(val[1], val[2], val[3], val[4], int(val[0]))
                         agnt.set_parameters(self, val[5], val[6], val[7])
                         agnt.choose_target_state = copy(self)
@@ -80,7 +82,7 @@ class POSimulator(Simulator,object):
 
                         j += 1
                     elif 'main' in key:
-                        # x-coord, y-coord, direction, type, index
+                        # x-coord, y-coord, direction, type, index,radius, angle
                         self.main_agent = intelligent_poagent.POAgent(val[0], val[1], val[2],float(val[5]),float(val[6]))
                         self.main_agent.level = val[4]
 

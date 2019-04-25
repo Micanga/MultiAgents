@@ -18,11 +18,11 @@ possible_directions = ['N','S','E','W']
 agent_types 		= ['l1','l2']#,'f1','f2']
 selected_types 		= [False,False]
 
-experiment_type_set = ['ABU', 'AGA', 'MIN']
-type_estimation_mode_set = ['PTE']#,'PTE','BTE']
+experiment_type_set = ['TRUE','ABU', 'AGA', 'MIN']
+type_estimation_mode_set = ['LPTE','BTE','BPTE','PTE']
 mutation_rate_set = ['0.2']#,'0.3','0.5','0.7','0.9']
-apply_adversary = True
-round_count = 2
+apply_adversary = False
+round_count = 1
 
 def random_pick(set_):
 	return set_[randint(0,len(set_)-1)]
@@ -86,8 +86,8 @@ def selectType():
 
 def main():
 	# 0. Checking the terminal input
-	if len(sys.argv) != 5:
-		print 'usage: python scenario_generator.py [size] [nagents] [nitems] [map_count]'
+	if len(sys.argv) != 6:
+		print 'usage: python scenario_generator.py [size] [nagents] [nitems] [map_count] [type_estimation_mode]'
 		exit(0)
 
 	# 1. Taking the information
@@ -95,20 +95,22 @@ def main():
 	nagents = int(sys.argv[2])
 	nitems = int(sys.argv[3])
 	map_count = sys.argv[-1]
+	tem = sys.argv[5]
+	print 'type estimation mode:',tem
 
 	# 2. Defining the simulation
 	grid_size = size
 	grid = [[0 for col in range(grid_size)] for row in range(grid_size)]
 	GRID = ['grid',grid_size,grid_size]
 
-	# a. defining the main agent parameters
+	# d. defining the main agent parameters
 	mainx,mainy,grid = generateRandomNumber(grid,grid_size)
 	mainDirection    = choice(possible_directions)
 	mainType  = 'm'
 	mainLevel = 1
 	MAIN = ['main',mainx,mainy,mainDirection,mainType,mainLevel]
 
-	# b. defining the commum agents
+	# e. defining the commum agents
 	AGENTS = []
 	for agent_idx in range(nagents):
 		agentx,agenty,grid = generateRandomNumber(grid,grid_size)
@@ -119,28 +121,16 @@ def main():
 		agentAngle = round(random.uniform(0.5,1), 3)
 		AGENTS.append(['agent'+ str(agent_idx),str(agent_idx),agentx,agenty,agentDirection,agentType,agentLevel,agentRadius,agentAngle])
 
-	# c. defining the items
 	ITEMS = []
 	for item_idx in range(nitems):
 		itemx,itemy,grid = generateRandomNumber(grid,grid_size)
 		itemLevel = round(random.uniform(0,1), 3)
 		ITEMS.append(['item'+ str(item_idx),itemx,itemy,itemLevel])
 
-	# d. defining the enemy
-	ENEMY = None
-	if apply_adversary:
-		agentx,agenty,grid = generateRandomNumber(grid,grid_size)
-		agentDirection = choice(possible_directions)
-		agentType = 'w'
-		agentLevel = round(random.uniform(0.9,1), 3)
-		agentRadius = round(random.uniform(0.5,1), 3)
-		agentAngle = round(random.uniform(0.5,1), 3)
-		ENEMY = (['enemy',str(agent_idx+1),agentx,agenty,agentDirection,agentType,agentLevel,agentRadius,agentAngle])
-
 	# 3. Creating the possible configuration files
 	# a. choosing the parameter estimation mode
 	for experiment in experiment_type_set:
-		for tem in type_estimation_mode_set:
+		#for tem in type_estimation_mode_set:
 			for mutation_rate in mutation_rate_set:
 
 				if experiment == 'MIN':
@@ -180,11 +170,7 @@ def main():
 					for agent_idx in range(nagents):
 						writer.writerows([AGENTS[agent_idx]])
 
-					# iv. enemy
-					if apply_adversary:
-						writer.writerows([ENEMY])
-
-					# v. items
+					# iv. items
 					for item_idx in range(nitems):
 						writer.writerows([ITEMS[item_idx]])
 
@@ -202,11 +188,7 @@ def main():
 					for agent_idx in range(nagents):
 						writer.writerows([AGENTS[agent_idx]])
 
-					# iv. enemy
-					if apply_adversary:
-						writer.writerows([ENEMY])
-
-					# v. items
+					# iv. items
 					for item_idx in range(nitems):
 						writer.writerows([ITEMS[item_idx]])
 

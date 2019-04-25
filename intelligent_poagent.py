@@ -379,17 +379,13 @@ class POAgent(Agent, object):
             if agent.index == unknown_agent.index:
                 pos = agent.position
                 if next_action == 'N':
-                    if(pos[1] - 1 >= 0):
-                        agent.position =  (pos[0] - 0, pos[1] - 1)
+                    agent.position =  (pos[0] - 0, pos[1] - 1)
                 elif next_action == 'S':
-                    if(pos[1] + 1 < 10):
-                        agent.position =  (pos[0] - 0, pos[1] + 1)
+                    agent.position =  (pos[0] - 0, pos[1] + 1)
                 elif next_action == 'W':
-                    if(pos[0] + 1 < 10):
-                        agent.position =  (pos[0] + 1, pos[1] - 0)
+                    agent.position =  (pos[0] + 1, pos[1] - 0)
                 elif next_action == 'E':
-                    if(pos[0] - 1 >= 0):
-                        agent.position =  (pos[0] - 1, pos[1] - 0)
+                    agent.position =  (pos[0] - 1, pos[1] - 0)
                 break
         return previous_state
 

@@ -48,7 +48,7 @@ class Simulator:
                 return False
 
     ################################################################################################################
-    def loader(self, path):
+    def loader(self, path,log_file):
         """
         Takes in a csv file and stores the necessary instances for the simulation object. The file path referenced
         should point to a file of a particular format - an example of which can be found in utils.py txt_generator().
@@ -63,6 +63,7 @@ class Simulator:
         with open(path) as info_read:
             for line in info_read:
                 print line
+                log_file.write(line )
                 if not self.is_comment(line):
                     data = line.strip().split(',')
                     key, val = data[0], data[1:]
@@ -88,8 +89,8 @@ class Simulator:
                         self.main_agent.level = val[4]
 
                     elif 'enemy' in key:
-                        self.enemy_agent = intelligent_agent.Agent(val[1], val[2], val[3],True)
-                        self.enemy_agent.level = val[5]
+                        self.enemy_agent = intelligent_agent.Agent(val[0], val[1], val[2],True)
+                        self.enemy_agent.level = val[4]
 
                     elif 'obstacle' in key:
                         self.obstacles.append(obstacle.Obstacle(val[0], val[1]))
@@ -360,7 +361,7 @@ class Simulator:
 
     def draw_map(self):
 
-        for y in range(self.dim_h):
+        for y in reversed(range(self.dim_h)):
             for x in range(self.dim_w):
                 xy = self.the_map[y][x]
                 if xy == 0:

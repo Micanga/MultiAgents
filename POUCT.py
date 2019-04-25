@@ -153,6 +153,7 @@ class POUCT(UCT,object):
 
         # 2. Starting the search main loop
         it = 0
+
         while it < self.iteration_max:
             if it % 10 == 0:
                 print it,'/',self.iteration_max
@@ -282,6 +283,7 @@ class POUCT(UCT,object):
     def simulate_action(self, state, action):
         # 1. Copying the current simulation state
         sim = state.simulator.copy()
+
         next_state = State(sim)
 
         # 2. Setting the A agents actions probabilities
@@ -410,7 +412,7 @@ class POUCT(UCT,object):
         # b. action node --- go to ---> observation node
         # print 'o',observation
         for obs_child in search_tree.childNodes:
-            #print 'c',obs_child.observation
+            print 'c',obs_child.observation
             if self.observation_is_equal(observation,obs_child.observation):
                 search_tree = obs_child
                 break
@@ -469,7 +471,7 @@ class POUCT(UCT,object):
                 sample_counter += 1
 
                 if print_flag:
-                    #print 'sampled states:',len(self.belief_state),'/',self.k
+                    print 'sampled states:',len(self.belief_state),'/',self.k
                     print_flag = False
 
                 tmp_sim = prev_sim.copy()

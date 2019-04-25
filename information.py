@@ -18,41 +18,44 @@ class Information:
 		self.name = name
 		self.threshold = 0
 
+
+		self.TRUE_max_len_hist = 0
 		self.AGA_max_len_hist = 0
 		self.ABU_max_len_hist = 0
-		self.PF_max_len_hist = 0
+		self.OGE_max_len_hist = 0
 
 		self.AGA_errors = list()
 		self.ABU_errors = list()
-		self.PF_errors = list()
+		self.OGE_errors = list()
 
 		self.AGA_mean_len_hist = 0
 		self.ABU_mean_len_hist = 0
-		self.PF_mean_len_hist = 0
+		self.OGE_mean_len_hist = 0
 
 		self.AGA_std_len_hist = 0
 		self.ABU_std_len_hist = 0
-		self.PF_std_len_hist = 0
+		self.OGE_std_len_hist = 0
 
 		self.AGA_ci_len_hist = 0
 		self.AGA_ci_len_hist = 0
 		self.AGA_ci_len_hist = 0
 
+		self.TRUE_timeSteps = list()
 		self.AGA_timeSteps = list()
 		self.ABU_timeSteps = list()
-		self.PF_timeSteps = list()
+		self.OGE_timeSteps = list()
 
 		self.AGA_estimationHist = list()
 		self.ABU_estimationHist = list()
-		self.PF_estimationHist = list()
+		self.OGE_estimationHist = list()
 
 		self.AGA_typeProbHistory= list()
 		self.ABU_typeProbHistory= list()
-		self.PF_typeProbHistory= list()
+		self.OGE_typeProbHistory= list()
 
 		self.AGA_trueParameter = list()
 		self.ABU_trueParameter = list()
-		self.PF_trueParameter = list()
+		self.OGE_trueParameter = list()
 
 		self.aga_levels, self.aga_levels_std_dev, self.aga_levels_ci = list(), list(), list()
 		self.aga_radius, self.aga_radius_std_dev, self.aga_radius_ci = list(), list(), list()
@@ -62,9 +65,9 @@ class Information:
 		self.abu_radius, self.abu_radius_std_dev, self.abu_radius_ci = list(), list(), list()
 		self.abu_angles, self.abu_angles_std_dev, self.abu_angles_ci = list(), list(), list()
 		
-		self.pf_levels, self.pf_levels_std_dev, self.pf_levels_ci = list(), list(), list()
-		self.pf_radius, self.pf_radius_std_dev, self.pf_radius_ci = list(), list(), list()
-		self.pf_angles, self.pf_angles_std_dev, self.pf_angles_ci = list(), list(), list()
+		self.OGE_levels, self.OGE_levels_std_dev, self.OGE_levels_ci = list(), list(), list()
+		self.OGE_radius, self.OGE_radius_std_dev, self.OGE_radius_ci = list(), list(), list()
+		self.OGE_angles, self.OGE_angles_std_dev, self.OGE_angles_ci = list(), list(), list()
 		
 	@staticmethod
 	def calcConfInt(p):
@@ -96,7 +99,8 @@ class Information:
 		return True
 
 	def normalise(self):
-		max_len = max(self.AGA_max_len_hist,self.ABU_max_len_hist,self.PF_max_len_hist)
+		max_len = max(self.AGA_max_len_hist,self.ABU_max_len_hist,self.OGE_max_len_hist,self.TRUE_max_len_hist)
+
 		print 'max_len', max_len
 		self.AGA_mean_len_hist, self.AGA_std_len_hist, self.AGA_ci_len_hist = self.calc_mean_len_hist(self.AGA_errors,'AGA')
 		self.AGA_errors = self.normalise_arrays(max_len,self.AGA_errors)
@@ -108,10 +112,10 @@ class Information:
 		self.ABU_typeProbHistory = self.normalise_arrays(max_len,self.ABU_typeProbHistory)
 		print '*** ABU data = ',len(self.ABU_errors),'/ABU avg len = ', self.ABU_mean_len_hist, " ***"
 
-		self.PF_mean_len_hist, self.PF_std_len_hist, self.PF_ci_len_hist = self.calc_mean_len_hist(self.PF_errors,'PF')
-		self.PF_errors = self.normalise_arrays(max_len,self.PF_errors)
-		self.PF_typeProbHistory  = self.normalise_arrays(max_len,self.PF_typeProbHistory)
-		print '*** PF data  = ',len(self.PF_errors),'/PF avg len  = ', self.PF_mean_len_hist,' ***'
+		self.OGE_mean_len_hist, self.OGE_std_len_hist, self.OGE_ci_len_hist = self.calc_mean_len_hist(self.OGE_errors,'OGE')
+		self.OGE_errors = self.normalise_arrays(max_len,self.OGE_errors)
+		self.OGE_typeProbHistory  = self.normalise_arrays(max_len,self.OGE_typeProbHistory)
+		print '*** OGE data  = ',len(self.OGE_errors),'/OGE avg len  = ', self.OGE_mean_len_hist,' ***'
 
 	def calc_mean_len_hist(self,errors_list,te):
 		lens = []
@@ -158,6 +162,16 @@ class Information:
 		print 'AGA - radius OK'
 		self.aga_angles, self.aga_angles_std_dev, self.aga_angles_ci = self.extract_parameter_errors(self.AGA_errors,ANGLE)
 		print 'AGA - angles OK'
+		self.aga_level_error_mean = np.mean(np.array(self.aga_levels))
+		self.aga_angle_error_mean = np.mean(np.array(self.aga_angles))
+		self.aga_radius_error_mean = np.mean(np.array(self.aga_radius))
+		self.aga_type_probability_mean = np.mean(np.array(self.AGA_typeProbHistory))
+
+
+		self.aga_level_error_ci = np.std(np.array(self.aga_levels))
+		self.aga_angle_error_ci = np.std(np.array(self.aga_angles))
+		self.aga_radius_error_ci = np.std(np.array(self.aga_radius))
+		self.aga_type_probability_ci = np.std(np.array(self.AGA_typeProbHistory))
 
 		print '*** ABU - extracting level, radius and angle info ***'
 		self.abu_levels, self.abu_levels_std_dev, self.abu_levels_ci = self.extract_parameter_errors(self.ABU_errors,LEVEL)
@@ -167,13 +181,36 @@ class Information:
 		self.abu_angles, self.abu_angles_std_dev, self.abu_angles_ci = self.extract_parameter_errors(self.ABU_errors,ANGLE)
 		print 'ABU - angles OK'
 
-		print '*** PF - extracting level, radius and angle info ***'
-		self.pf_levels, self.pf_levels_std_dev, self.pf_levels_ci = self.extract_parameter_errors(self.PF_errors,LEVEL)
-		print 'PF - levels OK'
-		self.pf_radius, self.pf_radius_std_dev, self.pf_radius_ci = self.extract_parameter_errors(self.PF_errors,RADIUS)
-		print 'PF - radius OK'
-		self.pf_angles, self.pf_angles_std_dev, self.pf_angles_ci = self.extract_parameter_errors(self.PF_errors,ANGLE)
-		print 'PF - angles OK'
+
+		self.abu_level_error_mean = np.mean(np.array(self.abu_levels))
+		self.abu_angle_error_mean = np.mean(np.array(self.abu_angles))
+		self.abu_radius_error_mean = np.mean(np.array(self.abu_radius))
+		self.abu_type_probability_mean = np.mean(np.array(self.ABU_typeProbHistory))
+
+
+		self.abu_level_error_ci = np.std(np.array(self.abu_levels))
+		self.abu_angle_error_ci= np.std(np.array(self.abu_angles))
+		self.abu_radius_error_ci = np.std(np.array(self.abu_radius))
+		self.abu_type_probability_ci = np.std(np.array(self.ABU_typeProbHistory))
+
+
+		print '*** OGE - extracting level, radius and angle info ***'
+		self.OGE_levels, self.OGE_levels_std_dev, self.OGE_levels_ci = self.extract_parameter_errors(self.OGE_errors,LEVEL)
+		print 'OGE - levels OK'
+		self.OGE_radius, self.OGE_radius_std_dev, self.OGE_radius_ci = self.extract_parameter_errors(self.OGE_errors,RADIUS)
+		print 'OGE - radius OK'
+		self.OGE_angles, self.OGE_angles_std_dev, self.OGE_angles_ci = self.extract_parameter_errors(self.OGE_errors,ANGLE)
+		print 'OGE - angles OK'
+
+		self.oge_level_error_mean = np.mean(np.array(self.OGE_levels))
+		self.oge_angle_error_mean = np.mean(np.array(self.OGE_angles))
+		self.oge_radius_error_mean = np.mean(np.array(self.OGE_radius))
+		self.oge_type_probability_mean = np.mean(np.array(self.OGE_typeProbHistory))
+		self.oge_level_error_ci = np.std(np.array(self.OGE_levels))
+		self.oge_angle_error_ci = np.std(np.array(self.OGE_angles))
+		self.oge_radius_error_ci = np.std(np.array(self.OGE_radius))
+		self.oge_type_probability_ci = np.std(np.array(self.OGE_typeProbHistory))
+		
 
 	def extract_parameter_errors(self,main_error,parameter):
 		error_histories = deepcopy(main_error)

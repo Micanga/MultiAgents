@@ -19,7 +19,7 @@ def create_output_folder(run_type = 'FO'):
     if run_type == 'PO':
         current_folder = "po_outputs/" + sub_dir + '/'
     else:
-        current_folder = "outputs/" + sub_dir + '/'
+        current_folder = "test_outputs/" + sub_dir + '/'
 
     if not os.path.exists(current_folder):
         os.mkdir(current_folder, 0755)
@@ -65,9 +65,9 @@ def write_map(file, sim):
         line = ''
     file.write('\n')
 
-def print_result(main_sim,  time_steps, begin_time, end_time,mcts_mode, parameter_estimation_mode,\
- type_selection_mode, iteration_max, max_depth, generated_data_number,\
- reuse_tree, PF_add_threshold, PF_weight, type_estimation_mode,mutation_rate ,end_cpu_time, memory_usage,log_file, current_folder, \
+def print_result(main_sim,  time_steps, begin_time, end_time,mcts_mode, parameter_estimation_mode,
+ type_selection_mode, iteration_max, max_depth, generated_data_number,
+ reuse_tree, PF_add_threshold, PF_weight, type_estimation_mode,mutation_rate ,end_cpu_time, memory_usage,log_file, current_folder,
                  round_count,po=False):
 
     pickleFile = open(current_folder + "/pickleResults.txt", 'wb')
@@ -75,18 +75,27 @@ def print_result(main_sim,  time_steps, begin_time, end_time,mcts_mode, paramete
 
     # Simulation Information
     systemDetails = {}
+    if po :
+         systemDetails['mainAgentRadius']=  main_sim.main_agent.vision.radius
+         systemDetails['mainAgentAngle']=  main_sim.main_agent.vision.angle
+
+
     systemDetails['simWidth'] = main_sim.dim_w
     systemDetails['simHeight'] = main_sim.dim_h
     systemDetails['agentsCounts'] = len(main_sim.agents)
     systemDetails['itemsCounts'] = len(main_sim.items)
+    print "Number of agents :" , len(main_sim.agents), " and number of items: ", len(main_sim.items),\
+        " in environment with size:" , main_sim.dim_w
     systemDetails['timeSteps'] = time_steps
     systemDetails['beginTime'] = begin_time
     systemDetails['endTime'] = end_time
     systemDetails['CPU_Time'] = end_cpu_time
     systemDetails['memory_usage'] = memory_usage
     systemDetails['type_estimation_mode'] = type_estimation_mode
+    print "type estimation mode: ", type_estimation_mode
     systemDetails['mutation_rate'] = mutation_rate
-    systemDetails['estimationMode'] = parameter_estimation_mode
+    systemDetails['parameter_estimation_mode'] = parameter_estimation_mode
+    print "Parameter Estimation Mode", parameter_estimation_mode
     systemDetails['typeSelectionMode'] = type_selection_mode
     systemDetails['iterationMax'] = iteration_max
     systemDetails['maxDepth'] = max_depth
@@ -105,6 +114,17 @@ def print_result(main_sim,  time_steps, begin_time, end_time,mcts_mode, paramete
         else:
             u_a = main_sim.main_agent.visible_agents[i]
         agentData = {}
+        if  main_sim.agents[i].agent_type == 'l1':
+            print  u_a.agents_parameter_estimation.l1_estimation.type_probabilities
+        elif  main_sim.agents[i].agent_type == 'l2':
+            print u_a.agents_parameter_estimation.l2_estimation.type_probabilities
+        elif  main_sim.agents[i].agent_type == 'f1':
+            print  u_a.agents_parameter_estimation.f1_estimation.type_probabilities
+        elif  main_sim.agents[i].agent_type == 'f2':
+            print  u_a.agents_parameter_estimation.f2_estimation.type_probabilities
+
+
+        print 'True type:', main_sim.agents[i].agent_type
 
         agentData['trueType'] = main_sim.agents[i].agent_type
         trueParameters = [main_sim.agents[i].level,main_sim.agents[i].radius,main_sim.agents[i].angle]
@@ -119,6 +139,9 @@ def print_result(main_sim,  time_steps, begin_time, end_time,mcts_mode, paramete
         l2EstimationHistory = u_a.agents_parameter_estimation.l2_estimation.get_estimation_history()
         agentData['l2EstimationHistory'] = l2EstimationHistory
         agentData['l2TypeProbHistory'] = u_a.agents_parameter_estimation.l2_estimation.type_probabilities
+        print "Parameter Estimation History: ", agentData['l2EstimationHistory']
+        agentData['l2TypeProbHistory'] = u_a.agents_parameter_estimation.l2_estimation.type_probabilities
+        print "l2 Type Prob History: ", agentData['l2TypeProbHistory']
 
         f1EstimationHistory = u_a.agents_parameter_estimation.f1_estimation.get_estimation_history()
         agentData['f1EstimationHistory'] = f1EstimationHistory
@@ -129,7 +152,7 @@ def print_result(main_sim,  time_steps, begin_time, end_time,mcts_mode, paramete
         agentData['f2TypeProbHistory'] = u_a.agents_parameter_estimation.f2_estimation.type_probabilities
 
         agentDictionary[i] = agentData
-
+        print '----------------------------------------------------------'
     dataList.append(systemDetails)
     dataList.append(agentDictionary)
 

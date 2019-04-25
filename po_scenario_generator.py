@@ -9,8 +9,8 @@ from numpy import pi
 
 # (1) CONFIG.CSV - INFORMATION
 # Defining the parameter estimation modes and
-max_depth_set = ['50']
-iteration_max_set = ['50']
+max_depth_set = ['10']
+iteration_max_set = ['10']
 
 # (2) SIM.CSV - INFORMATION
 # Defining the parameter of simulation file
@@ -19,7 +19,7 @@ agent_types 		= ['l1','l2']#,'f1','f2']
 selected_types 		= [False,False]
 apply_adversary = False
 
-experiment_type_set = ['ABU', 'AGA','MIN']
+experiment_type_set = ['ABU', 'AGA', 'MIN']
 type_estimation_mode_set = ['BPTE']#,'PTE','BTE']
 mutation_rate_set = ['0.2']#,'0.3','0.5','0.7','0.9']
 
@@ -95,7 +95,7 @@ def selectType():
 def main():
 	# 0. Checking the terminal input
 	if len(sys.argv) != 7:
-		print 'usage: python po_scenario_generator.py [size] [nagents] [nitems] [radius] [angle] [map_count]'
+		print 'usage: python po_scenario_generator.py [size] [nagents] [nitems] [radius] [angle] [map_count] [type_estimation_mode]'
 		exit(0)
 
 	# 1. Taking the information
@@ -105,13 +105,14 @@ def main():
 	radius = int(sys.argv[4])
 	angle = float(sys.argv[5])
 	map_count = sys.argv[-1]
+	tem = sys.argv[7]
 
 	# 2. Defining the simulation
 	grid_size = size
 	grid = [[0 for col in range(grid_size)] for row in range(grid_size)]
 	GRID = ['grid',grid_size,grid_size]
 
-	# a. defining the main agent parameters
+	# d. defining the main agent parameters
 	mainx,mainy,grid = generateRandomNumber(grid,grid_size)
 	mainDirection    = choice(possible_directions)
 	mainType  = 'm'
@@ -119,7 +120,7 @@ def main():
 	mainRadius, mainAngle = radius, angle
 	MAIN = ['main',mainx,mainy,mainDirection,mainType,mainLevel,mainRadius,mainAngle]
 
-	# b. defining the commum agents
+	# e. defining the commum agents
 	AGENTS = []
 	for agent_idx in range(nagents):
 		agentx,agenty,grid = generateRandomNumber(grid,grid_size)
@@ -130,7 +131,7 @@ def main():
 		agentAngle = round(random.uniform(0.1,1), 3)
 		AGENTS.append(['agent'+ str(agent_idx),str(agent_idx),agentx,agenty,agentDirection,agentType,agentLevel,agentRadius,agentAngle])
 
-	# c. defining the enemy agent
+	# e. defining the enemy agent
 	ENEMY = None
 	if apply_adversary:
 		agentx,agenty,grid = generateRandomNumber(grid,grid_size)
@@ -141,7 +142,7 @@ def main():
 		agentAngle = round(random.uniform(0.5,1), 3)
 		ENEMY = (['enemy',str(agent_idx+1),agentx,agenty,agentDirection,agentType,agentLevel,agentRadius,agentAngle])
 
-	# d. defining the items
+	# g. defining the items
 	ITEMS = []
 	for item_idx in range(nitems):
 		itemx,itemy,grid = generateRandomNumber(grid,grid_size)
