@@ -6,6 +6,7 @@ from random import randint
 def get_input_folder():
     # return
     return "inputs/test/"
+    # return "po_inputs/PO_O_ABU/"
 
 def create_output_folder(run_type = 'FO'):
     # 1. Getting the experiment time

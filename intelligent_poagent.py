@@ -228,7 +228,7 @@ class POAgent(Agent, object):
             state = State(sim.uniform_sim_sample())
 
         # 2. Updating the unknown agents
-        for sim_ag in sim.agents:
+        for sim_ag in state.simulator.agents:
             for vis_ag in self.visible_agents:
                 if sim_ag.index == vis_ag.index:
                     # a. the visible
@@ -237,7 +237,7 @@ class POAgent(Agent, object):
                     vis_ag.position = copy(sim_ag.position)
                     vis_ag.direction  = sim_ag.direction
                     vis_ag.next_action = sim_ag.next_action
-                    vis_ag.choose_target_state = copy(sim)
+                    vis_ag.choose_target_state = copy(state.simulator)
 
                     # b. and the memory visible agents
                     for mem_ag in self.agent_memory:
@@ -247,7 +247,7 @@ class POAgent(Agent, object):
                             mem_ag.position = copy(sim_ag.position)
                             mem_ag.direction  = sim_ag.direction
                             mem_ag.next_action = vis_ag.next_action
-                            mem_ag.choose_target_state = copy(sim)
+                            mem_ag.choose_target_state = copy(state.simulator)
                             break
 
         for sim_ag in state.simulator.agents:
@@ -259,7 +259,7 @@ class POAgent(Agent, object):
                     inv_ag.position = copy(sim_ag.position)
                     inv_ag.direction  = sim_ag.direction
                     inv_ag.next_action = sim_ag.next_action
-                    inv_ag.choose_target_state = copy(sim)
+                    inv_ag.choose_target_state = copy(state.simulator)
 
                     # b. and the memory visible agents
                     for mem_ag in self.agent_memory:
@@ -269,7 +269,7 @@ class POAgent(Agent, object):
                             mem_ag.position = copy(sim_ag.position)
                             mem_ag.direction  = sim_ag.direction
                             mem_ag.next_action = inv_ag.next_action
-                            mem_ag.choose_target_state = copy(sim)
+                            mem_ag.choose_target_state = copy(state.simulator)
                             break
 
     def update_unknown_agents_status(self, sim):
@@ -374,7 +374,7 @@ class POAgent(Agent, object):
 
     ####################################################################################################################
     def generate_previous_state(self,unknown_agent,next_action,current_state):
-        previous_state = deepcopy(current_state)
+        previous_state = copy(current_state)
         for agent in current_state.agents:
             if agent.index == unknown_agent.index:
                 pos = agent.position
@@ -409,7 +409,7 @@ class POAgent(Agent, object):
         return loaded_items
 
     def estimation(self,time_step,main_sim,enemy_action_prob, types, actions,current_state):
-        # For the unkown agents, estimating the parameters and types
+        # For the unknown agents, estimating the parameters and types
         loaded_items_list = self.find_loaded_item(main_sim)
         for unknown_agent in self.agent_memory:
             if unknown_agent is not None:
@@ -429,11 +429,17 @@ class POAgent(Agent, object):
 
                 # 3. Estimating
                 # print unknown_agent.next_action
+
                 if self.agent_is_visible(unknown_agent) and unknown_agent.next_action is not None:
+
                     tmp_sim = copy(main_sim)
+
                     tmp_previous_state = copy(self.previous_state)
-                    parameter_estimation.process_parameter_estimations(unknown_agent,\
+
+
+                    parameter_estimation.process_parameter_estimations(unknown_agent,
                         tmp_previous_state, tmp_sim, enemy_action_prob, selected_types,loaded_items_list,True)
+
                 elif current_state is not None:
                     
                     for agent in current_state.agents:
@@ -447,5 +453,7 @@ class POAgent(Agent, object):
 
 
                     #parameter_estimation.unseen_parameter_estimation_not_update(unknown_agent,selected_types)
-                    parameter_estimation.process_parameter_estimations(unknown_agent,\
+                    parameter_estimation.process_parameter_estimations(unknown_agent,
                         previous_state, current_state, enemy_action_prob, selected_types,loaded_items_list,True)
+
+        print "End of Estimationnnnnnnnn----------------------------------"
