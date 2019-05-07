@@ -19,15 +19,15 @@ results = list()
 informations = list()
 
 # 1. Defining the Graph Generation Parameters
-#ROOT_DIRS = ['po_outputs']  # ['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
 ROOT_DIRS = ['po_outputs']  # ['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
-#NAMES = ['POMCP']  # ['POMCP','POMCP','POMCP']#,'POMCP_FO']
+# ROOT_DIRS = ['outputs']  # ['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
 NAMES = ['POMCP']  # ['POMCP','POMCP','POMCP']#,'POMCP_FO']
+# NAMES = ['MCP']  # ['POMCP','POMCP','POMCP']#,'POMCP_FO']
 
 SIZE = ['10']  # ,'15','20','25']
 NAGENTS = ['1']
 NITEMS = ['10']  # ,'15','20','25']
-RADIUS = ['3']
+RADIUS = ['10']
 experiment_type_set = ['ABU', 'AGA', 'MIN']
 type_estimation_mode_set = ['BPTE']
 

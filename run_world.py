@@ -285,10 +285,10 @@ try:
         type_estimation_mode,mutation_rate ,
         end_cpu_time, memory_usage,log_file,output_folder,round_count)
 
-except :
+except Exception as e:
     log_file.write("Following error stop the progress:")
-    log_file.write(sys.exc_info()[1])
-    print "Unexpected error:", sys.exc_info()[1]
+    log_file.write(str(e))
+    print "Unexpected error:", str(e)
 
 print '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'
 print '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'

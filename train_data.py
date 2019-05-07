@@ -202,7 +202,7 @@ class TrainData:
     ###################################################################################################################
     def generate_data(self, unknown_agent, selected_type, current_state):
 
-        if len(self.data_set)>0:
+        if len(self.data_set) > 0:
             max_index = max([particle['index'] for particle in self.data_set])+1
         else:
             max_index = 1
@@ -356,7 +356,7 @@ class TrainData:
                         tmp_agent = copy_state.move_a_agent(tmp_agent)
                         target = tmp_agent.get_memory()
 
-                        #Update particle filters target
+                        # Update particle filters target
                         if tmp_agent.route_actions is not None :
                             print 'new target',target
                             # particle['route'] = tmp_agent.route_actions

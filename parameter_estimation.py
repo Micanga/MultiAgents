@@ -923,7 +923,7 @@ class ParameterEstimation:
         unknown_agent = (u_a)
         max_suceed_cts = None
         train_data = self.get_train_data(selected_type)
-        
+        max_succeed_cts = None
         # 2. Updating th Particles
         type_probability = self.get_last_selected_type_probability(selected_type)
         if self.train_mode == 'history_based':
@@ -961,7 +961,7 @@ class ParameterEstimation:
             
         # 4. Extrating and returning the train set
         x_train, y_train = train_data.extract_train_set()
-        return x_train, y_train, type_probability , max_suceed_cts
+        return x_train, y_train, type_probability , max_succeed_cts
 
     ####################################################################################################################
     def process_parameter_estimations(self, unknown_agent,previous_state,

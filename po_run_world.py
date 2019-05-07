@@ -259,7 +259,7 @@ try:
         # 7. Estimating
         log_file.write('7) Estimating')
         if do_estimation:
-            main_sim.main_agent.estimation(time_step,main_sim,enemy_action_prob,\
+            main_sim.main_agent.estimation(time_step,main_sim,enemy_action_prob,
                 types,actions,current_belief_state)
         log_file.write(' - OK\n')
 
@@ -286,7 +286,8 @@ try:
         PF_add_threshold, PF_weight,
         type_estimation_mode,mutation_rate ,
         end_cpu_time, memory_usage,log_file,output_folder,round_count,True)
-except :
+
+except Exception as e:
     log_file.write("Following error stop the progress:")
-    log_file.write(sys.exc_info()[1])
-    print "Unexpected error:", sys.exc_info()[1]
+    log_file.write(str(e))
+    print "Unexpected error:", str(e)

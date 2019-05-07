@@ -29,73 +29,73 @@ def read_files(root_dir,size,nagents,nitems,type_estimation_mode,radius=None):
                 # Simulator Information
                 systemDetails = dataList[0]
                 print systemDetails['round_count']
-                if systemDetails['round_count'] is None:
-                    simWidth = systemDetails['simWidth']
-                    simHeight = systemDetails['simHeight']
-                    agentsCounts = systemDetails['agentsCounts']
-                    itemsCounts = systemDetails['itemsCounts']
+                # if systemDetails['round_count'] ==1:
+                simWidth = systemDetails['simWidth']
+                simHeight = systemDetails['simHeight']
+                agentsCounts = systemDetails['agentsCounts']
+                itemsCounts = systemDetails['itemsCounts']
 
-                    generatedDataNumber = systemDetails['generatedDataNumber']
+                generatedDataNumber = systemDetails['generatedDataNumber']
 
-                    estimationDictionary['simWidth'] = systemDetails['simWidth']
-                    estimationDictionary['timeSteps'] = systemDetails['timeSteps']
-                    estimationDictionary['typeSelectionMode'] = systemDetails['typeSelectionMode']
+                estimationDictionary['simWidth'] = systemDetails['simWidth']
+                estimationDictionary['timeSteps'] = systemDetails['timeSteps']
+                estimationDictionary['typeSelectionMode'] = systemDetails['typeSelectionMode']
 
-                    beginTime = systemDetails['beginTime']
-                    endTime = systemDetails['endTime']
+                beginTime = systemDetails['beginTime']
+                endTime = systemDetails['endTime']
 
-                    estimationDictionary['computationalTime'] = int(endTime) - int(beginTime)
-                    estimationDictionary['parameter_estimation_mode'] = systemDetails['parameter_estimation_mode']
+                estimationDictionary['computationalTime'] = int(endTime) - int(beginTime)
+                estimationDictionary['parameter_estimation_mode'] = systemDetails['parameter_estimation_mode']
 
-                    data = dataList[1]
-                    for i in range(len(data)):
-                        agentDictionary = data[i]
-                        trueType = agentDictionary['trueType']
-                        if trueType in ['l1','l2','f1','f2']:
-                            if trueType == 'l1':
-                                typeProbHistory = agentDictionary['l1TypeProbHistory']
-                                historyParameters = ast.literal_eval(agentDictionary['l1EstimationHistory'])
-                            elif trueType == 'l2':
-                                typeProbHistory = agentDictionary['l2TypeProbHistory']
-                                historyParameters = ast.literal_eval(agentDictionary['l2EstimationHistory'])
-                            elif trueType == 'f1':
-                                typeProbHistory = agentDictionary['f1TypeProbHistory']
-                                historyParameters = ast.literal_eval(agentDictionary['f1EstimationHistory'])
-                            elif trueType == 'f2':
-                                typeProbHistory = agentDictionary['f2TypeProbHistory']
-                                historyParameters = ast.literal_eval(agentDictionary['f2EstimationHistory'])
+                data = dataList[1]
+                for i in range(len(data)):
+                    agentDictionary = data[i]
+                    trueType = agentDictionary['trueType']
+                    if trueType in ['l1','l2','f1','f2']:
+                        if trueType == 'l1':
+                            typeProbHistory = agentDictionary['l1TypeProbHistory']
+                            historyParameters = ast.literal_eval(agentDictionary['l1EstimationHistory'])
+                        elif trueType == 'l2':
+                            typeProbHistory = agentDictionary['l2TypeProbHistory']
+                            historyParameters = ast.literal_eval(agentDictionary['l2EstimationHistory'])
+                        elif trueType == 'f1':
+                            typeProbHistory = agentDictionary['f1TypeProbHistory']
+                            historyParameters = ast.literal_eval(agentDictionary['f1EstimationHistory'])
+                        elif trueType == 'f2':
+                            typeProbHistory = agentDictionary['f2TypeProbHistory']
+                            historyParameters = ast.literal_eval(agentDictionary['f2EstimationHistory'])
 
-                            x ={}
-                            trueParameters = agentDictionary['trueParameters']
-                            estimationDictionary['trueType'] = trueType
-                            estimationDictionary['typeProbHistory'] = typeProbHistory
-                            estimationDictionary['trueParameters'] = trueParameters
-                            estimationDictionary['historyParameters'] = historyParameters
-                            estimationDictionary['path'] = root
-                            if size == str(simWidth):
+                        x ={}
+                        trueParameters = agentDictionary['trueParameters']
+                        estimationDictionary['trueType'] = trueType
+                        estimationDictionary['typeProbHistory'] = typeProbHistory
+                        estimationDictionary['trueParameters'] = trueParameters
+                        estimationDictionary['historyParameters'] = historyParameters
+                        estimationDictionary['path'] = root
+                        if size == str(simWidth):
 
-                                if nagents == str(agentsCounts):
-                                    if nitems == str(itemsCounts):
+                            if nagents == str(agentsCounts):
+                                if nitems == str(itemsCounts):
 
-                                        if systemDetails['type_estimation_mode']==type_estimation_mode:
+                                    if systemDetails['type_estimation_mode']==type_estimation_mode:
 
-                                            # print estimationDictionary['timeSteps'] , ' ', systemDetails['parameter_estimation_mode']
-                                            # print
+                                        # print estimationDictionary['timeSteps'] , ' ', systemDetails['parameter_estimation_mode']
+                                        # print
 
-                                            if systemDetails['parameter_estimation_mode'] =='MIN':
-                                                x['root'] = root
-                                                x['step'] = estimationDictionary['timeSteps']
-                                                min_time_steps.append(x)
-                                                if estimationDictionary['timeSteps'] > max_min_steps:
+                                        if systemDetails['parameter_estimation_mode'] =='MIN':
+                                            x['root'] = root
+                                            x['step'] = estimationDictionary['timeSteps']
+                                            min_time_steps.append(x)
+                                            if estimationDictionary['timeSteps'] > max_min_steps:
 
 
-                                                    max_min_steps = estimationDictionary['timeSteps']
-                                            if root_dir == 'po_outputs':
-                                               # if radius == str(systemDetails['mainAgentRadius']):
-                                                 #   estimationDictionary['mainAgentRadius'] = str(systemDetails['mainAgentRadius'])
-                                                    results.append(estimationDictionary)
-                                            else:
+                                                max_min_steps = estimationDictionary['timeSteps']
+                                        if root_dir == 'po_outputs':
+                                           # if radius == str(systemDetails['mainAgentRadius']):
+                                             #   estimationDictionary['mainAgentRadius'] = str(systemDetails['mainAgentRadius'])
                                                 results.append(estimationDictionary)
+                                        else:
+                                            results.append(estimationDictionary)
             count += 1
     #import ipdb; ipdb.set_trace()
     progress = 1 * float(count/1.0)

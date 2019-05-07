@@ -14,13 +14,13 @@ square_grid_size    = ['10']
 number_of_agents    = ['1']#'2','3','5','7','10'
 number_of_items     = ['10']#,'20','25']
 
-radius_set          = ['3']
+radius_set          = ['10']
 angle_set           = [2*pi]
 
 # 1. Defining the experiment type
 experiment_type_set = ['MIN','AGA','ABU']
 
-type_estimation_mode_set = ['BPTE','PTE','BTE','LPTE']
+type_estimation_mode_set = ['BPTE']
 
 # 2. Starting the experiment
 test_number = 0
