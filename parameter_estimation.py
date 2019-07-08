@@ -102,7 +102,10 @@ class TypeEstimation:
 
 class ParameterEstimation:
 
-    def __init__(self,  generated_data_number, PF_add_threshold, train_mode, apply_adversary,
+    def __init__(self,  generated_data_number,
+                 PF_add_threshold,
+                 train_mode,
+                 apply_adversary,
                   mutation_rate, unknown_agent, sim):
 
         # P(teta|H)
@@ -929,7 +932,11 @@ class ParameterEstimation:
         if self.train_mode == 'history_based':
             if unknown_agent.next_action == 'L':
                 # a. Evaluating the particles
+                print ' start evaluate_data_set *******'
+
                 type_probability , max_succeed_cts = train_data.evaluate_data_set(unknown_agent,current_state,po)
+
+                print ' start generate_data *******'
                 train_data.generate_data(unknown_agent, selected_type,current_state )
 
                 # b. Generating
@@ -937,7 +944,7 @@ class ParameterEstimation:
                 # train_data.generate_data(unknown_agent,selected_type ,
                 #                          self.actions_to_reach_target,
                 #                          self.action_history)
-
+                print ' start update_data_set *******'
                 train_data.update_data_set(unknown_agent,loaded_items_list,current_state,po)
         else:
             self.data = train_data.\
@@ -971,7 +978,7 @@ class ParameterEstimation:
         new_parameters_estimation = None
         max_succeed_cts = None
 
-        print '>>>>>',po
+        # print '>>>>>',po
         # 2. Estimating the agent type
         for selected_type in types:
             # a. updating the train data for the current state
@@ -1073,8 +1080,8 @@ class ParameterEstimation:
                 hist = {}
                 hist['pos'] = copy(unknown_agent.choose_target_pos)
                 hist['direction'] = unknown_agent.choose_target_direction
-
-                hist['state'] = max_succeed_cts # unknown_agent.choose_target_state.copy()  # todo: replace it with items and agents position instead of whole state!
+                # hist['state'] = max_succeed_cts # unknown_agent.choose_target_state.copy()  # todo: replace it with items and agents position instead of whole state!
+                hist['state'] =  unknown_agent.choose_target_state.copy()
                 hist['loaded_item'] = copy(unknown_agent.last_loaded_item_pos)
                 unknown_agent.choose_target_history.append(hist)
 

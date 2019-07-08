@@ -138,10 +138,10 @@ class TrainData:
     def check_history(self, unknown_agent,level, radius, angle, selected_type):
 
         success_count = 0
-        print 'begin history ---------------------------------------------'
+        # print 'begin history ---------------------------------------------'
         for hist in unknown_agent.choose_target_history:
             (x, y) = hist['pos']
-            print hist
+            # print hist
             old_state = hist['state'].copy()
             tmp_agent = agent.Agent(x, y, hist['direction'], selected_type, -1)
 
@@ -150,11 +150,11 @@ class TrainData:
             # find the target with
             tmp_agent = old_state.move_a_agent(tmp_agent)
             target = tmp_agent.get_memory()
-
+            # print target , hist['loaded_item']
             if target == hist['loaded_item']:
-                print target, hist['loaded_item']
+                # print target, hist['loaded_item']
                 success_count +=1
-        print 'end history ---------------------------------------------'
+        # print 'end history ---------------------------------------------'
         return success_count
 
     ####################################################################################################################
@@ -231,12 +231,13 @@ class TrainData:
                 tmp_level = random.choice(self.level_pool)
 
             # if [tmp_level, tmp_radius, tmp_angle] not in self.false_data_set:
-            elif none_count < random_creation:  # Mutation
+           # elif none_count < random_creation + pool_creation:  # Mutation
+            else:
                 tmp_radius = random.uniform(radius_min, radius_max)  # 'radius'
                 tmp_angle = random.uniform(angle_min, angle_max)  # 'angle'
                 tmp_level = random.uniform(level_min, level_max)  # 'level'
-            else:
-                break
+            # else:
+            #     break
 
             # b. Simulating and Filtering the particle
             # i. creating the new particle
@@ -259,7 +260,6 @@ class TrainData:
                 particle['cts_type'] = 'e'
 
                 self.data_set.append(particle)
-            else:
                 none_count += 1
 
     ###################################################################################################################
@@ -323,65 +323,57 @@ class TrainData:
         remove_pf = []
         print '*************************************************************************************************'
 
-        print 'last_loaded_item_pos',unknown_agent.last_loaded_item_pos
+        # print 'last_loaded_item_pos',unknown_agent.last_loaded_item_pos
         # if unknown_agent.choose_target_state.items_left() != 0 and\
         if unknown_agent.is_item_nearby(current_state.items) != -1:
             self.load_count += 1
             for particle in self.data_set:
-                print particle['target'], unknown_agent.last_loaded_item_pos
+                # particle['total_steps'] += 1
+                [tmp_level, tmp_radius, tmp_angle] = particle['parameter']
+                # a. Creating a tmp agent to update
+                if current_state.items_left() != 0:
+                    x, y = cts_agent.position[0], cts_agent.position[1]
+                    direction = cts_agent.direction
+                    tmp_agent = agent.Agent(x, y, direction, self.type, -1)
+
+                    # b. Getting and setting the parameters data
+
+                    tmp_agent.set_parameters(current_state, tmp_level, tmp_radius, tmp_angle)
+
+                    # c. Simulating the selected particle
+                    copy_state = current_state.copy()
+                    tmp_agent = copy_state.move_a_agent(tmp_agent)
+                    target = tmp_agent.get_memory()
+                else:
+                    break
+
+                # # Update particle filters target
+                # if tmp_agent.route_actions is not None:
 
                 # d. Filtering the particle
                 if particle['target'] == unknown_agent.last_loaded_item_pos:
-                    # and                     ds['succeeded_steps'] == max_succeeded_steps:
-                    print 'before', particle
-                    # particle['total_steps'] += 1
-                    [tmp_level, tmp_radius, tmp_angle] = particle['parameter']
-
                     self.level_pool.append(tmp_level)
                     self.angle_pool.append(tmp_angle)
                     self.radius_pool.append(tmp_radius)
 
-                    if current_state.items_left() != 0:
-                        # a. Creating a tmp agent to update
-                        x, y = cts_agent.position[0], cts_agent.position[1]
-                        direction = cts_agent.direction
-                        tmp_agent = agent.Agent(x, y, direction, self.type, -1)
+                    particle['target'] = target
+                    particle['choose_target_state'] = current_state.copy()
 
-                        # b. Getting and setting the parameters data
+                    particle['succeeded_steps'] = self.check_history(unknown_agent, tmp_level, tmp_radius,
+                                                                     tmp_angle, self.type) + 1
 
-                        tmp_agent.set_parameters(current_state, tmp_level, tmp_radius, tmp_angle)
+                    particle['failed_steps'] = 0
 
-                        # c. Simulating the selected particle
-                        copy_state = current_state.copy()
-                        tmp_agent = copy_state.move_a_agent(tmp_agent)
-                        target = tmp_agent.get_memory()
 
-                        # Update particle filters target
-                        if tmp_agent.route_actions is not None :
-                            print 'new target',target
-                            # particle['route'] = tmp_agent.route_actions
-                            particle['target'] = target
-
-                            particle['succeeded_steps'] = self.check_history(unknown_agent, tmp_level, tmp_radius,
-                                                                             tmp_angle, self.type) + 1
-
-                            particle['failed_steps'] = 0
-                            print 'after', particle
-                        else:
-                            if int(particle['failed_steps']) > 0:
-                                self.false_data_set.append(particle)
-                                remove_pf.append(particle)
-                            else:
-                                particle['failed_steps'] += 1
-                                particle['succeeded_steps'] -= 1
                 else:
                     if int(particle['failed_steps']) > 0:
                         self.false_data_set.append(particle)
-
                         remove_pf.append(particle)
                     else:
                         particle['failed_steps'] += 1
                         particle['succeeded_steps'] -= 1
+                        particle['target'] = target
+                        particle['choose_target_state'] = current_state.copy()
 
                 # 4. Removing the marked data
             for marked_particle in remove_pf:
@@ -399,9 +391,9 @@ class TrainData:
             type_prob = 0.0
         else:
             type_prob = succeeded_sum
-        print '*************************************************************************************************'
-        print 'estimated type:', self.type, succeeded_sum
-        print 'true type:',unknown_agent.agent_type
+        # print '*************************************************************************************************'
+        # print 'estimated type:', self.type, succeeded_sum
+        # print 'true type:',unknown_agent.agent_type
         return type_prob,max_succeed_cts
 
     ####################################################################################################################

@@ -32,6 +32,7 @@ class POAgent(Agent, object):
         self.agent_memory = list()
         self.item_memory = list()
         self.history = list()
+        self.current_belief_state = None
 
     def initialise_visible_agents(self, sim, generated_data_number, PF_add_threshold, train_mode , type_selection_mode,
                                   parameter_estimation_mode, polynomial_degree,apply_adversary,
@@ -39,7 +40,7 @@ class POAgent(Agent, object):
         self.apply_adversary = apply_adversary
 
         # 1. getting the map empty positions
-        empty_positions = []
+
         empty_positions = [(int(x),int(y)) for x in range(sim.dim_w) for y in range(sim.dim_h)]
         empty_positions.remove(sim.main_agent.get_position())
 
@@ -88,8 +89,9 @@ class POAgent(Agent, object):
         # 4. starting the param estimation
         for unknown_a in self.agent_memory:
             param_estim = parameter_estimation.ParameterEstimation(generated_data_number, PF_add_threshold, train_mode,
+                                                                   apply_adversary,
                                                                    mutation_rate,
-                                                                   apply_adversary,unknown_a,sim)
+                                                                   unknown_a,sim)
             param_estim.estimation_initialisation()
             param_estim.estimation_configuration(type_selection_mode, parameter_estimation_mode, polynomial_degree,type_estimation_mode)
             
@@ -105,6 +107,10 @@ class POAgent(Agent, object):
                 x,y = ag.get_position()
                 a = unknown_agent.Agent(x, y, ag.direction,ag.index)
                 if self.see_object((x,y)):
+                    a.agent_type = ag.agent_type
+                    a.level = ag.level
+                    a.radius = ag.radius
+                    a.angle = ag.angle
                     a.next_action = ag.next_action
                     a.previous_agent_status = ag
                     self.visible_agents.append(a)
@@ -134,7 +140,7 @@ class POAgent(Agent, object):
 
     def refresh_visibility(self,sim):
         # 1. getting the map empty positions
-        empty_positions = []
+
         empty_positions = [(int(x),int(y)) for x in range(sim.dim_w) for y in range(sim.dim_h)]
         pos = sim.main_agent.get_position()
         empty_positions.remove(pos)
@@ -220,85 +226,72 @@ class POAgent(Agent, object):
 
                     break
     
-    def update_unknown_agents(self, sim):
-        # 1. Sampling a belief state
-        if len(self.uct.belief_state) > 0:
-            state = sample(self.uct.belief_state,1)[0]
-        else:
-            state = State(sim.uniform_sim_sample())
+    def update_unknown_agents(self):
 
-        # 2. Updating the unknown agents
-        for sim_ag in state.simulator.agents:
+        for sim_ag in self.current_belief_state.agents:
             for vis_ag in self.visible_agents:
                 if sim_ag.index == vis_ag.index:
                     # a. the visible
-                    vis_ag.previous_agent_status = sim_ag
-
-                    vis_ag.position = copy(sim_ag.position)
-                    vis_ag.direction  = sim_ag.direction
-                    vis_ag.next_action = sim_ag.next_action
-                    vis_ag.choose_target_state = copy(state.simulator)
-
+                    vis_ag.previous_agent_status = copy(sim_ag)
                     # b. and the memory visible agents
                     for mem_ag in self.agent_memory:
                         if mem_ag.index == vis_ag.index:
-                            mem_ag.previous_agent_status = sim_ag
-
-                            mem_ag.position = copy(sim_ag.position)
-                            mem_ag.direction  = sim_ag.direction
-                            mem_ag.next_action = vis_ag.next_action
-                            mem_ag.choose_target_state = copy(state.simulator)
+                            mem_ag.previous_agent_status = copy(sim_ag)
                             break
 
-        for sim_ag in state.simulator.agents:
             for inv_ag in self.invisible_agents:
                 if sim_ag.index == inv_ag.index:
                     # a. the visible
-                    inv_ag.previous_agent_status = sim_ag
-
-                    inv_ag.position = copy(sim_ag.position)
-                    inv_ag.direction  = sim_ag.direction
-                    inv_ag.next_action = sim_ag.next_action
-                    inv_ag.choose_target_state = copy(state.simulator)
+                    inv_ag.previous_agent_status = copy(sim_ag)
 
                     # b. and the memory visible agents
                     for mem_ag in self.agent_memory:
                         if mem_ag.index == inv_ag.index:
-                            mem_ag.previous_agent_status = sim_ag
+                            mem_ag.previous_agent_status =copy( sim_ag)
 
-                            mem_ag.position = copy(sim_ag.position)
-                            mem_ag.direction  = sim_ag.direction
-                            mem_ag.next_action = inv_ag.next_action
-                            mem_ag.choose_target_state = copy(state.simulator)
                             break
 
-    def update_unknown_agents_status(self, sim):
+    def update_unknown_agents_status(self,sim):
+
+        # 2. Updating the unknown agents
         for sim_ag in sim.agents:
             for vis_ag in self.visible_agents:
                 if sim_ag.index == vis_ag.index:
                     vis_ag.position = copy(sim_ag.position)
                     vis_ag.direction = sim_ag.direction
-
                     vis_ag.next_action = sim_ag.next_action
-                    vis_ag.previous_agent_status = sim_ag
-                    vis_ag.choose_target_state = sim.copy()
+
                     if vis_ag.next_action == 'L':
                         vis_ag.last_loaded_item_pos = sim_ag.last_loaded_item_pos
                         vis_ag.item_to_load = sim_ag.item_to_load  # todo wrong
 
-                    for mem_ag in self.agent_memory:
-                        if mem_ag.index == vis_ag.index:
-                            mem_ag.position = copy(sim_ag.position)
-                            mem_ag.direction  = sim_ag.direction
+                    self.update_agents_memory(vis_ag)
 
-                            mem_ag.next_action = vis_ag.next_action
-                            mem_ag.previous_agent_status = sim_ag
-                            mem_ag.choose_target_state = sim.copy()
-                            if vis_ag.next_action == 'L':
-                                mem_ag.last_loaded_item_pos = sim_ag.last_loaded_item_pos
-                                mem_ag.item_to_load = sim_ag.item_to_load  # todo wrong
+            for inv_ag in self.invisible_agents:
+                if sim_ag.index == inv_ag.index:
+                    inv_ag.position = copy(sim_ag.position)
+                    inv_ag.direction = sim_ag.direction
+                    inv_ag.next_action = sim_ag.next_action
 
-                            break
+                    if inv_ag.next_action == 'L':
+                        inv_ag.last_loaded_item_pos = sim_ag.last_loaded_item_pos
+                        inv_ag.item_to_load = sim_ag.item_to_load  # todo wrong
+
+                    self.update_agents_memory(inv_ag)
+
+
+    def update_agents_memory(self,agent):
+        for mem_ag in self.agent_memory:
+            if mem_ag.index == agent.index:
+                mem_ag.position = copy(agent.position)
+                mem_ag.direction = agent.direction
+                mem_ag.next_action = agent.next_action
+
+                if agent.next_action == 'L':
+                    mem_ag.last_loaded_item_pos = agent.last_loaded_item_pos
+                    mem_ag.item_to_load = agent.item_to_load  # todo wrong
+
+                break
 
     def get_memory_agent(self,unknown_agent):
         for m_a in self.agent_memory:
@@ -372,6 +365,7 @@ class POAgent(Agent, object):
         print 'history:',self.history
         print '**************************************'
 
+
     ####################################################################################################################
     def generate_previous_state(self,unknown_agent,next_action,current_state):
         previous_state = copy(current_state)
@@ -379,13 +373,13 @@ class POAgent(Agent, object):
             if agent.index == unknown_agent.index:
                 pos = agent.position
                 if next_action == 'N':
-                    agent.position =  (pos[0] - 0, pos[1] - 1)
+                    agent.position = (pos[0] - 0, pos[1] - 1)
                 elif next_action == 'S':
-                    agent.position =  (pos[0] - 0, pos[1] + 1)
+                    agent.position = (pos[0] - 0, pos[1] + 1)
                 elif next_action == 'W':
-                    agent.position =  (pos[0] + 1, pos[1] - 0)
+                    agent.position = (pos[0] + 1, pos[1] - 0)
                 elif next_action == 'E':
-                    agent.position =  (pos[0] - 1, pos[1] - 0)
+                    agent.position = (pos[0] - 1, pos[1] - 0)
                 break
         return previous_state
 
@@ -394,7 +388,8 @@ class POAgent(Agent, object):
             if v_a.index == unknown_agent.index:
                 return True
         return False
-        ####################################################################################################################
+
+    ####################################################################################################################
 
     def find_loaded_item(self, main_sim):
 
@@ -408,9 +403,12 @@ class POAgent(Agent, object):
 
         return loaded_items
 
+    ####################################################################################################################
     def estimation(self,time_step,main_sim,enemy_action_prob, types, actions,current_state):
+
         # For the unknown agents, estimating the parameters and types
         loaded_items_list = self.find_loaded_item(main_sim)
+
         for unknown_agent in self.agent_memory:
             if unknown_agent is not None:
                 # 1. Selecting the types
@@ -430,30 +428,12 @@ class POAgent(Agent, object):
                 # 3. Estimating
                 # print unknown_agent.next_action
 
-                if self.agent_is_visible(unknown_agent) and unknown_agent.next_action is not None:
-
+                if unknown_agent.next_action is not None:
+                    # tmp_sim = copy(self.current_belief_state)
                     tmp_sim = copy(main_sim)
-
                     tmp_previous_state = copy(self.previous_state)
-
-
                     parameter_estimation.process_parameter_estimations(unknown_agent,
-                        tmp_previous_state, tmp_sim, enemy_action_prob, selected_types,loaded_items_list,True)
-
-                elif current_state is not None:
-                    
-                    for agent in current_state.agents:
-                        if agent.index == unknown_agent.index:
-                            next_action = agent.next_action
-                            break
-
-                    previous_state = self.generate_previous_state(unknown_agent,next_action,current_state)
-
-                    unknown_agent.next_action = next_action
-
-
-                    #parameter_estimation.unseen_parameter_estimation_not_update(unknown_agent,selected_types)
-                    parameter_estimation.process_parameter_estimations(unknown_agent,
-                        previous_state, current_state, enemy_action_prob, selected_types,loaded_items_list,True)
+                                                                       tmp_previous_state, tmp_sim, enemy_action_prob,
+                                                                       selected_types, loaded_items_list,True)
 
         print "End of Estimationnnnnnnnn----------------------------------"

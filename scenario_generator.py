@@ -18,8 +18,8 @@ possible_directions = ['N','S','E','W']
 agent_types 		= ['l1','l2']#,'f1','f2']
 selected_types 		= [False,False]
 
-experiment_type_set = ['TRUE','ABU', 'AGA', 'MIN']
-type_estimation_mode_set = ['LPTE','BTE','BPTE','PTE']
+experiment_type_set =['ABU', 'AGA', 'MIN']# ['TRUE','ABU', 'AGA', 'MIN']
+type_estimation_mode_set = ['BPTE']#['LPTE','BTE','BPTE','PTE']
 mutation_rate_set = ['0.2']#,'0.3','0.5','0.7','0.9']
 apply_adversary = False
 round_count = 1
@@ -116,7 +116,7 @@ def main():
 		agentx,agenty,grid = generateRandomNumber(grid,grid_size)
 		agentDirection = choice(possible_directions)
 		agentType = selectType()
-		agentLevel = round(random.uniform(0.99,1), 3)
+		agentLevel = round(random.uniform(0.9,1), 3)
 		agentRadius = round(random.uniform(0.5,1), 3)
 		agentAngle = round(random.uniform(0.5,1), 3)
 		AGENTS.append(['agent'+ str(agent_idx),str(agent_idx),agentx,agenty,agentDirection,agentType,agentLevel,agentRadius,agentAngle])
@@ -124,7 +124,7 @@ def main():
 	ITEMS = []
 	for item_idx in range(nitems):
 		itemx,itemy,grid = generateRandomNumber(grid,grid_size)
-		itemLevel = round(random.uniform(0,1), 3)
+		itemLevel = round(random.uniform(0,0.8), 3)
 		ITEMS.append(['item'+ str(item_idx),itemx,itemy,itemLevel])
 
 	# 3. Creating the possible configuration files

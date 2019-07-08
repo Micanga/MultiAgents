@@ -15,17 +15,16 @@ actions = ['L', 'N', 'E', 'S', 'W']
 root = None
 
 
-class PONode(Node,object):
+class PONode(Node, object):
 
     def __init__(self, depth, state, enemy, parent=None):
-        # Common Parameters
-        # >> parentNode, depth, state, enemy, Q_table, untried_moves, 
-        # childNodes, action, visits e numItems
+
         super(PONode, self).__init__(depth, state, enemy, parent)
 
         # PO Parameters
         self.observation = None
         self.history = list()
+        self.particle_filter = list()
 
     def random_policy_action(self):
         possible_actions = list()
@@ -33,20 +32,20 @@ class PONode(Node,object):
             possible_actions.append(c.action)
         return choice(possible_actions)
 
-    def get_child_by_action(self,action):
+    def get_child_by_action(self, action):
         for c in self.childNodes:
             if c.action == action:
                 return c
         return None
 
     def add_child(self, state, enemy):
-        n = PONode(parent=self, depth=self.depth + 1, state=state,enemy=enemy)
+        n = PONode(parent=self, depth=self.depth + 1, state=state, enemy=enemy)
         n.history = self.history
         self.childNodes.append(n)
         return n
 
     def add_action_child(self, act, state, enemy):
-        new_node = PONode(parent=self, depth=self.depth + 1, state=state , enemy=enemy)
+        new_node = PONode(parent=self, depth=self.depth + 1, state=state, enemy=enemy)
         new_node.action = act
         new_node.history = copy(self.history)
         new_node.history.append(act)
@@ -54,21 +53,21 @@ class PONode(Node,object):
         return new_node
 
     def add_obs_child(self, obs, state, enemy):
-        new_node = PONode(parent=self, depth=self.depth + 1, state=state , enemy=enemy)
+        new_node = PONode(parent=self, depth=self.depth + 1, state=state, enemy=enemy)
         new_node.observation = obs
         new_node.history = copy(self.history)
         self.childNodes.append(new_node)
         return new_node
 
-    def update_depth(self,depth):
+    def update_depth(self, depth):
         self.depth = depth
         for c in self.childNodes:
-            c.update_depth(depth+1)
+            c.update_depth(depth + 1)
 
     def show_q_table(self):
         print '**** Q TABLE ****'
         for row in self.Q_table:
-            print row.action,row.QValue
+            print row.action, row.QValue
         print '*****************'
 
     def destroy(self):
@@ -80,18 +79,61 @@ class PONode(Node,object):
         self.untried_moves = None
         self.observation = None
 
-########################################################################################################################
-class POUCT(UCT,object):
-    def __init__(self,  iteration_max, max_depth, do_estimation, mcts_mode,apply_adversary, enemy):
-        # Common Parameters
-        super(POUCT,self).__init__(iteration_max, max_depth, do_estimation, mcts_mode,apply_adversary, enemy)
-        # PO Parameters
 
+########################################################################################################################
+class POMCP:
+    def __init__(self, iteration_max, max_depth, do_estimation, mcts_mode, apply_adversary, enemy):
+        # Common Parameters
+        # super(UCT, self).__init__(iteration_max, max_depth, do_estimation, mcts_mode, apply_adversary, enemy)
+        # PO Parameters
+        self.iteration_max = iteration_max
+        self.max_depth = max_depth
+        self.do_estimation = do_estimation
+        self.mcts_mode = mcts_mode
+        self.planning_for_enemy = enemy
+        self.apply_adversary = apply_adversary
         self.k = 150
         self.max_samples = 750
-    
+
+   ####################################################################################################################
+
+    def best_action(self, node):
+        Q_table = node.Q_table
+
+        tieCases = []
+
+        # Swaps between min and max depending on if its an enemy move or a main agent move
+        maxA = None
+        maxQ = -100000000000
+        # if not self.enemy:
+        for a in range(len(Q_table)):
+            if Q_table[a].QValue > maxQ and Q_table[a].trials > 0:
+                maxQ = Q_table[a].QValue
+                maxA = Q_table[a].action
+        # else:
+        #     maxQ = 100000000000
+        #     for a in range(len(Q_table)):
+        #         if Q_table[a].QValue < maxQ and Q_table[a].trials > 0:
+        #             maxQ = Q_table[a].QValue
+        #             maxA = Q_table[a].action
+
+        for a in range(len(Q_table)):
+            if (Q_table[a].QValue == maxQ):
+                tieCases.append(a)
+        if len(tieCases) > 0:
+            maxA = Q_table[choice(tieCases)].action
+
+        # maxA=node.uct_select_action()
+        return maxA
+    ################################################################################################################
+
+    def leaf(self, main_time_step, node):
+        if node.depth == main_time_step + self.max_depth + 1:
+            return True
+        return False
+
     ####################################################################################################################
-    def agent_planning(self, time_step, search_tree, sim,  enemy):
+    def agent_planning(self, time_step, search_tree, sim, enemy):
         global totalItems
 
         # 1. Updating the item count
@@ -107,7 +149,7 @@ class POUCT(UCT,object):
         return next_move, enemy_prediction, search_tree
 
     ####################################################################################################################
-    def monte_carlo_planning(self, main_time_step, search_tree, simulator,  enemy):
+    def monte_carlo_planning(self, main_time_step, search_tree, simulator, enemy):
         global root
 
         # 1. Initializing the current state
@@ -124,7 +166,7 @@ class POUCT(UCT,object):
 
         # 3. Taking the best action
         best_selected_action = self.search(main_time_step, root_node)
-        
+
         # root_node.show_q_table()
         # print 'best action:',best_selected_action
 
@@ -157,17 +199,17 @@ class POUCT(UCT,object):
 
         while it < self.iteration_max:
             if it % 10 == 0:
-                print it,'/',self.iteration_max
+                print it, '/', self.iteration_max
             # a. choosing the simulation state
-            if node.history == list() or self.belief_state == list():
+            if node.history == list() or node.particle_filter == list():
                 state = State(sim.uniform_sim_sample())
             else:
-                state = self.belief_state[random.randint(0,len(self.belief_state)-1)]
+                state = node.particle_filter[random.randint(0, len(node.particle_filter) - 1)]
 
             node.state = state
 
             # b. simulating
-            self.simulate(node,0)
+            self.simulate(node, 0)
 
             # c. increasing the time step
             it += 1
@@ -175,7 +217,7 @@ class POUCT(UCT,object):
         return self.best_action(node)
 
     ################################################################################################################
-    def simulate(self,node,depth):
+    def simulate(self, node, depth):
         # 0. Setting Simulate Parameters
         state = node.state
         history = node.history
@@ -188,11 +230,11 @@ class POUCT(UCT,object):
         if node.childNodes == []:
             for a in ['L', 'N', 'E', 'S', 'W']:
                 (next_state, observation, reward) = self.simulate_action(state, a)
-                node.add_action_child(a,next_state,node.enemy)
+                node.add_action_child(a, next_state, node.enemy)
             # b. rollout
-            return self.rollout(node,depth)
+            return self.rollout(node, depth)
 
-        #print 'simulate(',depth,')'
+        # print 'simulate(',depth,')'
         # 3. If the history exists in the tree, choose the best action to simulate
         action, action_idx = self.get_simulate_action(node)
         action_node = node.get_child_by_action(action)
@@ -204,32 +246,33 @@ class POUCT(UCT,object):
         # 5. Adding the observation node if it not exists
         new_observation = True
         for child in action_node.childNodes:
-            if self.observation_is_equal(child.observation,observation):  
+            if self.observation_is_equal(child.observation, observation):
                 new_observation = False
                 observation_node = child
                 break
 
         if new_observation:
-            observation_node = action_node.add_obs_child(observation,next_state,action_node.enemy)
-        
+            observation_node = action_node.add_obs_child(observation, next_state, action_node.enemy)
+
         # 6. Calculating the reward
         observation_node.visits += 1
-        R = reward + 0.95*self.simulate(observation_node,depth+1)
+        observation_node.particle_filter.append(state)
+        R = reward + 0.95 * self.simulate(observation_node, depth + 1)
 
         # 7. Updating the node
-        if depth == 0:
-            self.belief_state.append(state)
+     #   if depth == 0:
+
         node.visits += 1
 
         value = node.Q_table[action_idx].QValue
-        new_value = value + ((R-value)/action_node.visits)
-        node.update(action,new_value)
+        new_value = value + ((R - value) / action_node.visits)
+        node.update(action, new_value)
 
         return R
 
     ################################################################################################################
-    def rollout(self,node,depth):
-        #print 'rollouting (',depth,')...'
+    def rollout(self, node, depth):
+        # print 'rollouting (',depth,')...'
         if depth > self.max_depth or self.terminal(node.state):
             return 0
 
@@ -242,22 +285,22 @@ class POUCT(UCT,object):
         (next_state, observation, reward) = self.simulate_action(node.state, action)
 
         # 3. Building the rollout node
-        new_node = PONode(node.depth+1, next_state, node.enemy,None)
+        new_node = PONode(node.depth + 1, next_state, node.enemy, None)
         for a in new_node.create_possible_moves():
             (c_next_state, c_observation, c_reward) = self.simulate_action(new_node.state, a)
-            new_node.add_action_child(a,c_next_state,node.enemy)
+            new_node.add_action_child(a, c_next_state, node.enemy)
 
         # 4. Calculating the reward
-        R = reward + 0.95*self.rollout(new_node,depth+1)
+        R = reward + 0.95 * self.rollout(new_node, depth + 1)
 
         return R
 
     ################################################################################################################
-    def get_simulate_action(self,node):
+    def get_simulate_action(self, node):
         action, action_idx = None, None
         actions_value = []
         for a in range(len(node.Q_table)):
-            # 1. getting the child node information 
+            # 1. getting the child node information
             child = node.get_child_by_action(node.Q_table[a].action)
 
             # -- if the node was never tried, lets try it
@@ -267,11 +310,11 @@ class POUCT(UCT,object):
                 return action, action_idx
 
             # 2. calculating the value
-            value = node.Q_table[a].QValue + sqrt(log(node.visits)/child.visits)
-            actions_value.append((value,a))
+            value = node.Q_table[a].QValue + (sqrt(log(node.visits) / child.visits))
+            actions_value.append((value, a))
 
         # 3. taking the action and the linked child
-        action_idx = max(actions_value,key=lambda item:item[0])[1]
+        action_idx = max(actions_value, key=lambda item: item[0])[1]
         action = node.Q_table[action_idx].action
 
         return action, action_idx
@@ -295,7 +338,7 @@ class POUCT(UCT,object):
         m_reward, next_state.simulator = self.do_move(next_state.simulator, action)
 
         # 4. Run the A agents simulation
-        a_reward = self.update_all_A_agents(sim,True)
+        a_reward = self.update_all_A_agents(sim, True)
 
         if sim.do_collaboration():
             c_reward = float(1)
@@ -309,7 +352,7 @@ class POUCT(UCT,object):
         return next_state, observation, total_reward
 
     ################################################################################################################
-    def do_move(self, sim, move,  enemy = False, real=False):
+    def do_move(self, sim, move, enemy=False, real=False):
 
         if enemy:
             tmp_m_agent = sim.enemy_agent
@@ -360,7 +403,7 @@ class POUCT(UCT,object):
             reward += self.update(sim, i)
 
         return reward
-    
+
     def update(self, sim, a_agent_index):
         reward = 0
         loaded_item = None
@@ -370,8 +413,8 @@ class POUCT(UCT,object):
             # print 'loading :', a_agent.item_to_load.get_position()
             destination = a_agent.item_to_load
 
-            item_idx = sim.find_item_by_location(destination.get_position()[0],destination.get_position()[1])
-                
+            item_idx = sim.find_item_by_location(destination.get_position()[0], destination.get_position()[1])
+
             if destination.level <= a_agent.level:  # If there is a an item nearby loading process starts
 
                 # load item and and remove it from map  and get the direction of agent when reaching the item.
@@ -384,7 +427,7 @@ class POUCT(UCT,object):
 
         else:
             # If there is no item to collect just move A agent
-            (new_position_x, new_position_y) = a_agent.new_position_with_given_action(sim.dim_h,sim.dim_w
+            (new_position_x, new_position_y) = a_agent.new_position_with_given_action(sim.dim_h, sim.dim_w
                                                                                       , a_agent.next_action)
 
             if sim.position_is_empty(new_position_x, new_position_y):
@@ -394,10 +437,10 @@ class POUCT(UCT,object):
 
         sim.agents[a_agent_index] = a_agent
         sim.update_the_map()
-        return reward #, loaded_item
+        return reward  # , loaded_item
 
     ################################################################################################################
-    def update_belief_state(self,main_sim,search_tree):
+    def update_belief_state(self, main_sim, search_tree):
         # print '********* Updating search tree root **********'
         # 1. Taking the real action and the real observation
         action = main_sim.main_agent.history[-1]
@@ -413,8 +456,8 @@ class POUCT(UCT,object):
         # b. action node --- go to ---> observation node
         # print 'o',observation
         for obs_child in search_tree.childNodes:
-            print 'c',obs_child.observation
-            if self.observation_is_equal(observation,obs_child.observation):
+            print 'c', obs_child.observation
+            if self.observation_is_equal(observation, obs_child.observation):
                 search_tree = obs_child
                 break
 
@@ -431,11 +474,11 @@ class POUCT(UCT,object):
 
             search_tree.destroy()
 
-            search_tree = PONode(parent=None, depth=0, state=state , enemy=enemy)
+            search_tree = PONode(parent=None, depth=0, state=state, enemy=enemy)
             search_tree.observation = observation
             search_tree.history = history
 
-        self.black_box(action,observation,main_sim.main_agent.previous_state,non_child)
+        self.black_box(action, observation, main_sim.main_agent.previous_state, non_child,search_tree)
 
         # print '********* Updating the tree depth **********'
         search_tree.update_depth(0)
@@ -445,51 +488,49 @@ class POUCT(UCT,object):
         return search_tree
 
     ################################################################################################################
-    def black_box(self,action,real_obs,prev_sim,non_child):
+    def black_box(self, action, real_obs, prev_sim, non_child,node):
         # 1. Copying and cleaning the current belief states
         cur_belief = list()
 
-        for state in self.belief_state:
-            (next_state, observation, reward) = self.simulate_action(state, action)
-            if self.observation_is_equal(observation,real_obs):
-                cur_belief.append(state)
+        # for state in node.belief_state:
+        #     (next_state, observation, reward) = self.simulate_action(state, action)
+        #     if self.observation_is_equal(observation, real_obs):
+        #         cur_belief.append(state)
 
-        self.belief_state = list()
-
-        # 2. Sampling new particles while dont get k particles
+        # 2. Sampling new particles while don't get k particles
         sample_counter = 0
-        if not non_child and len(cur_belief) > 1: 
-            while len(self.belief_state) != self.k and sample_counter < self.max_samples:
+        if not non_child and len(cur_belief) > 1:
+            while len(node.belief_state) != self.k and sample_counter < self.max_samples:
                 sample_counter += 1
 
-                state = sample(cur_belief,1)[0]
+                state = sample(cur_belief, 1)[0]
                 (next_state, observation, reward) = self.simulate_action(state, action)
-                if self.observation_is_equal(real_obs,observation):
-                    self.belief_state.append(next_state)
+                if self.observation_is_equal(real_obs, observation):
+                    node.particle_filter.append(next_state)
         else:
             print_flag = True
-            while len(self.belief_state) != self.k and sample_counter < self.max_samples:
+            while len(node.particle_filter) != self.k and sample_counter < self.max_samples:
                 sample_counter += 1
 
-                if print_flag:
-                    print 'sampled states:',len(self.belief_state),'/',self.k
-                    print_flag = False
+                # if print_flag:
+                #     print 'sampled states:', len(node.belief_state), '/', self.k
+                #     print_flag = False
 
                 tmp_sim = prev_sim.copy()
 
                 if len(cur_belief) > 0:
-                    state = sample(cur_belief,1)[0]
+                    state = sample(cur_belief, 1)[0]
                 else:
                     state = State(tmp_sim.uniform_sim_sample())
 
                 (next_state, observation, reward) = self.simulate_action(state, action)
-                if self.observation_is_equal(real_obs,observation):
-                    self.belief_state.append(next_state)
-                    if len(self.belief_state) % 10 == 0:
+                if self.observation_is_equal(real_obs, observation):
+                    node.particle_filter.append(next_state)
+                    if len(node.particle_filter) % 10 == 0:
                         print_flag = True
 
     ################################################################################################################
-    def observation_is_equal(self,observation,other_observation):
+    def observation_is_equal(self, observation, other_observation):
         if len(observation) != len(other_observation):
             return False
 

@@ -3,10 +3,12 @@ import os
 import pickle
 from random import randint
 
+
 def get_input_folder():
     # return
-    return "inputs/test/"
-    # return "po_inputs/PO_O_ABU/"
+    # return "inputs/FO_O_MIN/"
+    return "po_inputs/PO_O_MIN/"
+
 
 def create_output_folder(run_type = 'FO'):
     # 1. Getting the experiment time
@@ -16,11 +18,12 @@ def create_output_folder(run_type = 'FO'):
     sub_dir = str(now.day) + "_"+ str(now.hour)+ "_" + str(now.minute)\
     + "-" + str(randint(0,now.day+now.hour+now.minute))
     
-    # 3. Verifing the current folder
+    # 3. Verifying the current folder
     if run_type == 'PO':
         current_folder = "po_outputs/" + sub_dir + '/'
     else:
-        current_folder = "test_outputs/" + sub_dir + '/'
+        current_folder = "outputs/" + sub_dir + '/'
+    #    current_folder = "test_outputs/" + sub_dir + '/'
 
     if not os.path.exists(current_folder):
         os.mkdir(current_folder, 0755)
@@ -30,16 +33,19 @@ def create_output_folder(run_type = 'FO'):
     # 4. Returning the created folder
     return current_folder
 
+
 def create_log_file(path):
     file = open(path, 'w')
     return file
 
-def write_configurations(file,sim_configuration):
+
+def write_configurations(file ,sim_configuration):
     for key in sim_configuration:
         file.write(key+' : '+str(sim_configuration[key])+'\n')
 
+
 def write_map(file, sim):
-    line =''
+    line = ''
     for y in range(sim.dim_h - 1, -1, -1):
         for x in range(sim.dim_w):
             xy = sim.the_map[y][x]
@@ -65,6 +71,7 @@ def write_map(file, sim):
         file.write(line+ '\n')
         line = ''
     file.write('\n')
+
 
 def print_result(main_sim,  time_steps, begin_time, end_time,mcts_mode, parameter_estimation_mode,
  type_selection_mode, iteration_max, max_depth, generated_data_number,

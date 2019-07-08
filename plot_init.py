@@ -14,7 +14,8 @@ def read_files(root_dir,size,nagents,nitems,type_estimation_mode,radius=None):
     results = list()
     count = 0
     min_time_steps = []
-    max_min_steps = 0
+    max_steps =0
+    min_steps = 1000
     for root, dirs, files in os.walk(root_dir):
         if 'pickleResults.txt' in files:
             # print root
@@ -28,78 +29,81 @@ def read_files(root_dir,size,nagents,nitems,type_estimation_mode,radius=None):
 
                 # Simulator Information
                 systemDetails = dataList[0]
-                print systemDetails['round_count']
-                # if systemDetails['round_count'] ==1:
-                simWidth = systemDetails['simWidth']
-                simHeight = systemDetails['simHeight']
-                agentsCounts = systemDetails['agentsCounts']
-                itemsCounts = systemDetails['itemsCounts']
 
-                generatedDataNumber = systemDetails['generatedDataNumber']
+                # if systemDetails['round_count'] == 1:
+                if 1 == 1:
+                    simWidth = systemDetails['simWidth']
+                    simHeight = systemDetails['simHeight']
+                    agentsCounts = systemDetails['agentsCounts']
+                    itemsCounts = systemDetails['itemsCounts']
 
-                estimationDictionary['simWidth'] = systemDetails['simWidth']
-                estimationDictionary['timeSteps'] = systemDetails['timeSteps']
-                estimationDictionary['typeSelectionMode'] = systemDetails['typeSelectionMode']
+                    generatedDataNumber = systemDetails['generatedDataNumber']
 
-                beginTime = systemDetails['beginTime']
-                endTime = systemDetails['endTime']
+                    estimationDictionary['simWidth'] = systemDetails['simWidth']
+                    estimationDictionary['timeSteps'] = systemDetails['timeSteps']
+                    estimationDictionary['typeSelectionMode'] = systemDetails['typeSelectionMode']
 
-                estimationDictionary['computationalTime'] = int(endTime) - int(beginTime)
-                estimationDictionary['parameter_estimation_mode'] = systemDetails['parameter_estimation_mode']
+                    beginTime = systemDetails['beginTime']
+                    endTime = systemDetails['endTime']
 
-                data = dataList[1]
-                for i in range(len(data)):
-                    agentDictionary = data[i]
-                    trueType = agentDictionary['trueType']
-                    if trueType in ['l1','l2','f1','f2']:
-                        if trueType == 'l1':
-                            typeProbHistory = agentDictionary['l1TypeProbHistory']
-                            historyParameters = ast.literal_eval(agentDictionary['l1EstimationHistory'])
-                        elif trueType == 'l2':
-                            typeProbHistory = agentDictionary['l2TypeProbHistory']
-                            historyParameters = ast.literal_eval(agentDictionary['l2EstimationHistory'])
-                        elif trueType == 'f1':
-                            typeProbHistory = agentDictionary['f1TypeProbHistory']
-                            historyParameters = ast.literal_eval(agentDictionary['f1EstimationHistory'])
-                        elif trueType == 'f2':
-                            typeProbHistory = agentDictionary['f2TypeProbHistory']
-                            historyParameters = ast.literal_eval(agentDictionary['f2EstimationHistory'])
+                    estimationDictionary['computationalTime'] = int(endTime) - int(beginTime)
+                    estimationDictionary['parameter_estimation_mode'] = systemDetails['parameter_estimation_mode']
 
-                        x ={}
-                        trueParameters = agentDictionary['trueParameters']
-                        estimationDictionary['trueType'] = trueType
-                        estimationDictionary['typeProbHistory'] = typeProbHistory
-                        estimationDictionary['trueParameters'] = trueParameters
-                        estimationDictionary['historyParameters'] = historyParameters
-                        estimationDictionary['path'] = root
-                        if size == str(simWidth):
+                    data = dataList[1]
+                    for i in range(len(data)):
+                        agentDictionary = data[i]
+                        trueType = agentDictionary['trueType']
+                        if trueType in ['l1','l2','f1','f2']:
+                            if trueType == 'l1':
+                                typeProbHistory = agentDictionary['l1TypeProbHistory']
+                                historyParameters = ast.literal_eval(agentDictionary['l1EstimationHistory'])
+                            elif trueType == 'l2':
+                                typeProbHistory = agentDictionary['l2TypeProbHistory']
+                                historyParameters = ast.literal_eval(agentDictionary['l2EstimationHistory'])
+                            elif trueType == 'f1':
+                                typeProbHistory = agentDictionary['f1TypeProbHistory']
+                                historyParameters = ast.literal_eval(agentDictionary['f1EstimationHistory'])
+                            elif trueType == 'f2':
+                                typeProbHistory = agentDictionary['f2TypeProbHistory']
+                                historyParameters = ast.literal_eval(agentDictionary['f2EstimationHistory'])
 
-                            if nagents == str(agentsCounts):
-                                if nitems == str(itemsCounts):
+                            x ={}
+                            trueParameters = agentDictionary['trueParameters']
+                            estimationDictionary['trueType'] = trueType
+                            estimationDictionary['typeProbHistory'] = typeProbHistory
+                            estimationDictionary['trueParameters'] = trueParameters
+                            estimationDictionary['historyParameters'] = historyParameters
+                            estimationDictionary['path'] = root
+                            if size == str(simWidth):
 
-                                    if systemDetails['type_estimation_mode']==type_estimation_mode:
+                                if nagents == str(agentsCounts):
+                                    if nitems == str(itemsCounts):
 
-                                        # print estimationDictionary['timeSteps'] , ' ', systemDetails['parameter_estimation_mode']
-                                        # print
+                                        if systemDetails['type_estimation_mode']==type_estimation_mode:
 
-                                        if systemDetails['parameter_estimation_mode'] =='MIN':
-                                            x['root'] = root
-                                            x['step'] = estimationDictionary['timeSteps']
-                                            min_time_steps.append(x)
-                                            if estimationDictionary['timeSteps'] > max_min_steps:
+                                            # print estimationDictionary['timeSteps'] , ' ', systemDetails['parameter_estimation_mode']
+                                            # print
 
+                                            if systemDetails['parameter_estimation_mode'] == 'AGA':
+                                                x['root'] = root
+                                                x['step'] = estimationDictionary['timeSteps']
+                                                min_time_steps.append(x)
+                                                if estimationDictionary['timeSteps'] > max_steps:
+                                                    max_steps = estimationDictionary['timeSteps']
+                                                if estimationDictionary['timeSteps'] < min_steps:
+                                                    min_steps = estimationDictionary['timeSteps']
 
-                                                max_min_steps = estimationDictionary['timeSteps']
-                                        if root_dir == 'po_outputs':
-                                           # if radius == str(systemDetails['mainAgentRadius']):
-                                             #   estimationDictionary['mainAgentRadius'] = str(systemDetails['mainAgentRadius'])
+                                            if root_dir == 'po_outputs':
+                                                if radius == str(int(systemDetails['mainAgentRadius'])):
+                                                 #   estimationDictionary['mainAgentRadius'] = str(systemDetails['mainAgentRadius'])
+                                                    results.append(estimationDictionary)
+                                            else:
                                                 results.append(estimationDictionary)
-                                        else:
-                                            results.append(estimationDictionary)
             count += 1
     #import ipdb; ipdb.set_trace()
     progress = 1 * float(count/1.0)
-    print 'Max: ', max_min_steps
+    print 'Max: ', max_steps
+    print 'Min: ', min_steps
     for m in min_time_steps:
         print m
 

@@ -21,13 +21,15 @@ informations = list()
 # 1. Defining the Graph Generation Parameters
 ROOT_DIRS = ['po_outputs']  # ['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
 # ROOT_DIRS = ['outputs']  # ['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
-NAMES = ['POMCP']  # ['POMCP','POMCP','POMCP']#,'POMCP_FO']
-# NAMES = ['MCP']  # ['POMCP','POMCP','POMCP']#,'POMCP_FO']
+# ROOT_DIRS = ['outputs']
+
+# NAMES = ['POMCP']  # ['POMCP','POMCP','POMCP']#,'POMCP_FO']
+NAMES = ['MCP']  # ['POMCP','POMCP','POMCP']#,'POMCP_FO']
 
 SIZE = ['10']  # ,'15','20','25']
-NAGENTS = ['1']
+NAGENTS = ['1']#,'3','5']
 NITEMS = ['10']  # ,'15','20','25']
-RADIUS = ['10']
+RADIUS = ['7']
 experiment_type_set = ['ABU', 'AGA', 'MIN']
 type_estimation_mode_set = ['BPTE']
 
@@ -41,7 +43,31 @@ type_estimation_mode_set = ['BPTE']
 ##		  ##	   ##	  ##	 ##	   ##    ##
 ##		  ########  #######	     ##	    ######
 ############################# ###############################################################
+def calc_CI(type_hist):
+    ci_hist = []
+    for th in type_hist:
+        ci = []
+        for e_h in th:
+            ci.append(e_h)
+        ci_hist.append(ci)
+
+    conf_int = np.zeros(len(ci_hist[0]))
+    ci_hist = np.array(ci_hist)
+
+    for i in range(len(conf_int)):
+        if not info.is_constant(ci_hist[:, i]):
+            conf_int[i] = info.calcConfInt(ci_hist[:, i])
+        else:
+            conf_int[i] = 0
+    return conf_int
+
+############################# ###############################################################
 def plot_type_probability(aga_tp, abu_tp, OGE_tp, threshold, plotname):
+
+    #
+    # aga_tp_ci=  calc_CI(aga_tp)
+    # abu_tp_ci=  calc_CI(abu_tp)
+    # OGE_tp_ci=  calc_CI(OGE_tp)
     aga_tp = np.array(aga_tp)
     abu_tp = np.array(abu_tp)
     OGE_tp = np.array(OGE_tp)
@@ -63,32 +89,60 @@ def plot_type_probability(aga_tp, abu_tp, OGE_tp, threshold, plotname):
     OGE_tp = np.array(OGE_tp)
     OGE_error = OGE_tp.mean(axis=0)  # .tolist()
 
-    aga_error = np.array([aga_error[t] for t in range(threshold)])
-    abu_error = np.array([abu_error[t] for t in range(threshold)])
-    OGE_error = np.array([OGE_error[t] for t in range(threshold)])
-
+    aga_error = np.array([1-aga_error[t] for t in range(5,threshold)])
+    abu_error = np.array([1-abu_error[t] for t in range(5,threshold)])
+    OGE_error = np.array([1-OGE_error[t] for t in range(5,threshold)])
+    #
+    # plot_aga_ci = np.array([1-aga_tp_ci[t] for t in range(5,threshold)])
+    # plot_abu_ci = np.array([1-abu_tp_ci[t] for t in range(5,threshold)])
+    # plot_OGE_ci = np.array([1-OGE_tp_ci[t] for t in range(5,threshold)])
+    x = [t for t in range(threshold-5)]
+    show_confint = True
+    if show_confint:
+        # delta = (plot_aga_ci - aga_error)
+        plt.fill_between(x, aga_error ,#- delta,
+                         aga_error, #+ delta,
+                         color='#3F5D7D', alpha=.15)
+        # delta = (plot_abu_ci - abu_error)
+        plt.fill_between(x, abu_error ,#- delta,
+                         abu_error, #+ delta,
+                         color='#37AA9C', alpha=.15)
+        # delta = (plot_OGE_ci - OGE_error)
+        plt.fill_between(x, OGE_error ,#- delta,
+                         OGE_error ,#+ delta,
+                         color='#F66095', alpha=.15)
     # 3. Plotting
+
     plt.plot(aga_error,
              label='AGA',
              color='#3F5D7D',
-             linestyle='-',
-             linewidth=2)
+             #linestyle='-',
+             marker='^',
+             markevery=10
+             #linewidth=2
+              )
 
     plt.plot(abu_error,
              label='ABU',
              color='#37AA9C',
-             linestyle='-',
-             linewidth=2)
+             #linestyle='--',
+             marker='v',
+             markevery=10,
+             #linewidth=2
+             )
 
     plt.plot(OGE_error,
              label='OGE',
              color='#F66095',
-             linestyle='-',
-             linewidth=2)
+             #linestyle='-.',
+             marker ='o',
+             markevery=10
+             #linewidth=2
+             )
 
     # 4. Saving the result
     axis = plt.gca()
-    axis.set_ylabel('True Type Estimation', fontsize='x-large')
+    axis.set_ylabel('Type Error', fontsize='x-large')
     axis.set_xlabel('Number of Iterations', fontsize='x-large')
     axis.xaxis.set_tick_params(labelsize=14)
     axis.yaxis.set_tick_params(labelsize=14)
@@ -130,7 +184,39 @@ def plot_run_length_bar(aga_m, aga_s, abu_m, abu_s, OGE_m, OGE_s, plotname):
     plt.close(fig)
 
 
-def plot_run_length_bar_1(true_m, aga_m,  abu_m,  OGE_m,  plotname):
+def plot_run_length_bar_1(aga_m,  abu_m,  OGE_m,  plotname):
+    # 1. Setting the figure
+    global fig_count
+    fig = plt.figure(fig_count, figsize=(6.4, 2.4))
+    fig_count += 1
+    bar_w = 0.5
+
+    # 2. Plotting the number of iteration for each run to load items
+    # a. defining the main plot
+    axis = plt.gca()
+
+    # AGA
+    aga = axis.bar(1, height=aga_m, width=bar_w, color='#3F5D7D')
+
+    # ABU
+    abu = axis.bar(2, height=abu_m, width=bar_w,  color='#37AA9C')
+
+    # OGE
+    OGE = axis.bar(3, height=OGE_m , width=bar_w,  color='#F66095')
+
+
+
+    # b. getting the current axis to label
+    axis.set_ylabel('Number of Iterations')
+    axis.set_xticks([1, 2, 3])
+    axis.set_xticklabels(['AGA', 'ABU', 'OGE'])
+
+    # 5. Saving the result
+    plt.savefig("./plots/" + plotname + '.pdf', bbox_inches='tight', pad_inches=0)
+    plt.close(fig)
+
+
+def plot_run_length_bar_true(aga_m,  abu_m,  OGE_m,  plotname):
     # 1. Setting the figure
     global fig_count
     fig = plt.figure(fig_count, figsize=(6.4, 2.4))
@@ -165,6 +251,7 @@ def plot_run_length_bar_1(true_m, aga_m,  abu_m,  OGE_m,  plotname):
 def plot_summarised(aga, aga_std, aga_ci,
                     abu, abu_std, abu_ci, OGE, OGE_std, OGE_ci,
                     threshold, plotname, show_errorbar=False, show_confint=False):
+
     # 1. Setting the figure
     global fig_count
     fig_w, fig_h = 6.4, 2.4
@@ -202,23 +289,36 @@ def plot_summarised(aga, aga_std, aga_ci,
     plt.plot(plot_aga,
              label='AGA',
              color='#3F5D7D',
-             linestyle='-',
-             linewidth=2,
-             clip_on=False)
+             #linestyle='-',
+              marker='^',
+             markevery=10
+             # ,
+             #
+             #  linewidth=2,
+             # clip_on=False
+             )
 
     plt.plot(plot_abu,
              label='ABU',
              color='#37AA9C',
-             linestyle='-',
-             linewidth=2,
-             clip_on=False)
+             # linestyle='-',
+              marker='v',
+             markevery=10,
+             # ms=2,
+             # linewidth=2,
+             # clip_on=False
+             #
+             )
 
     plt.plot(plot_OGE,
              label='OGE',
              color='#F66095',
-             linestyle='-',
-             linewidth=2,
-             clip_on=False)
+            # linestyle='-',
+             marker='o',
+             markevery=10
+
+             # linewidth=2,
+             )
 
     # 5. Saving the result
     axis = plt.gca()
@@ -367,7 +467,11 @@ for info in informations:
                         info.ABU_mean_len_hist, info.ABU_ci_len_hist,
                         info.OGE_mean_len_hist, info.OGE_ci_len_hist, info.name + '_Performance')
 
-    # plot_run_length_bar_1(info.TRUE_timeSteps,
+    # plot_run_length_bar_1(
+    #                       info.AGA_timeSteps,
+    #                       info.ABU_timeSteps,
+    #                       info.OGE_timeSteps, info.name + '_Performance')
+    # plot_run_length_bar_true(info.TRUE_timeSteps,
     #                     info.AGA_timeSteps,
     #                     info.ABU_timeSteps,
     #                     info.OGE_timeSteps, info.name + '_PerformanceWithTrue')
@@ -379,3 +483,6 @@ for info in informations:
                           info.ABU_typeProbHistory,
                           info.OGE_typeProbHistory,
                           info.threshold, info.name + 'TypeEstimation')
+
+
+#print info.significant_difference(info.ABU_timeSteps,info.OGE_timeSteps)

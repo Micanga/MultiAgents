@@ -26,8 +26,10 @@ class Agent:
         self.next_action = None
         self.previous_state = None
 
+
     ####################################################################################################################
     def initialise_uct(self, uct):
+
         self.uct = uct
 
     ####################################################################################################################
@@ -67,20 +69,21 @@ class Agent:
             unknown_a.agents_parameter_estimation = param_estim
 
         return
+
     ####################################################################################################################
     def update_unknown_agents(self, sim):
-        enemy_index = 0
+
         i = 0
         for i in range(len(sim.agents)):
-            self.visible_agents[i].previous_agent_status = sim.agents[i]
+            self.visible_agents[i].previous_agent_status = copy(sim.agents[i])
 
         enemy_index = i + 1
         if self.apply_adversary:          
-            self.visible_agents[enemy_index].previous_agent_status = sim.enemy_agent
+            self.visible_agents[enemy_index].previous_agent_status = copy(sim.enemy_agent)
 
     ####################################################################################################################
     def update_unknown_agents_status(self, sim):
-        enemy_index = 0
+
         i = 0
         for i in range(len(sim.agents)):
             self.visible_agents[i].next_action = sim.agents[i].next_action
@@ -101,11 +104,13 @@ class Agent:
     ####################################################################################################################
     def move(self,reuse_tree,main_sim,search_tree, time_step):
         next_action,guess_move, search_tree = self.uct_planning(reuse_tree,main_sim,search_tree, time_step)
-        if self.uct.planning_for_enemy:
-            print 'action for enemy : ', next_action
-        else:
-            print 'action for main : ', next_action
-        reward = self.uct.do_move(main_sim, next_action, self.uct.planning_for_enemy, real=True)
+
+        # if self.uct.planning_for_enemy:
+        #     print 'action for enemy : ', next_action
+        # else:
+        #     print 'action for main : ', next_action
+        reward = self.uct.do_move(main_sim, next_action, real=True)
+        self.next_action = next_action
         return reward , guess_move,search_tree
 
     ####################################################################################################################
@@ -341,7 +346,6 @@ class Agent:
                 loaded_items.append(current_items[i])
 
         return loaded_items
-
 
     ####################################################################################################################
     def estimation(self,time_step,main_sim,enemy_action_prob, types):

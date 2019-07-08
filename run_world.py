@@ -192,7 +192,7 @@ try:
             main_sim.enemy_agent.initialise_uct(enemy_uct)
 
     for v_a in main_sim.main_agent.visible_agents:
-        v_a.choose_target_state = deepcopy(main_sim)# todo: remove deepcopy and add just agents and items location
+        v_a.choose_target_state = main_sim.copy()# todo: remove deepcopy and add just agents and items location
         v_a.choose_target_pos = v_a.get_position()
         v_a.choose_target_direction = v_a.direction
 
@@ -210,7 +210,7 @@ try:
 
             log_file.write('***** Iteration #'+str(time_step)+' *****\n')
 
-            # 1. Updating Unkown Agents
+            # 1. Updating Unknown Agents
             if main_sim.main_agent is not None:
                 log_file.write('1) Updating Unknown Agents for Main Agent ')
                 main_sim.main_agent.previous_state = main_sim.copy()
@@ -247,7 +247,7 @@ try:
             # 6. Estimating
             log_file.write('6) Estimating')
             loaded_items_number = items_number - main_sim.items_left()
-            if loaded_items_number > 0 :
+            if loaded_items_number > 0:
                 item_loaded = True
             else :
                 item_loaded = False

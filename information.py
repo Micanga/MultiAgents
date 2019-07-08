@@ -1,7 +1,4 @@
 import pickle
-import matplotlib.pyplot as plt
-import ast
-import os
 import numpy as np
 import subprocess
 
@@ -79,7 +76,7 @@ class Information:
 		for n in p:
 			listStr = listStr + str(n) + ","
 
-		f.write("print(t.test(c("+listStr[:-1]+"),conf.level=0.90))")
+		f.write("print(t.test(c("+listStr[:-1]+"),conf.level=0.99))")
 
 		f.close()
 
@@ -102,7 +99,7 @@ class Information:
 		max_len = max(self.AGA_max_len_hist,self.ABU_max_len_hist,self.OGE_max_len_hist,self.TRUE_max_len_hist)
 
 		print 'max_len', max_len
-		self.AGA_mean_len_hist, self.AGA_std_len_hist, self.AGA_ci_len_hist = self.calc_mean_len_hist(self.AGA_errors,'AGA')
+		self.AGA_mean_len_hist, self.AGA_std_len_hist, self.abu_levels_ci = self.calc_mean_len_hist(self.AGA_errors,'AGA')
 		self.AGA_errors = self.normalise_arrays(max_len,self.AGA_errors)
 		self.AGA_typeProbHistory = self.normalise_arrays(max_len,self.AGA_typeProbHistory)
 		print '*** AGA data = ',len(self.AGA_errors),'/AGA avg len = ', self.AGA_mean_len_hist,' ***'
@@ -261,3 +258,31 @@ class Information:
 				conf_int[i] = 0
 
 		return errors, std_dev, conf_int
+
+	def significant_difference(self,p,q):
+		f = open("tmp.R", "w")
+		f.write("#!/usr/bin/Rscript\n")
+
+		listStr = ""
+
+		for n in p:
+			listStr = listStr + str(n) + ","
+
+		listStr1 = ""
+		for n in q:
+			listStr1 = listStr1 + str(n) + ","
+
+		f.write("print(t.test(c(" + listStr[:-1] + "),c(" + listStr1[:-1] + ")))")
+
+
+#f.write("print(t.test(c(" + listStr[:-1] + "),c(" + listStr1[:-1] + "),conf.level=0.90))")
+
+		f.close()
+
+		# os.system("chmod +x ./tmp.R")
+		output = subprocess.check_output(['Rscript', 'tmp.R'], stderr=subprocess.STDOUT, shell=False)
+
+		# output = subprocess.check_output("./tmp.R",stderr=subprocess.STDOUT,shell=True)
+		# output = output.split()
+		# print 'end of function', float(output[-7])
+		print output

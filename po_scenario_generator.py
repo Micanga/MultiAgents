@@ -94,7 +94,9 @@ def selectType():
 
 def main():
 	# 0. Checking the terminal input
-	if len(sys.argv) != 7:
+
+
+	if len(sys.argv) != 8:
 		print 'usage: python po_scenario_generator.py [size] [nagents] [nitems] [radius] [angle] [map_count] [type_estimation_mode]'
 		exit(0)
 
@@ -126,9 +128,9 @@ def main():
 		agentx,agenty,grid = generateRandomNumber(grid,grid_size)
 		agentDirection = choice(possible_directions)
 		agentType = selectType()
-		agentLevel = round(random.uniform(0,1), 3)
-		agentRadius = round(random.uniform(0.1,1), 3)
-		agentAngle = round(random.uniform(0.1,1), 3)
+		agentLevel = round(random.uniform(0.9, 1), 3)
+		agentRadius = round(random.uniform(0.5, 1), 3)
+		agentAngle = round(random.uniform(0.5, 1), 3)
 		AGENTS.append(['agent'+ str(agent_idx),str(agent_idx),agentx,agenty,agentDirection,agentType,agentLevel,agentRadius,agentAngle])
 
 	# e. defining the enemy agent
@@ -146,15 +148,16 @@ def main():
 	ITEMS = []
 	for item_idx in range(nitems):
 		itemx,itemy,grid = generateRandomNumber(grid,grid_size)
-		itemLevel = round(random.uniform(0,1), 3)
+		itemLevel = round(random.uniform(0,0.8), 3)
 		ITEMS.append(['item'+ str(item_idx),itemx,itemy,itemLevel])
 
 	# 3. Creating the possible configuration files
 	# a. choosing the parameter estimation mode
+
 	for experiment in experiment_type_set:
+
 		for tem in type_estimation_mode_set:
 			for mutation_rate in mutation_rate_set:
-				
 				if experiment == 'MIN':
 					train_mode = 'history_based'
 				else:
@@ -169,14 +172,12 @@ def main():
 				current_folder = "po_inputs/" + sub_dir + '/'
 				if not os.path.exists(current_folder):
 					os.mkdir(current_folder, 0755)
-
 				# d. creating the config files
 				create_config_file(current_folder, experiment, mcts_mode,train_mode,mutation_rate, tem)
 
 				# 4. Creating the files
 				# a. setting the file name
 				filename = current_folder + 'posim.csv'
-				print filename
 
 				# b. creating the a csv file
 				with open(filename,'wb+') as file:

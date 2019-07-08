@@ -76,6 +76,7 @@ class POSimulator(Simulator,object):
                     elif 'agent' in key:
                         # import ipdb; ipdb.set_trace()
                         agnt = agent.Agent(val[1], val[2], val[3], val[4], int(val[0]))
+                        #level, radius, angle
                         agnt.set_parameters(self, val[5], val[6], val[7])
                         agnt.choose_target_state = copy(self)
                         self.agents.append(agnt)

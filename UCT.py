@@ -1,12 +1,14 @@
 from math import *
 import agent
 from numpy.random import choice
+import random
 
 totalItems = 0  # TODO: Adding as a global variable for now
 
 actions = ['L', 'N', 'E', 'S', 'W']
 
 root = None
+
 
 class Q_table_row:
     def __init__(self, action, QValue, sumValue, trials):
@@ -111,6 +113,7 @@ class Node:
                     maxA = self.Q_table[a].action
 
         return maxA
+
     ####################################################################################################################
     def add_child(self, state, enemy):
 
@@ -277,7 +280,9 @@ class UCT:
         if len(tieCases) > 0:
             maxA = Q_table[choice(tieCases)].action
 
-        # maxA=node.uct_select_action()
+        if maxA is None:
+            maxA = random.choice(actions)
+
         return maxA
 
     ########################################################################################
@@ -491,6 +496,7 @@ class UCT:
 
 
         return best_selected_action, enemy_probabilities, node
+
     ####################################################################################################################
     def agent_planning(self, time_step, search_tree, sim,  enemy):
         global totalItems
