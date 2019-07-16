@@ -108,7 +108,6 @@ class Node:
 
         return maxA
 
-
     ####################################################################################################################
 
     def valid(self, action):  # Check in order to avoid moving out of board.
@@ -352,14 +351,14 @@ class POMCP:
 
     ################################################################################################################
 
-    def find_new_root(self,previous_root, current_state,history, enemy):
+    def find_new_root(self,previous_root, previous_action,previous_observation):
 
         if previous_root is None:
             return None
 
         root_node = None
         action_node = None
-        previous_action = current_state.simulator.main_agent.next_action
+        # previous_action = current_state.simulator.main_agent.next_action
 
         for child in previous_root.childNodes:
             if child.action == previous_action:
@@ -369,7 +368,7 @@ class POMCP:
         if action_node is None :
             return root_node
 
-        previous_observation = history[-1]
+
 
         for child in action_node.childNodes:
             if self.observation_is_equal(child.observation, previous_observation):
@@ -456,12 +455,12 @@ class POMCP:
         # a ~ pi(h)
 
         action = random.choice(actions)
-        history.append(action)
+        # history.append(action)
 
         # 2. Simulating the particle
         # (s',o,r) ~ G(s,a)
         (next_state, observation, reward) = self.simulate_action(state, action)
-        history.append(observation)
+        # history.append(observation)
         # print 'rolllllloooout'
         # next_state.simulator.draw_map()
 
@@ -474,9 +473,12 @@ class POMCP:
     def monte_carlo_planning(self, search_tree, simulator, history,  enemy):
         global root
         current_state = State(simulator)
+        previous_action = current_state.simulator.main_agent.next_action
+        previous_observation = history[-1]
 
-        root_node = self.find_new_root(search_tree, current_state, history, enemy)
+        root_node = self.find_new_root(search_tree, previous_action, previous_observation)
         current_observation = simulator.main_agent.history[-1]
+
         if root_node is None:
             root_node = ONode(history, depth=0, state=current_state, observation = current_observation)
 

@@ -11,12 +11,12 @@ map_count = 0
 number_of_tests = 1
 
 
-square_grid_size = ['10']
+square_grid_size = ['30']
 number_of_agents = ['10']#,'2']#,'3','5','7','10']
-number_of_items = ['10']#,'20','25']
+number_of_items = ['30']#,'20','25']
 
 # 1. Defining the experiment type# 1. Defining the experiment type
-experiment_type_set = ['MIN']#,'ABU', 'AGA']
+experiment_type_set = ['MIN','ABU', 'AGA']
 
 type_estimation_mode_set = ['BPTE']
 # 2. Starting the experiment

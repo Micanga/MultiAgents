@@ -27,7 +27,7 @@ type_selection_mode = None
 iteration_max = None
 max_depth = None
 
-do_estimation = False
+do_estimation = True
 train_mode = None
 parameter_estimation_mode = None
 
@@ -258,17 +258,19 @@ while main_sim.items_left() > 0:
     #     print "---------------------------------------"
     #     state.simulator.draw_map()
 
+    search_tree = uct.find_new_root(search_tree, main_sim.main_agent.next_action, new_observation)
     if len(search_tree.particleFilter) > 0:
-        current_belief_state = copy (search_tree.particleFilter[random.randint(0, len(search_tree.particleFilter) - 1)].simulator)
+
+        current_belief_state = copy(search_tree.particleFilter[random.randint(0, len(search_tree.particleFilter) - 1)].simulator)
     else:
         print "belief state is empty"
     log_file.write(' - OK\n')
 
     print "---------------------------------------------------"
     main_sim.main_agent.current_belief_state = current_belief_state
-    # print "Belief Stateeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-    # current_belief_state.draw_map()
-    # print "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+    print "Belief Stateeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+    current_belief_state.draw_map()
+    print "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
     # 7. Estimating
     log_file.write('7) Estimating')
 
