@@ -27,7 +27,7 @@ ROOT_DIRS = ['outputs']
 NAMES = ['MCP']  # ['POMCP','POMCP','POMCP']#,'POMCP_FO']
 
 SIZE = ['10']  # ,'15','20','25']
-NAGENTS = ['7']#,'3','5']
+NAGENTS = ['10']#,'3','5']
 NITEMS = ['10']  # ,'15','20','25']
 RADIUS = ['8']
 experiment_type_set = ['ABU', 'AGA', 'MIN']

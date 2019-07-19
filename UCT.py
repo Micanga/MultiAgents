@@ -456,7 +456,7 @@ class UCT:
                     next_node = node.add_child_one_state(action, next_state,  node.enemy,1)
 
         discount_factor = 0.95
-        q = node.delta * reward + discount_factor *  self.search(main_time_step, next_node)
+        q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
 
         node.update(action, q)
         node.visits += 1

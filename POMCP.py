@@ -29,7 +29,6 @@ class State:
 
 ################################################################################################################
 
-
 class Node:
 
     def __init__(self, history, depth, state,  parent=None):
@@ -42,13 +41,9 @@ class Node:
         self.immediateReward = 0
         self.expectedReward = 0
 
-        self.beliefState = state
-        self.particleFilter = []
         self.QTable = self.create_empty_table()
         self.visits = 0  # N(h)
         self.value = 0    # V(h)
-        self.numItems = state.simulator.items_left()
-        self.untriedActions = self.create_possible_actions()
 
     ####################################################################################################################
     @staticmethod
@@ -183,17 +178,38 @@ class Node:
             self.untriedActions.remove(move)
             return move
 
-    ####################################################################################################################
-    def create_possible_actions(self):
+
+
+################################################################################################################
+class ONode(Node):
+
+    def __init__(self,history, depth, state, observation=None, parent=None):
+
+        Node.__init__(self,history=history, depth=depth, state=state,  parent=parent)
+        self.observation = observation  # the Action that got us to this node - "None" for the root node
+        self.beliefState = state
+        self.particleFilter = []
+        self.particleFilter.append(state)
+        self.numItems = state.simulator.items_left()
+        m = state.simulator.dim_w
+        n = state.simulator.dim_h
+        (x, y) = state.simulator.main_agent.get_position()
+        self.untriedActions = self.create_possible_actions(m, n, x, y)
+
+    def add_child(self, h, s,a):
+
+        n = ANode(h, self.depth + 1, a, self)
+
+        self.childNodes.append(n)
+
+        return n
+
+   ####################################################################################################################
+    def create_possible_actions(self,m,n,x, y):
 
         # if self.enemy:
         #     (x, y) = self.beliefState.simulator.enemy_agent.get_position()
         # else:
-        (x, y) = self.beliefState.simulator.main_agent.get_position()
-
-        m = self.beliefState.simulator.dim_w
-        n = self.beliefState.simulator.dim_h
-
         untried_actions = ['N', 'S', 'E', 'W', 'L']
 
         if x == 0:
@@ -212,28 +228,11 @@ class Node:
 
 
 ################################################################################################################
-class ONode(Node):
-
-    def __init__(self,history, depth, state, observation=None, parent=None):
-
-        Node.__init__(self,history=history, depth=depth, state=state,  parent=parent)
-        self.observation = observation  # the Action that got us to this node - "None" for the root node
-
-    def add_child(self, h, s,a):
-
-        n = ANode(h, self.depth + 1, s, a, self)
-
-        self.childNodes.append(n)
-
-        return n
-
-
-################################################################################################################
 class ANode(Node):
 
-    def __init__(self,history, depth, state, action=None, parent=None):
+    def __init__(self,history, depth,  action=None, parent=None):
 
-        Node.__init__(self, history=history,depth = depth, state= state,  parent=parent)
+        Node.__init__(self, history=history,depth=depth, state=None,  parent=parent)
         self.action = action  # the Action that got us to this node - "None" for the root node
 
     def add_child(self, h, s,o):
@@ -323,7 +322,7 @@ class POMCP:
                                          u_a.radius,
                                          u_a.angle)
 
-                sim.move_a_agent(tmp_agent)
+                u_a = sim.move_a_agent(tmp_agent)
             else:
                 if u_a.agents_parameter_estimation is not None:
                     selected_type = u_a.agents_parameter_estimation.get_sampled_probability()
@@ -334,11 +333,11 @@ class POMCP:
                         tmp_agent.set_parameters(sim, agents_estimated_values.level,agents_estimated_values.radius,
                                                  agents_estimated_values.angle)
 
-                        sim.move_a_agent(tmp_agent)
+                        u_a = sim.move_a_agent(tmp_agent)
 
         m_reward = self.do_move(sim, action)
 
-        a_reward = sim.update_all_A_agents(True)
+        a_reward = sim.update_all_A_agents(sim)
 
         if sim.do_collaboration():
             c_reward = float(1)
@@ -368,8 +367,6 @@ class POMCP:
         if action_node is None :
             return root_node
 
-
-
         for child in action_node.childNodes:
             if self.observation_is_equal(child.observation, previous_observation):
                 root_node = child
@@ -391,16 +388,15 @@ class POMCP:
 
         if node.childNodes == []:
             for action in ['L', 'N', 'E', 'S', 'W']:
-                (next_state, observation, reward) = self.simulate_action(state, action)
-                # node.add_action_child(a, next_state, node.enemy)
-                node.add_child(history, next_state, action)
+
+                node.add_child(history, None, action)
 
             # b. rollout
             return self.rollout(state,history, node.depth)
 
         action = node.select_action()
         history.append(action)
-
+        # state.simulator.draw_map()
         action_node = None
 
         for child in node.childNodes:
@@ -409,9 +405,9 @@ class POMCP:
                 break
 
         if action_node is None:
-            action_node = node.add_child(history, node.beliefState, action)
+            action_node = node.add_child(history, action)
 
-        (next_state, observation, reward) = self.simulate_action(action_node.beliefState, action)
+        (next_state, observation, reward) = self.simulate_action(state, action)
 
         node.particleFilter.append(state)
         history.append(observation)
@@ -424,7 +420,7 @@ class POMCP:
 
         if observation_node is None:
             observation_node = action_node.add_child(history,  next_state, observation)
-
+        # next_state.simulator.draw_map()
         discount_factor = 0.95
         q = reward + discount_factor * self.simulate(observation_node)
 
@@ -480,7 +476,7 @@ class POMCP:
         current_observation = simulator.main_agent.history[-1]
 
         if root_node is None:
-            root_node = ONode(history, depth=0, state=current_state, observation = current_observation)
+            root_node = ONode(history, depth=0, state=current_state, observation=current_observation)
 
         node = root_node
         root = node
@@ -503,6 +499,7 @@ class POMCP:
             else:
                 beliefState = node.particleFilter[random.randint(0, len(node.particleFilter) - 1)]
 
+            # beliefState.simulator.draw_map()
             node.beliefState = beliefState
 
             # b. simulating

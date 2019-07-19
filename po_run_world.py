@@ -204,8 +204,10 @@ time_step = 0
 
 round = 1
 
-
+print "Initial Stateeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
 main_sim.draw_map()
+print "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+
 while main_sim.items_left() > 0:
     progress = 100 * (len(main_sim.items) - main_sim.items_left())/len(main_sim.items)
     sys.stdout.write("Experiment progress: %d%% | step: %d   \r" % (progress,time_step) )
@@ -245,10 +247,12 @@ while main_sim.items_left() > 0:
 
     # 6. Updating the Map
     log_file.write('6) Updating Map\n')
-    actions = main_sim.update_all_A_agents(False)
+    actions = main_sim.update_all_A_agents(main_sim)
     main_sim.do_collaboration()
     main_sim.main_agent.update_unknown_agents_status(main_sim)
+    print "Real Stateeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
     main_sim.draw_map()
+    print "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
     log.write_map(log_file, main_sim)
 
     # 5. Updating the PO-MCT and the current belief state
@@ -258,14 +262,14 @@ while main_sim.items_left() > 0:
     #     print "---------------------------------------"
     #     state.simulator.draw_map()
 
-    search_tree = uct.find_new_root(search_tree, main_sim.main_agent.next_action, new_observation)
-    if len(search_tree.particleFilter) > 0:
-
-        current_belief_state = copy(search_tree.particleFilter[random.randint(0, len(search_tree.particleFilter) - 1)].simulator)
-    else:
-        print "belief state is empty"
-    log_file.write(' - OK\n')
-
+    # search_tree = uct.find_new_root(search_tree, main_sim.main_agent.next_action, new_observation)
+    # if len(search_tree.particleFilter) > 0:
+    #
+    #     current_belief_state = copy(search_tree.particleFilter[random.randint(0, len(search_tree.particleFilter) - 1)].simulator)
+    # else:
+    #     print "belief state is empty"
+    # log_file.write(' - OK\n')
+    current_belief_state = main_sim
     print "---------------------------------------------------"
     main_sim.main_agent.current_belief_state = current_belief_state
     print "Belief Stateeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"

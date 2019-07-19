@@ -21,11 +21,11 @@ class Agent:
         self.uct = None
 
         self.visible_agents = []
+        self.belief_state = None
         self.is_enemy = is_enemy
 
         self.next_action = None
         self.previous_state = None
-
 
     ####################################################################################################################
     def initialise_uct(self, uct):
@@ -214,7 +214,23 @@ class Agent:
 
         return False,(-1,-1)
 
+    ################################################################################################################
+    def update_all_unknown_agents(self):
+        reward = 0
 
+        actions = ['L', 'N', 'E', 'S', 'W']
+
+        for i in range(len(self.visible_agents)):
+            # if not (simulated and self.agents[i].get_position() == self.suspect_agent.get_position()):
+
+                next_action = choice(actions,
+                                     p=self.visible_agents[i].get_actions_probabilities())  # random sampling the action
+
+                self.visible_agents[i].next_action = next_action
+
+                reward += self.update(i)
+
+        return reward
     
     ################################################################################################################
 

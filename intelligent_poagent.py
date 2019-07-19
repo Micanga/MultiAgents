@@ -32,7 +32,7 @@ class POAgent(Agent, object):
         self.agent_memory = list()
         self.item_memory = list()
         self.history = list()
-        self.current_belief_state = None
+        # self.current_belief_state = None
 
     def initialise_visible_agents(self, sim, generated_data_number, PF_add_threshold, train_mode , type_selection_mode,
                                   parameter_estimation_mode, polynomial_degree,apply_adversary,
@@ -326,13 +326,13 @@ class POAgent(Agent, object):
         copy_agent.history = list()
         for action in self.history:
             copy_agent.history.append(action)
-
-        for va in self.visible_agents:
-            copy_agent.visible_agents.append(va.copy())
-            idx = len(copy_agent.visible_agents)-1
-            copy_agent.visible_agents[idx].agents_parameter_estimation = va.agents_parameter_estimation
-            copy_agent.visible_agents[idx].choose_target_state = va.choose_target_state
-            copy_agent.visible_agents[idx].previous_agent_status = va.previous_agent_status
+        #
+        # for va in self.visible_agents:
+        #     copy_agent.visible_agents.append(va.copy())
+        #     idx = len(copy_agent.visible_agents)-1
+        #     copy_agent.visible_agents[idx].agents_parameter_estimation = va.agents_parameter_estimation
+        #     copy_agent.visible_agents[idx].choose_target_state = va.choose_target_state
+        #     copy_agent.visible_agents[idx].previous_agent_status = va.previous_agent_status
         for ia in self.invisible_agents:
             copy_agent.invisible_agents.append(ia.copy())
             idx = len(copy_agent.invisible_agents)-1
