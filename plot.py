@@ -1,16 +1,8 @@
-import ast
 import matplotlib.pyplot as plt
 import numpy as np
 import os
 import pickle
-import subprocess
-from math import sqrt
-
 import plot_init as init
-from plot_statistics import is_constant, calcConfInt
-
-# import matplotlib
-# matplotlib.use('Agg')
 
 # 0. Variables
 count = 0
@@ -19,19 +11,21 @@ results = list()
 informations = list()
 
 # 1. Defining the Graph Generation Parameters
-# ROOT_DIRS = ['po_outputs']  # ['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
+ROOT_DIRS = ['categorised/POMCP/p_s20_a3_r3']  # ['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
 # ROOT_DIRS = ['outputs']  # ['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
-ROOT_DIRS = ['outputs']
+# ROOT_DIRS = ['nips_outputs']
+# ROOT_DIRS = ['multiple_runs']
 
 # NAMES = ['POMCP']  # ['POMCP','POMCP','POMCP']#,'POMCP_FO']
-NAMES = ['MCP']  # ['POMCP','POMCP','POMCP']#,'POMCP_FO']
-
-SIZE = ['10']  # ,'15','20','25']
-NAGENTS = ['10']#,'3','5']
-NITEMS = ['10']  # ,'15','20','25']
-RADIUS = ['8']
+NAMES = ['POMCP']  # ['POMCP','POMCP','POMCP']#,'POMCP_FO']
+PLOT_TYPE = 'POMCP'
+SIZE = ['20']  # ,'15','20','25']
+NAGENTS = ['3']
+NITEMS = ['20']  # ,'15','20','25']
+RADIUS = ['3']
 experiment_type_set = ['ABU', 'AGA', 'MIN']
 type_estimation_mode_set = ['BPTE']
+PLOTS_DIR = "./p_results"
 
 
 ############################################################################################
@@ -149,7 +143,7 @@ def plot_type_probability(aga_tp, abu_tp, OGE_tp, threshold, plotname):
     axis.legend(loc="upper center", fontsize='large',
                 borderaxespad=0.1, borderpad=0.1, handletextpad=0.1,
                 fancybox=True, framealpha=0.8, ncol=3)
-    plt.savefig("./plots/" + plotname + '.pdf', bbox_inches='tight', pad_inches=0)
+    plt.savefig(PLOTS_DIR + "/plots/" + plotname + '.pdf', bbox_inches='tight', pad_inches=0)
     plt.close(fig)
 
 
@@ -180,7 +174,7 @@ def plot_run_length_bar(aga_m, aga_s, abu_m, abu_s, OGE_m, OGE_s, plotname):
     axis.set_xticklabels(['AGA', 'ABU', 'OGE'])
 
     # 5. Saving the result
-    plt.savefig("./plots/" + plotname + '.pdf', bbox_inches='tight', pad_inches=0)
+    plt.savefig(PLOTS_DIR + "/plots/" + plotname + '.pdf', bbox_inches='tight', pad_inches=0)
     plt.close(fig)
 
 
@@ -212,7 +206,7 @@ def plot_run_length_bar_1(aga_m,  abu_m,  OGE_m,  plotname):
     axis.set_xticklabels(['AGA', 'ABU', 'OGE'])
 
     # 5. Saving the result
-    plt.savefig("./plots/" + plotname + '.pdf', bbox_inches='tight', pad_inches=0)
+    plt.savefig(PLOTS_DIR + "/plots/" + plotname + '.pdf', bbox_inches='tight', pad_inches=0)
     plt.close(fig)
 
 
@@ -245,7 +239,7 @@ def plot_run_length_bar_true(aga_m,  abu_m,  OGE_m,  plotname):
     axis.set_xticklabels(['AGA', 'ABU', 'OGE','TRUE'])
 
     # 5. Saving the result
-    plt.savefig("./plots/" + plotname + '.pdf', bbox_inches='tight', pad_inches=0)
+    plt.savefig(PLOTS_DIR + "/plots/" + plotname + '.pdf', bbox_inches='tight', pad_inches=0)
     plt.close(fig)
 
 def plot_summarised(aga, aga_std, aga_ci,
@@ -329,7 +323,7 @@ def plot_summarised(aga, aga_std, aga_ci,
     axis.legend(loc="upper center", fontsize='large',
                 borderaxespad=0.1, borderpad=0.1, handletextpad=0.1,
                 fancybox=True, framealpha=0.8, ncol=3)
-    plt.savefig("./plots/" + plotname + '.pdf', bbox_inches='tight', pad_inches=0)
+    plt.savefig(PLOTS_DIR + "/plots/" + plotname + '.pdf', bbox_inches='tight', pad_inches=0)
     plt.close(fig)
 
 
@@ -344,28 +338,28 @@ def plot_summarised(aga, aga_std, aga_ci,
 ######################################################################
 # 1. Reading the files and extracting the results
 for root in ROOT_DIRS:
-    if root == 'po_outputs':
+    if PLOT_TYPE == 'POMCP':
         for sz in SIZE:
             for na in NAGENTS:
                 for ni in NITEMS:
                     for tem in type_estimation_mode_set:
                         for ra in RADIUS:
                             filename = 'POMCP_s' + sz + '_a' + na + '_i' + ni + '_t' + tem +'_r' + ra + '_Pickle'
-                            if not os.path.exists(filename):
-                                results.append(init.read_files(root, sz, na, ni, tem ,ra))
+                            if not os.path.exists(PLOTS_DIR + "/pickles/" +filename):
+                                results.append(init.read_files(root, sz, na, ni, tem,ra))
                                 info = init.extract_information(results[-1],
                                                                 'POMCP_s' + sz + '_a' + na + '_i' + ni + '_t'+tem+ '_r' + ra)
-
+                                info.plots_dir = PLOTS_DIR
                                 info.normalise()
                                 info.extract()
                                 info.threshold = min([info.AGA_max_len_hist, info.ABU_max_len_hist, info.OGE_max_len_hist])
                                 informations.append(info)
 
-                                file = open(filename,'wb')
+                                file = open(PLOTS_DIR + "/pickles/" + filename,'wb')
                                 pickle.dump(info, file)
                                 file.close()
                             else:
-                                file = open(filename, 'r')
+                                file = open(PLOTS_DIR + "/pickles/" +filename, 'r')
                                 info = pickle.load(file)
                                 informations.append(info)
                                 file.close()
@@ -375,21 +369,21 @@ for root in ROOT_DIRS:
                 for ni in NITEMS:
                     for tem in type_estimation_mode_set:
                         filename = 'MCTS_s' + sz + '_a' + na + '_i' + ni + '_t' + tem + '_Pickle'
-                        if not os.path.exists(filename):
+                        if not os.path.exists(PLOTS_DIR + "/pickles/" +filename):
                             results.append(init.read_files(root, sz, na, ni,tem))
                             info = init.extract_information(results[-1], 'MCTS_s' + sz + '_a' + na + '_i' + ni + '_t'+tem)
-
+                            info.plots_dir = PLOTS_DIR
                             info.normalise()
                             info.extract()
                             info.threshold = min([info.AGA_max_len_hist, info.ABU_max_len_hist, info.OGE_max_len_hist])
                             informations.append(info)
 
-                            file = open(filename, 'wb')
+                            file = open(PLOTS_DIR + "/pickles/" +filename, 'wb')
                             pickle.dump(info, file)
                             file.close()
                         else:
                             print filename, 'already exists'
-                            file = open(filename, 'r')
+                            file = open(PLOTS_DIR + "/pickles/" +filename, 'r')
                             info = pickle.load(file)
                             informations.append(info)
                             file.close()

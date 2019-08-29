@@ -224,8 +224,9 @@ class UCT:
             if load_item :
                 destination_item_index = sim.find_item_by_location(item_position_x, item_position_y)
                 if real:
-                    print "Try to load item" , item_position_x, item_position_y, "  by M"
-                if sim.items[destination_item_index].level <= tmp_m_agent.level:
+                    print "Try to load item:", item_position_x, item_position_y, "  by M"
+                    print "Item level:", sim.items[destination_item_index].level, " agent level:", tmp_m_agent.level
+                if float(sim.items[destination_item_index].level) <= float(tmp_m_agent.level):
                     if real:
                         print "loaded by M"
                     sim.items[destination_item_index].loaded = True
@@ -352,7 +353,7 @@ class UCT:
 
     ################################################################################################################
 
-    def simulate_action(self, state, action,enemy = False):
+    def simulate_action(self, state, action, enemy=False):
 
         sim = state.simulator.copy()
         next_state = State(sim)
@@ -384,10 +385,13 @@ class UCT:
                         sim.move_a_agent(tmp_agent)
 
         m_reward = self.do_move(sim, action,enemy)
-
-        a_reward = sim.update_all_A_agents(True)
+        print 'simulate action'
+        sim.draw_map()
+        print 'simulate action'
+        a_reward = sim.update_all_A_agents(sim)
 
         if sim.do_collaboration():
+            print 'colllllllllllllllllllllllllllllllllllllllaboration'
             c_reward = float(1)
         else:
             c_reward = 0

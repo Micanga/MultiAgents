@@ -1,15 +1,11 @@
 import ast
-import matplotlib.pyplot as plt
-import numpy as np
 import os
 import sys
 import pickle
-import subprocess
-
-from math import sqrt
 from information import Information
 
-def read_files(root_dir,size,nagents,nitems,type_estimation_mode,radius=None):
+
+def read_files(root_dir,size,nagents, nitems,type_estimation_mode,radius=None):
     print '***** reading the files *****'
     results = list()
     count = 0
@@ -24,33 +20,36 @@ def read_files(root_dir,size,nagents,nitems,type_estimation_mode,radius=None):
                 progress = 1 * float(count/1)
                 sys.stdout.write("Progress: %.1f%% | file #%d   \r" % (progress,count) )
                 sys.stdout.flush()
-                estimationDictionary = {}
+
                 dataList = pickle.load(pickleFile)
 
                 # Simulator Information
                 systemDetails = dataList[0]
 
-                # if systemDetails['round_count'] == 1:
+                # if systemDetails['round_count'] == 10:
+                #     print root
                 if 1 == 1:
-                    simWidth = systemDetails['simWidth']
-                    simHeight = systemDetails['simHeight']
-                    agentsCounts = systemDetails['agentsCounts']
-                    itemsCounts = systemDetails['itemsCounts']
-
-                    generatedDataNumber = systemDetails['generatedDataNumber']
-
-                    estimationDictionary['simWidth'] = systemDetails['simWidth']
-                    estimationDictionary['timeSteps'] = systemDetails['timeSteps']
-                    estimationDictionary['typeSelectionMode'] = systemDetails['typeSelectionMode']
-
-                    beginTime = systemDetails['beginTime']
-                    endTime = systemDetails['endTime']
-
-                    estimationDictionary['computationalTime'] = int(endTime) - int(beginTime)
-                    estimationDictionary['parameter_estimation_mode'] = systemDetails['parameter_estimation_mode']
-
                     data = dataList[1]
                     for i in range(len(data)):
+                        estimationDictionary = {}
+                        simWidth = systemDetails['simWidth']
+                        simHeight = systemDetails['simHeight']
+                        agentsCounts = systemDetails['agentsCounts']
+                        itemsCounts = systemDetails['itemsCounts']
+
+                        generatedDataNumber = systemDetails['generatedDataNumber']
+
+                        estimationDictionary['simWidth'] = systemDetails['simWidth']
+                        estimationDictionary['timeSteps'] = systemDetails['timeSteps']
+                        estimationDictionary['typeSelectionMode'] = systemDetails['typeSelectionMode']
+
+                        beginTime = systemDetails['beginTime']
+                        endTime = systemDetails['endTime']
+
+                        estimationDictionary['computationalTime'] = int(endTime) - int(beginTime)
+                        estimationDictionary['parameter_estimation_mode'] = systemDetails['parameter_estimation_mode']
+
+
                         agentDictionary = data[i]
                         trueType = agentDictionary['trueType']
                         if trueType in ['l1','l2','f1','f2']:
@@ -84,7 +83,7 @@ def read_files(root_dir,size,nagents,nitems,type_estimation_mode,radius=None):
                                             # print estimationDictionary['timeSteps'] , ' ', systemDetails['parameter_estimation_mode']
                                             # print
 
-                                            if systemDetails['parameter_estimation_mode'] == 'AGA':
+                                            if systemDetails['parameter_estimation_mode'] == 'MIN':
                                                 x['root'] = root
                                                 x['step'] = estimationDictionary['timeSteps']
                                                 min_time_steps.append(x)
@@ -105,13 +104,16 @@ def read_files(root_dir,size,nagents,nitems,type_estimation_mode,radius=None):
     print 'Max: ', max_steps
     print 'Min: ', min_steps
     for m in min_time_steps:
-        print m
+         print m
 
     sys.stdout.write("Progress: %.1f%% | file #%d      \n" % (progress,count) )
     return results
 
 ########################################################################################################################
+
+
 def extract_information(results,name,radius=None):
+
     print '***** extracting the information *****'
     info = Information(name)
 
@@ -124,7 +126,7 @@ def extract_information(results,name,radius=None):
         if result['parameter_estimation_mode'] == 'TRUE':
             # print 'true'
             # print 'time step:', result['timeSteps']
-#            print result['type_estimation_mode']
+            # print result['type_estimation_mode']
             if len(result['typeProbHistory']) > info.TRUE_max_len_hist:
                 info.TRUE_max_len_hist = len(result['typeProbHistory'])
 
@@ -142,7 +144,9 @@ def extract_information(results,name,radius=None):
             info.AGA_estimationHist.append(result['historyParameters'])
             info.AGA_typeProbHistory.append(result['typeProbHistory'])
             info.AGA_trueParameter.append( result['trueParameters'])
-            info.AGA_errors.append(calculate_error(result['trueParameters'], result['historyParameters']))
+            error = calculate_error(result['trueParameters'], result['historyParameters'])
+            # print 'AGA', result['path'], error
+            info.AGA_errors.append(error)
 
         if result['parameter_estimation_mode'] == 'ABU':
             if len(result['typeProbHistory']) > info.ABU_max_len_hist:
@@ -152,7 +156,9 @@ def extract_information(results,name,radius=None):
             info.ABU_estimationHist.append(result['historyParameters'])
             info.ABU_typeProbHistory.append(result['typeProbHistory'])
             info.ABU_trueParameter.append(result['trueParameters'])
-            info.ABU_errors.append(calculate_error(result['trueParameters'], result['historyParameters']))
+            error = calculate_error(result['trueParameters'], result['historyParameters'])
+            # print 'ABU', result['path'] , error
+            info.ABU_errors.append(error)
 
         if result['parameter_estimation_mode'] == 'MIN':
             if radius != None:
@@ -165,7 +171,9 @@ def extract_information(results,name,radius=None):
                     info.OGE_typeProbHistory.append(result['typeProbHistory'])
                     info.OGE_estimationHist.append(result['historyParameters'])
                     info.OGE_trueParameter.append(result['trueParameters'])
-                    info.OGE_errors.append(calculate_error(result['trueParameters'], result['historyParameters']))
+                    error = calculate_error(result['trueParameters'], result['historyParameters'])
+                    print 'OGE', result['path'], error
+                    info.OGE_errors.append(error)
             else:
                 if len(result['typeProbHistory']) > info.OGE_max_len_hist:
                     info.OGE_max_len_hist = len(result['typeProbHistory'])
@@ -174,7 +182,9 @@ def extract_information(results,name,radius=None):
                 info.OGE_typeProbHistory.append(result['typeProbHistory'])
                 info.OGE_estimationHist.append(result['historyParameters'])
                 info.OGE_trueParameter.append(result['trueParameters'])
-                info.OGE_errors.append(calculate_error(result['trueParameters'], result['historyParameters']))
+                error = calculate_error(result['trueParameters'], result['historyParameters'])
+                print 'OGE', result['path'], error
+                info.OGE_errors.append(error)
 
     # print name
     print "number of AGA: ",len(info.AGA_timeSteps)

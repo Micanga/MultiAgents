@@ -5,9 +5,9 @@ from random import randint
 
 
 def get_input_folder():
-    # return
+    return
     # return "inputs/FO_O_MIN/"
-    return "po_inputs/PO_O_MIN/"
+    # return "po_inputs/PO_O_MIN/"
 
 
 def create_output_folder(run_type = 'FO'):
@@ -122,17 +122,17 @@ def print_result(main_sim,  time_steps, begin_time, end_time,mcts_mode, paramete
         else:
             u_a = main_sim.main_agent.visible_agents[i]
         agentData = {}
-        if  main_sim.agents[i].agent_type == 'l1':
-            print  u_a.agents_parameter_estimation.l1_estimation.type_probabilities
-        elif  main_sim.agents[i].agent_type == 'l2':
-            print u_a.agents_parameter_estimation.l2_estimation.type_probabilities
-        elif  main_sim.agents[i].agent_type == 'f1':
-            print  u_a.agents_parameter_estimation.f1_estimation.type_probabilities
-        elif  main_sim.agents[i].agent_type == 'f2':
-            print  u_a.agents_parameter_estimation.f2_estimation.type_probabilities
+        # if  main_sim.agents[i].agent_type == 'l1':
+        #     print  u_a.agents_parameter_estimation.l1_estimation.type_probabilities
+        # elif  main_sim.agents[i].agent_type == 'l2':
+        #     print u_a.agents_parameter_estimation.l2_estimation.type_probabilities
+        # elif  main_sim.agents[i].agent_type == 'f1':
+        #     print  u_a.agents_parameter_estimation.f1_estimation.type_probabilities
+        # elif  main_sim.agents[i].agent_type == 'f2':
+        #     print  u_a.agents_parameter_estimation.f2_estimation.type_probabilities
 
 
-        print 'True type:', main_sim.agents[i].agent_type
+        # print 'True type:', main_sim.agents[i].agent_type
 
         agentData['trueType'] = main_sim.agents[i].agent_type
         trueParameters = [main_sim.agents[i].level,main_sim.agents[i].radius,main_sim.agents[i].angle]
@@ -147,9 +147,9 @@ def print_result(main_sim,  time_steps, begin_time, end_time,mcts_mode, paramete
         l2EstimationHistory = u_a.agents_parameter_estimation.l2_estimation.get_estimation_history()
         agentData['l2EstimationHistory'] = l2EstimationHistory
         agentData['l2TypeProbHistory'] = u_a.agents_parameter_estimation.l2_estimation.type_probabilities
-        print "Parameter Estimation History: ", agentData['l2EstimationHistory']
+        # print "Parameter Estimation History: ", agentData['l2EstimationHistory']
         agentData['l2TypeProbHistory'] = u_a.agents_parameter_estimation.l2_estimation.type_probabilities
-        print "l2 Type Prob History: ", agentData['l2TypeProbHistory']
+        # print "l2 Type Prob History: ", agentData['l2TypeProbHistory']
 
         f1EstimationHistory = u_a.agents_parameter_estimation.f1_estimation.get_estimation_history()
         agentData['f1EstimationHistory'] = f1EstimationHistory

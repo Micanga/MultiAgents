@@ -1,6 +1,5 @@
 # Python Imports
 from collections import defaultdict
-from copy import deepcopy
 
 import psutil
 import sys
@@ -47,9 +46,9 @@ apply_adversary = False
 if len(sys.argv) > 1:
     input_folder = sys.argv[1]
 else:
-    input_folder = log.get_input_folder()
+    input_folder = ""
 
-# input_folder = "inputs/adversary2/"
+input_folder = "inputs/test/"
 output_folder = log.create_output_folder()
 
 # ============= Read Configuration ============
@@ -167,128 +166,134 @@ search_tree = None
 enemy_search_tree = None
 enemy_action_prob = None
 
-try:
+# try:
 
     # 3. Ad hoc Agents
-    if main_sim.main_agent is not None:
-        main_agent = main_sim.main_agent
-        search_tree = None
+if main_sim.main_agent is not None:
+    main_agent = main_sim.main_agent
+    search_tree = None
 
-        main_sim.main_agent.initialise_visible_agents(main_sim,generated_data_number, PF_add_threshold, train_mode,
-                                                      type_selection_mode, parameter_estimation_mode, polynomial_degree,
-                                                      apply_adversary,type_estimation_mode,mutation_rate)
+    main_sim.main_agent.initialise_visible_agents(main_sim,generated_data_number, PF_add_threshold, train_mode,
+                                                  type_selection_mode, parameter_estimation_mode, polynomial_degree,
+                                                  apply_adversary,type_estimation_mode,mutation_rate)
 
-        uct = UCT.UCT(iteration_max, max_depth, do_estimation, mcts_mode, apply_adversary,enemy=False)
-        main_sim.main_agent.initialise_uct(uct)
+    uct = UCT.UCT(iteration_max, max_depth, do_estimation, mcts_mode, apply_adversary,enemy=False)
+    main_sim.main_agent.initialise_uct(uct)
 
-    if apply_adversary:
-        enemy_agent = main_sim.enemy_agent
-        enemy_search_tree = None
-        if main_sim.enemy_agent is not None:
-            main_sim.enemy_agent.initialise_visible_agents(main_sim,generated_data_number, PF_add_threshold, train_mode,
-                                                           type_selection_mode, parameter_estimation_mode, polynomial_degree,
-                                                           apply_adversary, type_estimation_mode, mutation_rate)
-            enemy_uct = UCT.UCT(iteration_max, max_depth, do_estimation, mcts_mode,apply_adversary, enemy=True )
-            main_sim.enemy_agent.initialise_uct(enemy_uct)
+if apply_adversary:
+    enemy_agent = main_sim.enemy_agent
+    enemy_search_tree = None
+    if main_sim.enemy_agent is not None:
+        main_sim.enemy_agent.initialise_visible_agents(main_sim,generated_data_number, PF_add_threshold, train_mode,
+                                                       type_selection_mode, parameter_estimation_mode, polynomial_degree,
+                                                       apply_adversary, type_estimation_mode, mutation_rate)
+        enemy_uct = UCT.UCT(iteration_max, max_depth, do_estimation, mcts_mode,apply_adversary, enemy=True )
+        main_sim.enemy_agent.initialise_uct(enemy_uct)
 
-    for v_a in main_sim.main_agent.visible_agents:
-        v_a.choose_target_state = main_sim.copy()# todo: remove deepcopy and add just agents and items location
-        v_a.choose_target_pos = v_a.get_position()
-        v_a.choose_target_direction = v_a.direction
+for v_a in main_sim.main_agent.visible_agents:
+    v_a.choose_target_state = main_sim.copy()  # todo: remove deepcopy and add just agents and items location
+    v_a.choose_target_pos = v_a.get_position()
+    v_a.choose_target_direction = v_a.direction
 
 
-    # ============= Start Simulation ==================
-    time_step = 0
-    main_sim.draw_map()
-    round = 1
-    while round <= round_count:
-        while main_sim.items_left() > 0:
-            items_number = main_sim.items_left()
-            progress = 100 * (len(main_sim.items) - main_sim.items_left())/len(main_sim.items)
-            sys.stdout.write("Experiment progress: %d%% | step: %d   \r" % (progress,time_step) )
-            sys.stdout.flush()
+# ============= Start Simulation ==================
 
-            log_file.write('***** Iteration #'+str(time_step)+' *****\n')
+if round_count == 1000:
+    round_count = len(main_sim.agents)
 
-            # 1. Updating Unknown Agents
-            if main_sim.main_agent is not None:
-                log_file.write('1) Updating Unknown Agents for Main Agent ')
-                main_sim.main_agent.previous_state = main_sim.copy()
-                main_sim.main_agent.update_unknown_agents(main_sim)
-                log_file.write('- OK\n')
+if round_count == 2000:
+   round_count = 2* len(main_sim.agents)
+time_step = 0
+main_sim.draw_map()
+round = 1
+while round <= round_count:
+    while main_sim.items_left() > 0:
+        items_number = main_sim.items_left()
+        progress = 100 * (len(main_sim.items) - main_sim.items_left())/len(main_sim.items)
+        sys.stdout.write("Experiment progress: %d%% | step: %d   \r" % (progress,time_step) )
+        sys.stdout.flush()
 
-            # 2. Move Common Agent
-            for i in range(len(main_sim.agents)):
-                log_file.write('2) Move Common Agent '+str(i))
-                main_sim.agents[i] = main_sim.move_a_agent(main_sim.agents[i])
-                print i,':',main_sim.agents[i].index,main_sim.agents[i].agent_type,
-                log_file.write(' - OK\ntarget: '+str(main_sim.agents[i].get_memory())+'\n')
-            print
-            # 3. Move Main Agent
-            if main_sim.main_agent is not None:
-                log_file.write('3) Move Main Agent ')
-                r,enemy_action_prob,search_tree = main_sim.main_agent.move(reuse_tree, main_sim, search_tree, time_step)
-                log_file.write(' - OK\n')
+        log_file.write('***** Iteration #'+str(time_step)+' *****\n')
 
-            # 4. Move Adversary
-            if main_sim.enemy_agent is not None:
-                log_file.write('4) Move Adversary Agent ')
-                r, main_action_prob,enemy_search_tree = main_sim.enemy_agent.move(reuse_tree, main_sim, enemy_search_tree, time_step)
-                log_file.write(' - OK\n')
+        # 1. Updating Unknown Agents
+        if main_sim.main_agent is not None:
+            log_file.write('1) Updating Unknown Agents for Main Agent ')
+            main_sim.main_agent.previous_state = main_sim.copy()
+            main_sim.main_agent.update_unknown_agents(main_sim)
+            log_file.write('- OK\n')
 
-            # 5. Updating the Map
-            log_file.write('5) Updating Map\n')
-            main_sim.update_all_A_agents(False)
-            main_sim.do_collaboration()
-            main_sim.main_agent.update_unknown_agents_status(main_sim)
-            main_sim.draw_map()
-            log.write_map(log_file,main_sim)
-
-            # 6. Estimating
-            log_file.write('6) Estimating')
-            loaded_items_number = items_number - main_sim.items_left()
-            if loaded_items_number > 0:
-                item_loaded = True
-            else :
-                item_loaded = False
-
-            if do_estimation:
-                main_sim.main_agent.estimation(time_step,main_sim,enemy_action_prob,types)
-
+        # 2. Move Common Agent
+        for i in range(len(main_sim.agents)):
+            log_file.write('2) Move Common Agent '+str(i))
+            main_sim.agents[i] = main_sim.move_a_agent(main_sim.agents[i])
+            print i,':',main_sim.agents[i].index,main_sim.agents[i].agent_type,
+            log_file.write(' - OK\ntarget: '+str(main_sim.agents[i].get_memory())+'\n')
+        print
+        # 3. Move Main Agent
+        if main_sim.main_agent is not None:
+            log_file.write('3) Move Main Agent ')
+            r,enemy_action_prob,search_tree = main_sim.main_agent.move(reuse_tree, main_sim, search_tree, time_step)
             log_file.write(' - OK\n')
 
-            time_step += 1
+        # 4. Move Adversary
+        if main_sim.enemy_agent is not None:
+            log_file.write('4) Move Adversary Agent ')
+            r, main_action_prob,enemy_search_tree = main_sim.enemy_agent.move(reuse_tree, main_sim, enemy_search_tree, time_step)
+            log_file.write(' - OK\n')
 
-            if main_sim.items_left() == 0:
-                break
+        # 5. Updating the Map
+        log_file.write('5) Updating Map\n')
+        main_sim.update_all_A_agents(main_sim)
+        main_sim.do_collaboration()
+        main_sim.main_agent.update_unknown_agents_status(main_sim)
+        main_sim.draw_map()
+        log.write_map(log_file,main_sim)
 
-            log_file.write("left items: "+str(main_sim.items_left())+'\n')
-            log_file.write('*********************\n')
+        # 6. Estimating
+        log_file.write('6) Estimating')
+        loaded_items_number = items_number - main_sim.items_left()
+        if loaded_items_number > 0:
+            item_loaded = True
+        else :
+            item_loaded = False
 
-        round +=1
-        main_sim.recreate_items()
+        if do_estimation:
+            main_sim.main_agent.estimation(time_step,main_sim,enemy_action_prob,types)
 
-    print 'total time steps:', time_step
-    progress = 100 * (len(main_sim.items) - main_sim.items_left())/len(main_sim.items)
-    sys.stdout.write("Experiment progress: %d%% | step: %d   \n" % (progress,time_step) )
+        log_file.write(' - OK\n')
 
-    # ============= Finish Simulation ==================
-    end_time = time.time()
-    used_mem_after = psutil.virtual_memory().used
-    end_cpu_time = psutil.cpu_times()
-    memory_usage = used_mem_after - used_mem_before
+        time_step += 1
 
-    log.print_result(main_sim,  time_step, begin_time, end_time,
-        mcts_mode, parameter_estimation_mode, type_selection_mode,
-        iteration_max,max_depth, generated_data_number,reuse_tree,
-        PF_add_threshold, PF_weight,
-        type_estimation_mode,mutation_rate ,
-        end_cpu_time, memory_usage,log_file,output_folder,round_count)
+        if main_sim.items_left() == 0:
+            break
 
-except Exception as e:
-    log_file.write("Following error stop the progress:")
-    log_file.write(str(e))
-    print "Unexpected error:", str(e)
+        log_file.write("left items: "+str(main_sim.items_left())+'\n')
+        log_file.write('*********************\n')
+
+    round +=1
+    main_sim.recreate_items()
+
+print 'total time steps:', time_step
+progress = 100 * (len(main_sim.items) - main_sim.items_left())/len(main_sim.items)
+sys.stdout.write("Experiment progress: %d%% | step: %d   \n" % (progress,time_step) )
+
+# ============= Finish Simulation ==================
+end_time = time.time()
+used_mem_after = psutil.virtual_memory().used
+end_cpu_time = psutil.cpu_times()
+memory_usage = used_mem_after - used_mem_before
+
+log.print_result(main_sim,  time_step, begin_time, end_time,
+    mcts_mode, parameter_estimation_mode, type_selection_mode,
+    iteration_max,max_depth, generated_data_number,reuse_tree,
+    PF_add_threshold, PF_weight,
+    type_estimation_mode,mutation_rate ,
+    end_cpu_time, memory_usage,log_file,output_folder,round_count)
+
+# except Exception as e:
+#     log_file.write("Following error stop the progress:")
+#     log_file.write(str(e))
+#     print "Unexpected error:", str(e)
 
 print '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'
 print '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'

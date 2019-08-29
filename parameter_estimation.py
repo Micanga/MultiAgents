@@ -11,7 +11,7 @@ from copy import copy
 import logging
 import sys
 import train_data
-import matplotlib.pyplot as plt
+import POMCP_estimation
 
 logging.basicConfig(filename='parameter_estimation.log', format='%(asctime)s %(message)s', level=logging.DEBUG)
 
@@ -836,6 +836,8 @@ class ParameterEstimation:
                 estimated_parameter = self.calculate_gradient_ascent(x_train, y_train, last_parameters_value)
             elif self.parameter_estimation_mode == 'ABU':
                 estimated_parameter = self.bayesian_updating(x_train, y_train, last_parameters_value)
+            elif self.parameter_estimation_mode == 'POMCP':
+                estimated_parameter = self.POMCP_estimation()
             else:
                 estimated_parameter = None
         else:
@@ -971,6 +973,10 @@ class ParameterEstimation:
         return x_train, y_train, type_probability , max_succeed_cts
 
     ####################################################################################################################
+    # def POMCP_estimation(self):
+    #     pomcpe = POMCP_estimation.POMCP(iteration_max, max_depth, do_estimation, mcts_mode, apply_adversary, enemy=False)
+
+    ####################################################################################################################
     def process_parameter_estimations(self, unknown_agent,previous_state,
     current_state, enemy_action_prob, types,loaded_items_list, po=False):
         # 1. Initialising the parameter variables
@@ -1003,9 +1009,9 @@ class ParameterEstimation:
                     direction = unknown_agent.previous_agent_status.direction
                     tmp_agent = agent.Agent(x, y, direction, selected_type)
 
-                    tmp_agent.set_parameters(tmp_sim, new_parameters_estimation.level,\
+                    tmp_agent.set_parameters(tmp_sim, new_parameters_estimation.level,
                         new_parameters_estimation.radius,new_parameters_estimation.angle)
-                    tmp_agent.memory = self.update_internal_state(new_parameters_estimation,\
+                    tmp_agent.memory = self.update_internal_state(new_parameters_estimation,
                         selected_type,unknown_agent,po)
 
                     # Runs a simulator object

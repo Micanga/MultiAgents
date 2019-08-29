@@ -203,7 +203,7 @@ class TrainData:
     def generate_data(self, unknown_agent, selected_type, current_state):
 
         if len(self.data_set) > 0:
-            max_index = max([particle['index'] for particle in self.data_set])+1
+            max_index = max([particle['index'] for particle in self.data_set]) + 1
         else:
             max_index = 1
         particle_count = max_index
@@ -221,9 +221,13 @@ class TrainData:
             random_creation = self.generated_data_number - len(self.data_set)
             pool_creation = 0
 
-        none_count, none_threshold = 0, self.generated_data_number
+        none_count,loop_count, none_threshold = 0,0, self.generated_data_number
         while len(self.data_set) < self.generated_data_number:
             # a. Sampling a particle
+            loop_count += 1
+            if loop_count > 1000:
+                break
+
             particle = {}
             if none_count < pool_creation:
                 tmp_radius = random.choice(self.radius_pool)

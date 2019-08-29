@@ -14,6 +14,7 @@ class Information:
 	def __init__(self,name):
 		self.name = name
 		self.threshold = 0
+		self.plots_dir = ""
 
 
 		self.TRUE_max_len_hist = 0
@@ -74,7 +75,7 @@ class Information:
 		listStr = ""
 
 		for n in p:
-			listStr = listStr + str(n) + ","
+ 			listStr = listStr + str(n) + ","
 
 		f.write("print(t.test(c("+listStr[:-1]+"),conf.level=0.99))")
 
@@ -99,7 +100,7 @@ class Information:
 		max_len = max(self.AGA_max_len_hist,self.ABU_max_len_hist,self.OGE_max_len_hist,self.TRUE_max_len_hist)
 
 		print 'max_len', max_len
-		self.AGA_mean_len_hist, self.AGA_std_len_hist, self.abu_levels_ci = self.calc_mean_len_hist(self.AGA_errors,'AGA')
+		self.AGA_mean_len_hist, self.AGA_std_len_hist, self.abu_levels_ci = self.calc_mean_len_hist(self.AGA_errors,'_AGA')
 		self.AGA_errors = self.normalise_arrays(max_len,self.AGA_errors)
 		self.AGA_typeProbHistory = self.normalise_arrays(max_len,self.AGA_typeProbHistory)
 		print '*** AGA data = ',len(self.AGA_errors),'/AGA avg len = ', self.AGA_mean_len_hist,' ***'
@@ -118,7 +119,7 @@ class Information:
 		lens = []
 		for e_l in errors_list:
 			lens.append(len(e_l))
-		file = open(self.name+te+'Pickle','wb')
+		file = open(self.plots_dir + "/pickles/" +self.name + '_' + te+'_Pickle','wb')
 		pickle.dump(lens,file)
 		file.close() 
 

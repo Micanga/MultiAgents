@@ -76,8 +76,11 @@ class Simulator:
                         self.items.append(item.item(val[0], val[1], val[2], i))
                         i += 1
                     elif 'agent' in key:
+
                         #import ipdb; ipdb.set_trace()
+                        #  x, y, direction, agent_type, index
                         agnt = agent.Agent(val[1], val[2], val[3], val[4], int(val[0]))
+                        #level, radius, angle
                         agnt.set_parameters(self, val[5], val[6], val[7])
                         agnt.choose_target_state = copy(self)
                         self.agents.append(agnt)
@@ -86,11 +89,11 @@ class Simulator:
                     elif 'main' in key:
                         # x-coord, y-coord, direction, type, index
                         self.main_agent = intelligent_agent.Agent(val[0], val[1], val[2])
-                        self.main_agent.level = val[4]
+                        self.main_agent.level = float( val[4])
 
                     elif 'enemy' in key:
                         self.enemy_agent = intelligent_agent.Agent(val[0], val[1], val[2],True)
-                        self.enemy_agent.level = val[4]
+                        self.enemy_agent.level = float(val[4])
 
                     elif 'obstacle' in key:
                         self.obstacles.append(obstacle.Obstacle(val[0], val[1]))
