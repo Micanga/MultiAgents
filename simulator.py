@@ -621,17 +621,18 @@ class Simulator:
                 agents_total_level += agent.level
             if agents_total_level >= item.level and item.agents_load_item !=[]:
                 item.loaded = True
+                c_reward += 1
                 for agent in item.agents_load_item:
-                    if not self.intelligent_agent:
+                    if not agent.intelligent_agent:
                         self.agents[agent.index].last_loaded_item_pos = item.get_position()
                         self.agents[agent.index].reset_memory()
                     #print '2'
                 item.agents_load_item = list()
-                c_reward += 1
+
 
         self.update_the_map()
 
-        return
+        return float(c_reward)
     ###############################################################################################################
 
     def mark_route_map(self, route, xA, yA):  # todo: check to  delete

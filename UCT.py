@@ -390,11 +390,7 @@ class UCT:
         # print 'simulate action'
         a_reward = sim.update_all_A_agents(sim)
 
-        if sim.do_collaboration():
-            print 'colllllllllllllllllllllllllllllllllllllllaboration'
-            c_reward = float(1)
-        else:
-            c_reward = 0
+        c_reward = sim.do_collaboration()
 
         total_reward = float(m_reward + a_reward + c_reward) / totalItems
 
