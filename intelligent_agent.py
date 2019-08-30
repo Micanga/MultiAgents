@@ -26,6 +26,7 @@ class Agent:
 
         self.next_action = None
         self.previous_state = None
+        self.intelligent_agent=True
 
     ####################################################################################################################
     def initialise_uct(self, uct):

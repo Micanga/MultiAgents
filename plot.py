@@ -11,7 +11,7 @@ results = list()
 informations = list()
 
 # 1. Defining the Graph Generation Parameters
-ROOT_DIRS = ['categorised/POMCP/p_s20_a3_r3']  # ['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
+ROOT_DIRS = ['categorised/POMCP/']  # ['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
 # ROOT_DIRS = ['outputs']  # ['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
 # ROOT_DIRS = ['nips_outputs']
 # ROOT_DIRS = ['multiple_runs']
@@ -20,9 +20,9 @@ ROOT_DIRS = ['categorised/POMCP/p_s20_a3_r3']  # ['AAMAS_Outputs_POMCP','AAMAS_O
 NAMES = ['POMCP']  # ['POMCP','POMCP','POMCP']#,'POMCP_FO']
 PLOT_TYPE = 'POMCP'
 SIZE = ['20']  # ,'15','20','25']
-NAGENTS = ['3']
+NAGENTS = ['1','2']
 NITEMS = ['20']  # ,'15','20','25']
-RADIUS = ['3']
+RADIUS = ['5']
 experiment_type_set = ['ABU', 'AGA', 'MIN']
 type_estimation_mode_set = ['BPTE']
 PLOTS_DIR = "./p_results"
@@ -344,9 +344,12 @@ for root in ROOT_DIRS:
                 for ni in NITEMS:
                     for tem in type_estimation_mode_set:
                         for ra in RADIUS:
+
+
                             filename = 'POMCP_s' + sz + '_a' + na + '_i' + ni + '_t' + tem +'_r' + ra + '_Pickle'
                             if not os.path.exists(PLOTS_DIR + "/pickles/" +filename):
-                                results.append(init.read_files(root, sz, na, ni, tem,ra))
+                                full_root = root + 'p_s' + sz + '_a' + na + '_r' + ra
+                                results.append(init.read_files(full_root, sz, na, ni, tem,ra))
                                 info = init.extract_information(results[-1],
                                                                 'POMCP_s' + sz + '_a' + na + '_i' + ni + '_t'+tem+ '_r' + ra)
                                 info.plots_dir = PLOTS_DIR
@@ -370,6 +373,7 @@ for root in ROOT_DIRS:
                     for tem in type_estimation_mode_set:
                         filename = 'MCTS_s' + sz + '_a' + na + '_i' + ni + '_t' + tem + '_Pickle'
                         if not os.path.exists(PLOTS_DIR + "/pickles/" +filename):
+                            full_root = root + 'm_s' + sz + '_a' + na
                             results.append(init.read_files(root, sz, na, ni,tem))
                             info = init.extract_information(results[-1], 'MCTS_s' + sz + '_a' + na + '_i' + ni + '_t'+tem)
                             info.plots_dir = PLOTS_DIR

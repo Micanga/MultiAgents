@@ -34,6 +34,7 @@ class Agent:
         self.visible_items = []
         self.next_action = None
         self.state_dim = []
+        self.intelligent_agent = False
 
 
     ####################################################################################################################

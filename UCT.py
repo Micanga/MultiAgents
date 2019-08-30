@@ -385,9 +385,9 @@ class UCT:
                         sim.move_a_agent(tmp_agent)
 
         m_reward = self.do_move(sim, action,enemy)
-        print 'simulate action'
-        sim.draw_map()
-        print 'simulate action'
+        # print 'simulate action'
+        # sim.draw_map()
+        # print 'simulate action'
         a_reward = sim.update_all_A_agents(sim)
 
         if sim.do_collaboration():

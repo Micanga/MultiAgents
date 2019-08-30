@@ -622,8 +622,9 @@ class Simulator:
             if agents_total_level >= item.level and item.agents_load_item !=[]:
                 item.loaded = True
                 for agent in item.agents_load_item:
-                    self.agents[agent.index].last_loaded_item_pos = item.get_position()
-                    self.agents[agent.index].reset_memory()
+                    if not self.intelligent_agent:
+                        self.agents[agent.index].last_loaded_item_pos = item.get_position()
+                        self.agents[agent.index].reset_memory()
                     #print '2'
                 item.agents_load_item = list()
                 c_reward += 1
