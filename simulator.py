@@ -374,7 +374,7 @@ class Simulator:
                 elif xy == 2:
                     print 'S',  # start
                 elif xy == 3:
-                    print '.',  # route
+                    print 'R',  # route
                 elif xy == 4:
                     print 'D',  # finish
                 elif xy == 5:
@@ -462,7 +462,7 @@ class Simulator:
                     line_str += ' S '
 
                 elif xy == 3:
-                    line_str += ' R '
+                    line_str += ' . '
 
                 elif xy == 4:
                     line_str += ' D '

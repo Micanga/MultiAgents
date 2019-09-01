@@ -2,9 +2,9 @@ import numpy as np
 from agent import Agent
 
 
-class UnknownAgent(Agent):
+class UnknownAgent(Agent,object):
     def __init__(self, x, y, direction, index='0'):
-        Agent.__init__(x, y, direction, index)
+        super(UnknownAgent, self).__init__(x, y, direction, index)
 
         self.agents_parameter_estimation = None
 
@@ -57,7 +57,7 @@ class UnknownAgent(Agent):
     def copy(self):
 
         (x, y) = self.position
-        copy_agent = Agent(x, y, self.direction)
+        copy_agent = UnknownAgent(x, y, self.direction)
 
         copy_agent.agents_parameter_estimation = self.agents_parameter_estimation
         copy_agent.index = self.index
@@ -68,6 +68,12 @@ class UnknownAgent(Agent):
         copy_agent.level = self.level
         copy_agent.radius = self.radius
         copy_agent.angle = self.angle
+
+        copy_agent.co_radius = self.co_radius
+        copy_agent.co_angle = self.co_angle
+
+        copy_agent.memory= self.memory
+        copy_agent.intelligent_agent = self.intelligent_agent
 
         copy_agent.previous_agent_status = self.previous_agent_status
         copy_agent.choose_target_pos = self.choose_target_pos

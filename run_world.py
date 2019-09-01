@@ -232,7 +232,7 @@ while round <= round_count:
             log_file.write(' - OK\ntarget: '+str(main_sim.agents[i].get_memory())+'\n')
         print
 
-        main_sim.draw_map()
+      #  main_sim.draw_map()
         # 3. Move Main Agent
         if main_sim.main_agent is not None:
             log_file.write('3) Move Main Agent ')

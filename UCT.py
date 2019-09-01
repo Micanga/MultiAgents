@@ -387,9 +387,9 @@ class UCT:
         m_reward = self.do_move(sim, action,enemy)
 
         a_reward = sim.update_all_A_agents(sim)
-      #  print 'simulate action'
-       # sim.draw_map()
-        #print 'simulate action'
+        # print 'simulate action'
+        # sim.draw_map()
+        # print 'simulate action'
         c_reward = sim.do_collaboration()
 
         total_reward = float(m_reward + a_reward + c_reward) / totalItems
@@ -426,9 +426,9 @@ class UCT:
         action = self.select_action(node)
 
         (next_state, reward) = self.simulate_action(node.state, action,node.enemy)
-        print 'Is it enemy : ',node.enemy
-        print 'Selected Action for ',action
-        next_state.simulator.draw_map()
+        # print 'Is it enemy : ',node.enemy
+        # print 'Selected Action for ',action
+        # next_state.simulator.draw_map()
         next_node = None
         if self.mcts_mode == 'UCT':
             for child in node.childNodes:

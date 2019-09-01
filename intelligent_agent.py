@@ -51,7 +51,7 @@ class Agent:
                                                  type_estimation_mode)
         for agent in sim.agents:
             x, y = agent.get_position()
-            u_a = unknown_agent.Agent(x, y, agent.direction, agent_index)
+            u_a = unknown_agent.UnknownAgent(x, y, agent.direction, agent_index)
             if not do_estimation:
                 u_a.agent_type = agent.agent_type
                 u_a.set_parameters(sim, agent.level, agent.radius, agent.angle)
@@ -65,13 +65,13 @@ class Agent:
 
                 u_a.agents_parameter_estimation = param_estim
                 u_a.set_type_parameters(sim)
-                u_a.find_estimated_target(sim)
+            u_a.find_estimated_target(sim)
             self.visible_agents.append(u_a)
             agent_index += 1
 
         if sim.enemy_agent is not None:
             x, y = sim.enemy_agent.get_position()
-            a = unknown_agent.Agent(x, y, sim.enemy_agent.direction, agent_index)
+            a = unknown_agent.UnknownAgent(x, y, sim.enemy_agent.direction, agent_index)
             a.agent_type = 'w'
 
             self.visible_agents.append(a)

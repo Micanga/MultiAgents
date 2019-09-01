@@ -19,8 +19,8 @@ algorithms_symbol = ["^", "v", "o"]
 algorithm_colors=["#3F5D7D","#37AA9C","#F66095"]
 
 n_agents = ['1','2','3','5']
-n_size = ['20']
-n_items = ['20']  # ,'15','20','25']
+n_size = ['10']
+n_items = ['10']  # ,'15','20','25']
 # size = '20'
 # agent = '5'
 error_mean = np.zeros((len(n_agents),(len(n_size)), len(parameter_estimation_mode_set)))
@@ -322,7 +322,7 @@ def plot_multiple_size_performance():
                        label=algorithms_labels[a], marker=algorithms_symbol[a],color = algorithm_colors[a])
 
     plt.legend(loc=0)
-    plt.ylim([0, 600])
+    plt.ylim([0, 100])
     plt.xlim([0,40])
     plt.xlabel("Size of Environment")
     plt.ylabel("Performance")
@@ -330,8 +330,8 @@ def plot_multiple_size_performance():
     plt.savefig(PLOTS_DIR+"/summarized_plots/performance_multiple_size" + n_agents[0] + ".pdf", bbox_inches='tight')
 
     plt.show()
-# plot_multiple_agents_error()
+plot_multiple_agents_error()
 plot_multiple_agents_performance()
-# plot_multiple_agents_type_error()
+plot_multiple_agents_type_error()
 # plot_multiple_size_performance()
 # plot_multiple_size_error()
