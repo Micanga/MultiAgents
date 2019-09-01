@@ -43,7 +43,7 @@ class Parameter:
 
 ########################################################################################################################
 class TypeEstimation:
-    def __init__(self, a_type, generated_data_number, PF_add_threshold, train_mode, mutation_rate,unknown_agent, sim):
+    def __init__(self, a_type, generated_data_number, PF_add_threshold, train_mode, mutation_rate):
         self.type = a_type  # Type for which we are doing estimation
         self.type_probability = 0
         self.type_probabilities = []
@@ -52,7 +52,7 @@ class TypeEstimation:
         self.internal_state = None
         self.train_mode = train_mode
         self.train_data = train_data.TrainData(generated_data_number, PF_add_threshold, train_mode, a_type,
-                                               mutation_rate, unknown_agent, sim)
+                                               mutation_rate)
 
     ####################################################################################################################
     def add_estimation_history(self, probability, level, angle, radius):
@@ -106,17 +106,17 @@ class ParameterEstimation:
                  PF_add_threshold,
                  train_mode,
                  apply_adversary,
-                  mutation_rate, unknown_agent, sim):
+                  mutation_rate):
 
         # P(teta|H)
         self.apply_adversary = apply_adversary
         if self.apply_adversary:
-            self.w_estimation = TypeEstimation('w', generated_data_number, PF_add_threshold, train_mode, mutation_rate, unknown_agent, sim)
+            self.w_estimation = TypeEstimation('w', generated_data_number, PF_add_threshold, train_mode, mutation_rate)
 
-        self.l1_estimation = TypeEstimation('l1',  generated_data_number, PF_add_threshold, train_mode, mutation_rate, unknown_agent, sim)
-        self.l2_estimation = TypeEstimation('l2',  generated_data_number, PF_add_threshold, train_mode, mutation_rate, unknown_agent, sim)
-        self.f1_estimation = TypeEstimation('f1',  generated_data_number, PF_add_threshold, train_mode, mutation_rate, unknown_agent, sim)
-        self.f2_estimation = TypeEstimation('f2',  generated_data_number, PF_add_threshold, train_mode, mutation_rate, unknown_agent, sim)
+        self.l1_estimation = TypeEstimation('l1',  generated_data_number, PF_add_threshold, train_mode, mutation_rate)
+        self.l2_estimation = TypeEstimation('l2',  generated_data_number, PF_add_threshold, train_mode, mutation_rate)
+        self.f1_estimation = TypeEstimation('f1',  generated_data_number, PF_add_threshold, train_mode, mutation_rate)
+        self.f2_estimation = TypeEstimation('f2',  generated_data_number, PF_add_threshold, train_mode, mutation_rate)
 
         self.action_history = []
         self.train_mode = train_mode

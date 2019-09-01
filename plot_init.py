@@ -103,8 +103,8 @@ def read_files(root_dir,size,nagents, nitems,type_estimation_mode,radius=None):
     progress = 1 * float(count/1.0)
     print 'Max: ', max_steps
     print 'Min: ', min_steps
-    for m in min_time_steps:
-         print m
+    # for m in min_time_steps:
+    #      print m
 
     sys.stdout.write("Progress: %.1f%% | file #%d      \n" % (progress,count) )
     return results
@@ -172,7 +172,7 @@ def extract_information(results,name,radius=None):
                     info.OGE_estimationHist.append(result['historyParameters'])
                     info.OGE_trueParameter.append(result['trueParameters'])
                     error = calculate_error(result['trueParameters'], result['historyParameters'])
-                    print 'OGE', result['path'], error
+                    # print 'OGE', result['path'], error
                     info.OGE_errors.append(error)
             else:
                 if len(result['typeProbHistory']) > info.OGE_max_len_hist:
@@ -183,7 +183,7 @@ def extract_information(results,name,radius=None):
                 info.OGE_estimationHist.append(result['historyParameters'])
                 info.OGE_trueParameter.append(result['trueParameters'])
                 error = calculate_error(result['trueParameters'], result['historyParameters'])
-                print 'OGE', result['path'], error
+                # print 'OGE', result['path'], error
                 info.OGE_errors.append(error)
 
     # print name

@@ -1,27 +1,12 @@
-
-import position
 import numpy as np
-from math import sqrt
+from agent import Agent
 
 
-class Agent:
+class UnknownAgent(Agent):
     def __init__(self, x, y, direction, index='0'):
-        self.position = (int(x), int(y))
-
-        if isinstance(direction, basestring):
-            self.direction = self.convert_direction(direction)
-        else:
-            self.direction = float(direction)
+        Agent.__init__(x, y, direction, index)
 
         self.agents_parameter_estimation = None
-        self.index = index
-        self.last_loaded_item_pos = None
-        self.item_to_load = -1
-        self.next_action = None
-        self.agent_type = None
-        self.level = None
-        self.radius = None
-        self.angle = None
 
         self.previous_agent_status = None
         self.choose_target_pos = None
@@ -106,3 +91,23 @@ class Agent:
                 return i
 
         return -1
+
+    def set_type_parameters(self, sim):
+            selected_type = self.agents_parameter_estimation.get_sampled_probability()
+            if selected_type != 'w':
+                self.agent_type = selected_type
+                agents_estimated_values = self.agents_parameter_estimation.get_parameters_for_selected_type(
+                    selected_type)
+                self.set_parameters(sim, agents_estimated_values.level,
+                                   agents_estimated_values.radius,
+                                   agents_estimated_values.angle)
+
+
+    def find_estimated_target(self,sim):
+        self.visible_agents_items(sim.items, sim.agents)
+        target = self.choose_target(sim.items, sim.agents)
+
+        if target.get_position() != (-1, -1):
+            destination = target
+
+        self.memory = destination

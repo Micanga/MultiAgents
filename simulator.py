@@ -503,74 +503,8 @@ class Simulator:
         return agent
 
     ################################################################################################################
-
-    def run_and_update(self, a_agent):
-
-        a_agent = self.move_a_agent(a_agent)
-
-        next_action = choice(actions, p=a_agent.get_actions_probabilities())  # random sampling the action
-
-        a_agent.next_action = next_action
-        a_agent.actions_history.append(next_action)
-
-        self.update(a_agent)
-
-        return self.agents[a_agent.index]
-
-    # ####################################################################################################################
-    # def update_all_A_agents(self, simulated):
-    #     reward = 0
-    #
-    #     for i in range(len(self.agents)):
-    #         # if not (simulated and self.agents[i].get_position() == self.suspect_agent.get_position()):
-    #
-    #             next_action = choice(actions,
-    #                                  p=self.agents[i].get_actions_probabilities())  # random sampling the action
-    #
-    #             self.agents[i].next_action = next_action
-    #
-    #             reward += self.update(i)
-    #
-    #     return reward
-    #
-    # ################################################################################################################
-    # def update(self, a_agent_index):
-    #     reward = 0
-    #     loaded_item = None
-    #     a_agent = self.agents[a_agent_index]
-    #
-    #     if a_agent.next_action == 'L' and a_agent.item_to_load != -1:
-    #         # print 'loading :', a_agent.item_to_load.get_position()
-    #         destination = a_agent.item_to_load
-    #
-    #         if destination.level <= a_agent.level:  # If there is a an item nearby loading process starts
-    #
-    #             # load item and and remove it from map  and get the direction of agent when reaching the item.
-    #             a_agent = self.load_item(a_agent, destination.index)
-    #             loaded_item = self.items[destination.index]
-    #             reward += 1
-    #         else:
-    #             if not self.items[destination.index].is_agent_in_loaded_list(a_agent):
-    #                 self.items[destination.index].agents_load_item.append(a_agent)
-    #
-    #     else:
-    #         # If there is no item to collect just move A agent
-    #         (new_position_x, new_position_y) = a_agent.new_position_with_given_action(self.dim_h,self.dim_w
-    #                                                                                   , a_agent.next_action)
-    #
-    #         if self.position_is_empty(new_position_x, new_position_y):
-    #             a_agent.position = (new_position_x, new_position_y)
-    #         else:
-    #             a_agent.change_direction_with_action(a_agent.next_action)
-    #
-    #     self.agents[a_agent_index] = a_agent
-    #     self.update_the_map()
-    #     return reward #, loaded_item
-
-    ################################################################################################################
     def destination_loaded_by_other_agents(self, agent):
         # Check if item is collected by other agents so we need to ignore it and change the target.
-
         (memory_x, memory_y) = agent.get_memory()
         destination_index = self.find_item_by_location(memory_x, memory_y)
 
@@ -628,7 +562,6 @@ class Simulator:
                         self.agents[agent.index].reset_memory()
                     #print '2'
                 item.agents_load_item = list()
-
 
         self.update_the_map()
 

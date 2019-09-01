@@ -1,17 +1,11 @@
-from copy import copy, deepcopy
-from math import sqrt
-from numpy.random import choice
-import numpy as np
+from copy import copy
 from random import sample
-
-import agent
 from intelligent_agent import Agent
 import parameter_estimation
 import position
-import UCT
-from UCT import State
 import unknown_agent
 import sensor
+
 
 class POAgent(Agent, object): 
 

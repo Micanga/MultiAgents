@@ -24,7 +24,7 @@ type_selection_mode = None
 iteration_max = None
 max_depth = None
 
-do_estimation = True
+do_estimation = False
 train_mode = None
 parameter_estimation_mode = None
 
@@ -168,30 +168,31 @@ enemy_action_prob = None
 
 # try:
 
-    # 3. Ad hoc Agents
+# 3. Ad hoc Agents
 if main_sim.main_agent is not None:
     main_agent = main_sim.main_agent
     search_tree = None
 
-    main_sim.main_agent.initialise_visible_agents(main_sim,generated_data_number, PF_add_threshold, train_mode,
+    main_sim.main_agent.initialise_visible_agents(main_sim, generated_data_number, PF_add_threshold, train_mode,
                                                   type_selection_mode, parameter_estimation_mode, polynomial_degree,
-                                                  apply_adversary,type_estimation_mode,mutation_rate)
+                                                  apply_adversary, type_estimation_mode, mutation_rate, do_estimation)
 
-    uct = UCT.UCT(iteration_max, max_depth, do_estimation, mcts_mode, apply_adversary,enemy=False)
+    uct = UCT.UCT(iteration_max, max_depth, do_estimation, mcts_mode, apply_adversary, enemy=False)
     main_sim.main_agent.initialise_uct(uct)
 
 if apply_adversary:
     enemy_agent = main_sim.enemy_agent
     enemy_search_tree = None
     if main_sim.enemy_agent is not None:
-        main_sim.enemy_agent.initialise_visible_agents(main_sim,generated_data_number, PF_add_threshold, train_mode,
+        main_sim.enemy_agent.initialise_visible_agents(main_sim, generated_data_number, PF_add_threshold, train_mode,
                                                        type_selection_mode, parameter_estimation_mode, polynomial_degree,
-                                                       apply_adversary, type_estimation_mode, mutation_rate)
+                                                       apply_adversary, type_estimation_mode, mutation_rate,
+                                                       do_estimation)
         enemy_uct = UCT.UCT(iteration_max, max_depth, do_estimation, mcts_mode,apply_adversary, enemy=True )
         main_sim.enemy_agent.initialise_uct(enemy_uct)
 
 for v_a in main_sim.main_agent.visible_agents:
-    v_a.choose_target_state = main_sim.copy()  # todo: remove deepcopy and add just agents and items location
+    v_a.choose_target_state = main_sim.copy()
     v_a.choose_target_pos = v_a.get_position()
     v_a.choose_target_direction = v_a.direction
 
@@ -202,7 +203,8 @@ if round_count == 1000:
     round_count = len(main_sim.agents)
 
 if round_count == 2000:
-   round_count = 2* len(main_sim.agents)
+   round_count = 2 * len(main_sim.agents)
+
 time_step = 0
 main_sim.draw_map()
 round = 1
@@ -226,9 +228,11 @@ while round <= round_count:
         for i in range(len(main_sim.agents)):
             log_file.write('2) Move Common Agent '+str(i))
             main_sim.agents[i] = main_sim.move_a_agent(main_sim.agents[i])
-            print i,':',main_sim.agents[i].index,main_sim.agents[i].agent_type,
+            print i,':',main_sim.agents[i].index, main_sim.agents[i].agent_type,
             log_file.write(' - OK\ntarget: '+str(main_sim.agents[i].get_memory())+'\n')
         print
+
+        main_sim.draw_map()
         # 3. Move Main Agent
         if main_sim.main_agent is not None:
             log_file.write('3) Move Main Agent ')
@@ -258,7 +262,7 @@ while round <= round_count:
             item_loaded = False
 
         if do_estimation:
-            main_sim.main_agent.estimation(time_step,main_sim,enemy_action_prob,types)
+            main_sim.main_agent.estimation(time_step, main_sim,enemy_action_prob,types)
 
         log_file.write(' - OK\n')
 

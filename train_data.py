@@ -11,7 +11,7 @@ level_min = 0
 
 
 class TrainData:
-    def __init__(self, generated_data_number, PF_add_threshold, train_mode, train_data_type, mutation_rate, unknown_agent, sim):
+    def __init__(self, generated_data_number, PF_add_threshold, train_mode, train_data_type, mutation_rate):
 
         self.generated_data_number = generated_data_number
         self.PF_add_threshold = PF_add_threshold
@@ -20,10 +20,6 @@ class TrainData:
         self.mutation_rate = mutation_rate
 
         self.data_set = []
-        if train_mode == 'history_based':
-            self.initialise_particle_data_set(unknown_agent, sim)
-        #else:
-        #    self.initialise_data_set(uknown_agent, sim)
 
         self.false_data_set = []
         self.level_pool = []
@@ -95,7 +91,7 @@ class TrainData:
                 none_count += 1
 
     ####################################################################################################################
-    def initialise_data_set(self, unknown_agent, sim,po = False):
+    def initialise_data_set(self, unknown_agent, sim):
         # 1. Generating initial data (particles)
         none_count, none_thereshold = 0, 500
         while len(self.data_set) < self.generated_data_number:

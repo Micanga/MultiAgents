@@ -39,20 +39,24 @@ for root, dirs, files in os.walk(root_dir):
                     radius = str(int(systemDetails['mainAgentRadius']))
 
                     if systemDetails['round_count']==1:
-                        copy(root, 'categorised/POMCP/p_s' + simWidth + '_a' + agentsCounts + "_r" + radius + "/" + str(
-                            count))
+                        dest = 'categorised/POMCP/p_s' + simWidth + '_a' + agentsCounts + "_r" + radius + "/" + str(
+                            count)
+                        copy(root, dest )
                     else:
                         round = str(systemDetails['round_count'])
-                        copy(root, 'categorised/POMCP_mr/p_s' + simWidth + '_a' + agentsCounts +
-                             "_r" + radius + "_ro" + round +  "/" + str(count))
+                        dest = 'categorised/POMCP_mr/p_s' + simWidth + '_a' + agentsCounts + "_r" + radius + "_ro" + round +  "/" + str(count)
+                        copy(root, dest)
                 else:
                     if systemDetails['round_count']==1:
-                         copy(root,'categorised/UCT/m_s' + simWidth + '_a' + agentsCounts + "/" + str(count))
+                        dest = 'categorised/UCT/m_s' + simWidth + '_a' + agentsCounts + "/" + str(count)
+                        copy(root,dest)
                     else:
                         round = str(systemDetails['round_count'])
-                        copy(root, 'categorised/UCT_mr/m_s' + simWidth + '_a' + agentsCounts + "_ro" + round + "/" + str(count))
+                        dest = 'categorised/UCT_mr/m_s' + simWidth + '_a' + agentsCounts + "_ro" + round + "/" + str(count)
+                        copy(root, dest)
                 count +=1
-                print 'done'
+                print dest ,'done'
+                print '---------------------------------'
         else:
             f_count +=1
             print "No pickel:" + root

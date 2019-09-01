@@ -2,8 +2,8 @@ from numpy.random import choice
 import position
 import numpy as np
 from math import sqrt
-import parameter_estimation
 from copy import copy
+
 
 class Agent:
     def __init__(self, x, y, direction, agent_type='l1', index='0'):
@@ -35,7 +35,6 @@ class Agent:
         self.next_action = None
         self.state_dim = []
         self.intelligent_agent = False
-
 
     ####################################################################################################################
     def set_parameters(self, sim, level, radius, angle):
@@ -653,6 +652,15 @@ class Agent:
             return position.position(-1, -1)
 
     ####################################################################################################################
+    def set_target(self,items, agents):
+        self.visible_agents_items(items, agents)
+        target = self.choose_target(items, agents)
+
+        if target.get_position() != (-1, -1):
+            destination = target
+
+        self.memory = destination
+
     def choose_target(self, items, agents):
         # 1. Choosing target (item) if type L1
         if self.agent_type == "l1":

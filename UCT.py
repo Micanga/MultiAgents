@@ -362,34 +362,34 @@ class UCT:
         tmp_main_agent = sim.main_agent
         for u_a in tmp_main_agent.visible_agents:
             if self.do_estimation is False:
-                selected_type = u_a.agent_type
-                x, y = u_a.get_position()
+                # selected_type = u_a.agent_type
+                # x, y = u_a.get_position()
+                #
+                # tmp_agent = agent.Agent(x, y, u_a.direction, selected_type, '-1')
+                # tmp_agent.set_parameters(sim, u_a.level,
+                #                          u_a.radius,
+                #                          u_a.angle)
 
-                tmp_agent = agent.Agent(x, y, u_a.direction, selected_type, '-1')
-                tmp_agent.set_parameters(sim, u_a.level,
-                                         u_a.radius,
-                                         u_a.angle)
-
-                sim.move_a_agent(tmp_agent)
+                sim.move_a_agent(u_a)
             else:
                 if u_a.agents_parameter_estimation != None:
                     selected_type = u_a.agents_parameter_estimation.get_sampled_probability()
                     if selected_type != 'w':
-                        x, y = u_a.get_position()
+                        # x, y = u_a.get_position()
                         agents_estimated_values = u_a.agents_parameter_estimation.get_parameters_for_selected_type(selected_type)
-                        tmp_agent = agent.Agent(x, y, u_a.direction, selected_type, '-1')
-                        tmp_agent.set_parameters(sim, agents_estimated_values.level,
+                        # tmp_agent = agent.Agent(x, y, u_a.direction, selected_type, '-1')
+                        u_a.set_parameters(sim, agents_estimated_values.level,
                                                       agents_estimated_values.radius,
                                                       agents_estimated_values.angle)
 
-                        sim.move_a_agent(tmp_agent)
+                        sim.move_a_agent(u_a)
 
         m_reward = self.do_move(sim, action,enemy)
-        # print 'simulate action'
-        # sim.draw_map()
-        # print 'simulate action'
-        a_reward = sim.update_all_A_agents(sim)
 
+        a_reward = sim.update_all_A_agents(sim)
+      #  print 'simulate action'
+       # sim.draw_map()
+        #print 'simulate action'
         c_reward = sim.do_collaboration()
 
         total_reward = float(m_reward + a_reward + c_reward) / totalItems
@@ -426,9 +426,9 @@ class UCT:
         action = self.select_action(node)
 
         (next_state, reward) = self.simulate_action(node.state, action,node.enemy)
-        # print 'Is it enemy : ',node.enemy
-        # print 'Selected Action for ',action
-        # next_state.simulator.draw_map()
+        print 'Is it enemy : ',node.enemy
+        print 'Selected Action for ',action
+        next_state.simulator.draw_map()
         next_node = None
         if self.mcts_mode == 'UCT':
             for child in node.childNodes:
