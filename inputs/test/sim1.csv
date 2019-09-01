@@ -1,0 +1,5 @@
+grid,5,5
+main,0,2,N,m,0.5
+#level, radius, angle
+agent0,0,4,2,N,l1,0.593,0.85,0.8
+item0,2,2,1.0
