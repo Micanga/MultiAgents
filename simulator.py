@@ -79,7 +79,7 @@ class Simulator:
 
                         #import ipdb; ipdb.set_trace()
                         #  x, y, direction, agent_type, index
-                        agnt = agent.Agent(val[1], val[2], val[3], val[4], int(val[0]))
+                        agnt = agent.Agent(val[1], val[2], val[3], int(val[0]), val[4])
                         #level, radius, angle
                         agnt.set_parameters(self, val[5], val[6], val[7])
                         agnt.choose_target_state = copy(self)
@@ -186,7 +186,7 @@ class Simulator:
 
     ####################################################################################################################
 
-    def copy(self, for_UCT = True):
+    def copy(self, for_UCT = False):
 
         copy_items = []
 
@@ -195,21 +195,16 @@ class Simulator:
             copy_items.append(copy_item)
 
         copy_agents = list()
-
-        for cagent in self.agents:
-            if for_UCT:
-                (x, y) = cagent.get_position()
-
-                copy_agent = agent.Agent(x, y, cagent.direction, cagent.agent_type, cagent.index)
-                copy_agent.level = cagent.level
-                copy_agent.radius = cagent.radius
-                copy_agent.index = cagent.index
-                copy_agent.angle = cagent.angle
-                copy_agent.co_radius = cagent.co_radius
-                copy_agent.co_angle = cagent.co_angle
-            else:
+        copy_agent = None
+        if not for_UCT:
+            for cagent in self.agents:
                 copy_agent = cagent.copy()
-            copy_agents.append(copy_agent)
+
+        else:
+            for u_a in self.main_agent.visible_agents:
+                copy_agent = u_a.copy()
+
+        copy_agents.append(copy_agent)
 
         copy_obstacles = []
         for obs in self.obstacles:
@@ -462,7 +457,7 @@ class Simulator:
                     line_str += ' S '
 
                 elif xy == 3:
-                    line_str += ' . '
+                    line_str += ' R '
 
                 elif xy == 4:
                     line_str += ' D '
@@ -545,6 +540,16 @@ class Simulator:
 
         return True
 
+    ####################################################################################################################
+
+    def find_by_index(self,index):
+
+        for a in self.agents:
+            if a.index == index:
+                return a
+
+        return None
+
     ################################################################################################################
     def do_collaboration(self):
         c_reward = 0
@@ -558,8 +563,9 @@ class Simulator:
                 c_reward += 1
                 for agent in item.agents_load_item:
                     if not agent.intelligent_agent:
-                        self.agents[agent.index].last_loaded_item_pos = item.get_position()
-                        self.agents[agent.index].reset_memory()
+
+                        agent.last_loaded_item_pos = item.get_position()
+                        agent.reset_memory()
                     #print '2'
                 item.agents_load_item = list()
 
@@ -579,6 +585,7 @@ class Simulator:
                 x += dx[j]
                 y += dy[j]
                 self.the_map[y][x] = 3
+
     ####################################################################################################################
 
     def move_a_agent(self, a_agent):
@@ -640,12 +647,9 @@ class Simulator:
                 action = self.get_first_action(route)  # Get first action of the path
                 a_agent.set_actions_probabilities(action)
 
-
             return a_agent
 
-
-
-  ####################################################################################################################
+    ####################################################################################################################
     @staticmethod
     def update_all_A_agents(sim):
             reward = 0
@@ -662,7 +666,7 @@ class Simulator:
 
             return reward
 
-    ################################################################################################################
+    ####################################################################################################################
     @staticmethod
     def update(sim, a_agent):
         reward = 0

@@ -870,7 +870,10 @@ class ParameterEstimation:
         # 1. Defining the agent to update in main agent point of view
         u_agent = None 
         if not po:
-            u_agent = unknown_agent.choose_target_state.main_agent.visible_agents[unknown_agent.index]
+            for v_a in unknown_agent.choose_target_state.main_agent.visible_agents:
+                if v_a.index == unknown_agent.index:
+                    u_agent = v_a
+
         else:
             memory_agents = unknown_agent.choose_target_state.main_agent.agent_memory
             for m_a in memory_agents:

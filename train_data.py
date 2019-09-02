@@ -267,7 +267,9 @@ class TrainData:
         # 1. Getting the agent to update
         cts_agent = None
         if not po:
-            cts_agent = copy(current_state.main_agent.visible_agents[unknown_agent.index])
+            for v_a in current_state.main_agent.visible_agents:
+                if v_a.index == unknown_agent.index:
+                    cts_agent = copy(v_a)
         else:
             memory_agents = current_state.main_agent.agent_memory
             for m_a in memory_agents:
@@ -309,7 +311,10 @@ class TrainData:
         cts_agent = None
         max_succeed_cts = None
         if not po:
-            cts_agent = copy(current_state.main_agent.visible_agents[unknown_agent.index])
+
+            for v_a in current_state.main_agent.visible_agents:
+                if v_a.index == unknown_agent.index:
+                    cts_agent = copy(v_a)
         else:
             memory_agents = current_state.main_agent.agent_memory
             for m_a in memory_agents:

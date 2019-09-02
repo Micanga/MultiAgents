@@ -6,7 +6,7 @@ from copy import copy
 
 
 class Agent:
-    def __init__(self, x, y, direction, agent_type='l1', index='0'):
+    def __init__(self, x, y, direction, index, agent_type='l1' ):
         self.position = (int(x), int(y))
         self.index = index
         self.level = None
@@ -36,7 +36,11 @@ class Agent:
         self.state_dim = []
         self.intelligent_agent = False
 
+
+
+
     ####################################################################################################################
+
     def set_parameters(self, sim, level, radius, angle):
 
         self.state_dim.append(sim.dim_w)

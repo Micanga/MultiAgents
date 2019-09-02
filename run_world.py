@@ -248,6 +248,7 @@ while round <= round_count:
         # 5. Updating the Map
         log_file.write('5) Updating Map\n')
         main_sim.update_all_A_agents(main_sim)
+        print 'Main colllllaboration'
         main_sim.do_collaboration()
         main_sim.main_agent.update_unknown_agents_status(main_sim)
         main_sim.draw_map()
@@ -263,6 +264,11 @@ while round <= round_count:
 
         if do_estimation:
             main_sim.main_agent.estimation(time_step, main_sim,enemy_action_prob,types)
+            main_sim.main_agent.update_unknown_agents_parameters(main_sim)
+
+
+
+
 
         log_file.write(' - OK\n')
 
@@ -287,12 +293,13 @@ used_mem_after = psutil.virtual_memory().used
 end_cpu_time = psutil.cpu_times()
 memory_usage = used_mem_after - used_mem_before
 
-log.print_result(main_sim,  time_step, begin_time, end_time,
-    mcts_mode, parameter_estimation_mode, type_selection_mode,
-    iteration_max,max_depth, generated_data_number,reuse_tree,
-    PF_add_threshold, PF_weight,
-    type_estimation_mode,mutation_rate ,
-    end_cpu_time, memory_usage,log_file,output_folder,round_count)
+if  do_estimation:
+    log.print_result(main_sim,  time_step, begin_time, end_time,
+        mcts_mode, parameter_estimation_mode, type_selection_mode,
+        iteration_max,max_depth, generated_data_number,reuse_tree,
+        PF_add_threshold, PF_weight,
+        type_estimation_mode,mutation_rate ,
+        end_cpu_time, memory_usage,log_file,output_folder,round_count)
 
 # except Exception as e:
 #     log_file.write("Following error stop the progress:")

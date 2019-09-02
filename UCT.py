@@ -355,12 +355,12 @@ class UCT:
 
     def simulate_action(self, state, action, enemy=False):
 
-        sim = state.simulator.copy()
+        sim = state.simulator.copy(False)
         next_state = State(sim)
 
         # Run the A agent to get the actions probabilities
         tmp_main_agent = sim.main_agent
-        for u_a in tmp_main_agent.visible_agents:
+        for u_a in sim.agents:
             if self.do_estimation is False:
                 # selected_type = u_a.agent_type
                 # x, y = u_a.get_position()
@@ -481,7 +481,7 @@ class UCT:
         root = node
 
         while time_step < self.iteration_max:
-            tmp_sim = simulator.copy()
+            tmp_sim = simulator.copy(for_UCT=True)
             node.state.simulator = tmp_sim
 
             self.search(main_time_step, node)

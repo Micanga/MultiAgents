@@ -5,9 +5,9 @@ class item:
 
     def __init__(self, x,y,level, index):
         self.position = position.position(int(x), int(y))
-        self.loaded = False
         self.level = float(level)
         self.index = index
+        self.loaded = False
         self.agents_load_item = list()
 
         self.already_seen = False
@@ -33,6 +33,7 @@ class item:
         self.position.y = y
 
     def copy(self):
+
         (x, y) = self.get_position()
 
         copy_item = item(x, y, self.level, self.index)
@@ -40,6 +41,14 @@ class item:
         copy_item.loaded = self.loaded
 
         copy_item.already_seen = self.already_seen
+
+
+        ca_list = list()
+        for a in self.agents_load_item:
+            ca =  a.copy()
+            ca_list.append(ca)
+
+        copy_item.agents_load_item = ca_list
 
         return copy_item
         

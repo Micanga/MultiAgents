@@ -1,9 +1,10 @@
 import numpy as np
 from agent import Agent
+import position
 
 
 class UnknownAgent(Agent,object):
-    def __init__(self, x, y, direction, index='0'):
+    def __init__(self, x, y, direction, index):
         super(UnknownAgent, self).__init__(x, y, direction, index)
 
         self.agents_parameter_estimation = None
@@ -57,7 +58,7 @@ class UnknownAgent(Agent,object):
     def copy(self):
 
         (x, y) = self.position
-        copy_agent = UnknownAgent(x, y, self.direction)
+        copy_agent = UnknownAgent(x, y, self.direction,self.index)
 
         copy_agent.agents_parameter_estimation = self.agents_parameter_estimation
         copy_agent.index = self.index
@@ -110,6 +111,8 @@ class UnknownAgent(Agent,object):
 
 
     def find_estimated_target(self,sim):
+
+        destination = position.position(-1, -1)
         self.visible_agents_items(sim.items, sim.agents)
         target = self.choose_target(sim.items, sim.agents)
 
