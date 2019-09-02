@@ -14,8 +14,12 @@ class item:
 
     def is_agent_in_loaded_list(self, new_agent):
         for agent in self.agents_load_item:
-            if agent.equals(new_agent):
-                return True
+            if new_agent.intelligent_agent:
+                if agent.intelligent_agent:
+                    return True
+            else:
+                if agent.equals(new_agent):
+                    return True
         return False
 
     def remove_agent(self,agent_x , agent_y):

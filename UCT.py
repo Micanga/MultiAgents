@@ -232,7 +232,8 @@ class UCT:
                     sim.items[destination_item_index].loaded = True
                     get_reward += float(1.0)
                 else:
-                    sim.items[destination_item_index].agents_load_item.append(tmp_m_agent)
+                    if not sim.items[destination_item_index].is_agent_in_loaded_list(tmp_m_agent):
+                        sim.items[destination_item_index].agents_load_item.append(tmp_m_agent)
         else:
             #if real and self.planning_for_enemy:
                 #print 'x'
