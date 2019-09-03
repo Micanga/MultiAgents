@@ -221,7 +221,7 @@ class UCT:
             if real and self.planning_for_enemy:
                 return 0
             load_item, (item_position_x, item_position_y) = tmp_m_agent.is_agent_face_to_item(sim)
-            if load_item :
+            if load_item:
                 destination_item_index = sim.find_item_by_location(item_position_x, item_position_y)
                 if real:
                     print "Try to load item:", item_position_x, item_position_y, "  by M"
@@ -388,9 +388,10 @@ class UCT:
         m_reward = self.do_move(sim, action,enemy)
 
         a_reward = sim.update_all_A_agents(sim)
-        # print 'simulate action'
-        # sim.draw_map()
-        # print 'simulate action'
+        print 'simulate action'
+        print 'M action', action
+        sim.draw_map()
+        print 'simulate action'
         c_reward = sim.do_collaboration()
 
         total_reward = float(m_reward + a_reward + c_reward) / totalItems

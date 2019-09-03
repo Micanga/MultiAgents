@@ -267,9 +267,6 @@ while round <= round_count:
             main_sim.main_agent.update_unknown_agents_parameters(main_sim)
 
 
-
-
-
         log_file.write(' - OK\n')
 
         time_step += 1
