@@ -63,14 +63,14 @@ class TypeEstimation:
     ####################################################################################################################
 
     def get_estimation_history(self):
-        estimation_historty = "["
+        estimation_history = "["
         for est_hist in self.estimation_history:
-            estimation_historty += "[" + str(est_hist.level) + "," + str(est_hist.angle) + "," + str(
+            estimation_history += "[" + str(est_hist.level) + "," + str(est_hist.angle) + "," + str(
                 est_hist.radius) + "],"
 
-        estimation_historty = estimation_historty[0:len(estimation_historty) - 1]
-        estimation_historty += "]"
-        return estimation_historty
+        estimation_history = estimation_history[0:len(estimation_history) - 1]
+        estimation_history += "]"
+        return estimation_history
 
     ####################################################################################################################
     def get_last_type_probability(self):
@@ -1010,7 +1010,7 @@ class ParameterEstimation:
                     x = unknown_agent.previous_agent_status.position[0] 
                     y = unknown_agent.previous_agent_status.position[1]
                     direction = unknown_agent.previous_agent_status.direction
-                    tmp_agent = agent.Agent(x, y, direction, selected_type)
+                    tmp_agent = agent.Agent(x, y, direction,-1, selected_type)
 
                     tmp_agent.set_parameters(tmp_sim, new_parameters_estimation.level,
                         new_parameters_estimation.radius,new_parameters_estimation.angle)

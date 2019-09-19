@@ -638,22 +638,44 @@ class Agent:
             else:
                 return position.position(-1, -1)
 
+    # ####################################################################################################################
+    # def choose_target_l1(self,items,agents):
+    #     # 1. Initialising the support variables
+    #     max_index, max_distance = -1, -1
+    #
+    #     # 2. Searching for max distance item
+    #     for i in range(0, len(self.visible_items)):
+    #         if self.distance(self.visible_items[i]) > max_distance:
+    #             max_distance = self.distance(self.visible_items[i])
+    #             max_index = i
+    #
+    #     # 3. Returning the result
+    #     if max_index > -1:
+    #         return self.visible_items[max_index]
+    #     else:
+    #         return position.position(-1, -1)
     ####################################################################################################################
-    def choose_target_l1(self,items,agents):
+    def choose_target_l1(self, items, agents):
         # 1. Initialising the support variables
         max_index, max_distance = -1, -1
+        lost_indexes = []
 
         # 2. Searching for max distance item
-        for i in range(0, len(self.visible_items)):
-            if self.distance(self.visible_items[i]) > max_distance:
-                max_distance = self.distance(self.visible_items[i])
-                max_index = i
+        while True:
+            for i in range(0, len(self.visible_items)):
+                if self.distance(self.visible_items[i]) > max_distance and i not in lost_indexes:
+                    max_distance = self.distance(self.visible_items[i])
+                    max_index = i
 
-        # 3. Returning the result
-        if max_index > -1:
-            return self.visible_items[max_index]
-        else:
-            return position.position(-1, -1)
+            if max_index == -1:
+                return position.position(-1, -1)
+            if self.visible_items[max_index] < self.level:
+                return self.visible_items[max_index]
+            else:
+                lost_indexes.append(max_index)
+                max_index, max_distance = -1, -1
+
+        return position.position(-1, -1)
 
     ####################################################################################################################
     def set_target(self,items, agents):

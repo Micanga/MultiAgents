@@ -1,13 +1,14 @@
 from heapq import heappush, heappop # for priority queue
 import math
 
+
 class node:
 
     xPos = 0
     yPos = 0
 
     distance = 0
-    priority = 0# smaller: higher priority
+    priority = 0 # smaller: higher priority
 
     def __init__(self, xPos, yPos, distance, priority):
         self.xPos = xPos

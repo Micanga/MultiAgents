@@ -24,7 +24,7 @@ type_selection_mode = None
 iteration_max = None
 max_depth = None
 
-do_estimation = False
+do_estimation = True
 train_mode = None
 parameter_estimation_mode = None
 
@@ -48,7 +48,8 @@ if len(sys.argv) > 1:
 else:
     input_folder = ""
 
-input_folder = "inputs/test/"
+#input_folder = "inputs/test/"
+input_folder = "inputs/FO_O_AGA/"
 output_folder = log.create_output_folder()
 
 # ============= Read Configuration ============

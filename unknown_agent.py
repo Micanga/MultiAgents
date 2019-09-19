@@ -86,7 +86,6 @@ class UnknownAgent(Agent,object):
         return copy_agent
 
     ################################################################################################################
-
     def is_item_nearby(self, items):
 
         pos = self.position
@@ -99,18 +98,20 @@ class UnknownAgent(Agent,object):
 
         return -1
 
+    ################################################################################################################
     def set_type_parameters(self, sim):
             selected_type = self.agents_parameter_estimation.get_sampled_probability()
             if selected_type != 'w':
                 self.agent_type = selected_type
                 agents_estimated_values = self.agents_parameter_estimation.get_parameters_for_selected_type(
                     selected_type)
+                print'estimated parameters', agents_estimated_values.level, agents_estimated_values.radius,agents_estimated_values.angle
                 self.set_parameters(sim, agents_estimated_values.level,
                                    agents_estimated_values.radius,
                                    agents_estimated_values.angle)
 
-
-    def find_estimated_target(self,sim):
+    ################################################################################################################
+    def find_estimated_target(self, sim):
 
         destination = position.position(-1, -1)
         self.visible_agents_items(sim.items, sim.agents)

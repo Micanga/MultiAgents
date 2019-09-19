@@ -388,10 +388,10 @@ class UCT:
         m_reward = self.do_move(sim, action,enemy)
 
         a_reward = sim.update_all_A_agents(sim)
-        print 'simulate action'
-        print 'M action', action
-        sim.draw_map()
-        print 'simulate action'
+        # print 'simulate action'
+        # print 'M action', action
+        # sim.draw_map()
+        # print 'simulate action'
         c_reward = sim.do_collaboration()
 
         total_reward = float(m_reward + a_reward + c_reward) / totalItems

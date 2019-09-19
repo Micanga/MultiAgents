@@ -33,7 +33,7 @@ class TrainData:
 
         none_count, none_threshold = 0, 500
         x, y, direction = unknown_agent.position[0], unknown_agent.position[1], unknown_agent.direction
-        tmp_agent = agent.Agent(x, y, direction, self.type, -1)
+        tmp_agent = agent.Agent(x, y, direction, -1, self.type)
 
         tmp_agent.set_parameters(sim, sim.agents[0].level, sim.agents[0].radius, sim.agents[0].angle)
 
@@ -68,7 +68,7 @@ class TrainData:
 
             # 3. Creating the temporary agent
             x,y,direction = unknown_agent.position[0], unknown_agent.position[1], unknown_agent.direction
-            tmp_agent = agent.Agent(x,y,direction, self.type, -1)
+            tmp_agent = agent.Agent(x,y,direction, -1, self.type)
             tmp_agent.set_parameters(sim, tmp_level, tmp_radius, tmp_angle)
 
             # 4. Calculating route
@@ -105,7 +105,7 @@ class TrainData:
 
             # 3. Creating the temporary agent
             x,y,direction = unknown_agent.position[0], unknown_agent.position[1], unknown_agent.direction
-            tmp_agent = agent.Agent(x,y,direction, self.type, -1)
+            tmp_agent = agent.Agent(x,y,direction, -1, self.type)
             tmp_agent.set_parameters(sim, tmp_level, tmp_radius, tmp_angle)
             
             # 4. Defining route
@@ -139,7 +139,7 @@ class TrainData:
             (x, y) = hist['pos']
             # print hist
             old_state = hist['state'].copy()
-            tmp_agent = agent.Agent(x, y, hist['direction'], selected_type, -1)
+            tmp_agent = agent.Agent(x, y, hist['direction'], -1, selected_type)
 
             tmp_agent.set_parameters(old_state, level, radius, angle)
 
@@ -168,7 +168,7 @@ class TrainData:
         tmp_sim = unknown_agent.choose_target_state
         (x, y) = u_agent.get_position()
 
-        tmp_agent = agent.Agent(x, y, u_agent.direction, selected_type, -1)
+        tmp_agent = agent.Agent(x, y, u_agent.direction, -1, selected_type)
 
         tmp_agent.set_parameters(unknown_agent.choose_target_state, level, radius, angle)
 
@@ -242,7 +242,7 @@ class TrainData:
             # b. Simulating and Filtering the particle
             # i. creating the new particle
             x, y, direction = unknown_agent.position[0], unknown_agent.position[1], unknown_agent.direction
-            tmp_agent = agent.Agent(x, y, direction, selected_type, -1)
+            tmp_agent = agent.Agent(x, y, direction, -1, selected_type)
             tmp_agent.set_parameters(unknown_agent.choose_target_state, tmp_level, tmp_radius, tmp_angle)
 
             if self.check_history(unknown_agent,tmp_level,tmp_radius,tmp_angle,selected_type) > 0:
@@ -288,7 +288,7 @@ class TrainData:
 
                     x, y = cts_agent.position[0], cts_agent.position[1]
                     direction = cts_agent.direction
-                    tmp_agent = agent.Agent(x, y, direction, self.type, -1)
+                    tmp_agent = agent.Agent(x, y, direction, -1, self.type)
 
                     # b. Getting and setting the parameters data
 
@@ -311,10 +311,8 @@ class TrainData:
         cts_agent = None
         max_succeed_cts = None
         if not po:
+            cts_agent = copy(current_state.main_agent.visible_agents[unknown_agent.index])
 
-            for v_a in current_state.main_agent.visible_agents:
-                if v_a.index == unknown_agent.index:
-                    cts_agent = copy(v_a)
         else:
             memory_agents = current_state.main_agent.agent_memory
             for m_a in memory_agents:
@@ -339,7 +337,7 @@ class TrainData:
                 if current_state.items_left() != 0:
                     x, y = cts_agent.position[0], cts_agent.position[1]
                     direction = cts_agent.direction
-                    tmp_agent = agent.Agent(x, y, direction, self.type, -1)
+                    tmp_agent = agent.Agent(x, y, direction, -1, self.type)
 
                     # b. Getting and setting the parameters data
 
@@ -418,7 +416,7 @@ class TrainData:
             tmp_angle = angle_min + (1.0 * (angle_max - angle_min) / self.generated_data_number) * i
             tmp_level = level_min + (1.0 * (level_max - level_min) / self.generated_data_number) * i
             x, y = previous_agent.get_position()
-            tmpAgent = agent.Agent(x, y, previous_agent.direction, selected_type)
+            tmpAgent = agent.Agent(x, y, previous_agent.direction, -1, selected_type)
             tmpAgent.agent_type = selected_type
             tmpAgent.memory = self.update_internal_state(tmp_radius, tmp_angle, tmp_level, selected_type, unknown_agent,
                                                          po)

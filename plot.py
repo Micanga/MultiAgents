@@ -11,21 +11,21 @@ results = list()
 informations = list()
 
 # 1. Defining the Graph Generation Parameters
-ROOT_DIRS = ['categorised/POMCP/']  # ['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
-# ROOT_DIRS = ['outputs']  # ['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
+#ROOT_DIRS = ['categorised/POMCP/']  # ['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
+ROOT_DIRS = ['outputs']  # ['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
 # ROOT_DIRS = ['nips_outputs']
 # ROOT_DIRS = ['multiple_runs']
 
 # NAMES = ['POMCP']  # ['POMCP','POMCP','POMCP']#,'POMCP_FO']
-NAMES = ['POMCP']  # ['POMCP','POMCP','POMCP']#,'POMCP_FO']
-PLOT_TYPE = 'POMCP'
+NAMES = ['MDP']  # ['POMCP','POMCP','POMCP']#,'POMCP_FO']
+PLOT_TYPE = 'MDP'
 SIZE = ['10']  # ,'15','20','25']
-NAGENTS = ['5']
+NAGENTS = ['1']
 NITEMS = ['10']  # ,'15','20','25']
 RADIUS = ['5']
 experiment_type_set = ['ABU', 'AGA', 'MIN']
 type_estimation_mode_set = ['BPTE']
-PLOTS_DIR = "./p_results"
+PLOTS_DIR = "./t_results"
 
 
 ############################################################################################
@@ -393,23 +393,23 @@ for root in ROOT_DIRS:
                             file.close()
 
 # 3. Plotting the Information
-print '***** plotting parameters results *****'
-# for info in informations:
-#     print info.name, 'Level'
-#     plot_summarised(info.aga_levels, info.aga_levels_std_dev, info.aga_levels_ci,
-#                     info.abu_levels, info.abu_levels_std_dev, info.abu_levels_ci,
-#                     info.OGE_levels, info.OGE_levels_std_dev, info.OGE_levels_ci,
-#                     info.threshold, info.name + '_Level', False, True)
-#     print info.name, 'Radius'
-#     plot_summarised(info.aga_radius, info.aga_radius_std_dev, info.aga_radius_ci,
-#                     info.abu_radius, info.abu_radius_std_dev, info.abu_radius_ci,
-#                     info.OGE_radius, info.OGE_radius_std_dev, info.OGE_radius_ci,
-#                     info.threshold, info.name + '_Radius', False, True)
-#     print info.name, 'Angle'
-#     plot_summarised(info.aga_angles, info.aga_angles_std_dev, info.aga_angles_ci,
-#                     info.abu_angles, info.abu_angles_std_dev, info.abu_angles_ci,
-#                     info.OGE_angles, info.OGE_angles_std_dev, info.OGE_angles_ci,
-#                      info.threshold, info.name + '_Angle', False, True)
+# print '***** plotting parameters results *****'
+for info in informations:
+    print info.name, 'Level'
+    plot_summarised(info.aga_levels, info.aga_levels_std_dev, info.aga_levels_ci,
+                    info.abu_levels, info.abu_levels_std_dev, info.abu_levels_ci,
+                    info.OGE_levels, info.OGE_levels_std_dev, info.OGE_levels_ci,
+                    info.threshold, info.name + '_Level', False, True)
+    print info.name, 'Radius'
+    plot_summarised(info.aga_radius, info.aga_radius_std_dev, info.aga_radius_ci,
+                    info.abu_radius, info.abu_radius_std_dev, info.abu_radius_ci,
+                    info.OGE_radius, info.OGE_radius_std_dev, info.OGE_radius_ci,
+                    info.threshold, info.name + '_Radius', False, True)
+    print info.name, 'Angle'
+    plot_summarised(info.aga_angles, info.aga_angles_std_dev, info.aga_angles_ci,
+                    info.abu_angles, info.abu_angles_std_dev, info.abu_angles_ci,
+                    info.OGE_angles, info.OGE_angles_std_dev, info.OGE_angles_ci,
+                     info.threshold, info.name + '_Angle', False, True)
 
 print '***** plotting general results *****'
 for info in informations:
