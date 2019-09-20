@@ -10,20 +10,23 @@ def get_input_folder():
     # return "po_inputs/PO_O_MIN/"
 
 
-def create_output_folder(run_type = 'FO'):
+def create_output_folder(run_type='FO',main_output_dir=""):
     # 1. Getting the experiment time
+    if main_output_dir == "":
+        if run_type == 'PO':
+            main_output_dir = "po_outputs/"
+        else:
+            main_output_dir = "outputs/"
+
     now = datetime.datetime.now()
 
     # 2. Defining the sub directory to save the log
     sub_dir = str(now.day) + "_"+ str(now.hour)+ "_" + str(now.minute)\
-    + "-" + str(randint(0,now.day+now.hour+now.minute))
+    + "-" + str(randint(0, now.day + now.hour + now.minute))
     
     # 3. Verifying the current folder
-    if run_type == 'PO':
-        current_folder = "po_outputs/" + sub_dir + '/'
-    else:
-        current_folder = "outputs/" + sub_dir + '/'
-    #    current_folder = "test_outputs/" + sub_dir + '/'
+
+    current_folder = main_output_dir + sub_dir + '/'
 
     if not os.path.exists(current_folder):
         os.mkdir(current_folder, 0755)

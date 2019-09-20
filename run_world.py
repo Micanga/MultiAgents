@@ -48,9 +48,16 @@ if len(sys.argv) > 1:
 else:
     input_folder = ""
 
+if len(sys.argv) > 2:
+    main_output_folder = sys.argv[2]
+else:
+    main_output_folder = ""
+
+
 #input_folder = "inputs/test/"
-input_folder = "inputs/FO_O_AGA/"
-output_folder = log.create_output_folder()
+#input_folder = "inputs/FO_O_AGA/"
+output_folder = log.create_output_folder(main_output_dir = main_output_folder)
+print 'output_folder', output_folder
 
 # ============= Read Configuration ============
 # 1. Reading the sim configuration file
@@ -238,6 +245,9 @@ while round <= round_count:
         if main_sim.main_agent is not None:
             log_file.write('3) Move Main Agent ')
             r,enemy_action_prob,search_tree = main_sim.main_agent.move(reuse_tree, main_sim, search_tree, time_step)
+            log_file.write('Action for Main Agent: '+ main_sim.main_agent.next_action)
+            print 'Action for Main Agent: ' , main_sim.main_agent.next_action
+
             log_file.write(' - OK\n')
 
         # 4. Move Adversary
@@ -266,7 +276,6 @@ while round <= round_count:
         if do_estimation:
             main_sim.main_agent.estimation(time_step, main_sim,enemy_action_prob,types)
             main_sim.main_agent.update_unknown_agents_parameters(main_sim)
-
 
         log_file.write(' - OK\n')
 
