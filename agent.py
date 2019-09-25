@@ -6,7 +6,7 @@ from copy import copy
 
 
 class Agent:
-    def __init__(self, x, y, direction, index, agent_type='l1' ):
+    def __init__(self, x, y, direction, index, agent_type = 'l1' ):
         self.position = (int(x), int(y))
         self.index = index
         self.level = None

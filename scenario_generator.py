@@ -116,7 +116,7 @@ def main():
 		agentx,agenty,grid = generateRandomNumber(grid,grid_size)
 		agentDirection = choice(possible_directions)
 		agentType = selectType()
-		agentLevel = round(random.uniform(0.9,1), 3)
+		agentLevel = round(random.uniform(0.5,1), 3)
 		agentRadius = round(random.uniform(0.5,1), 3)
 		agentAngle = round(random.uniform(0.5,1), 3)
 		AGENTS.append(['agent'+ str(agent_idx),str(agent_idx),agentx,agenty,agentDirection,agentType,agentLevel,agentRadius,agentAngle])

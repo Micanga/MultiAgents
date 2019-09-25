@@ -23,15 +23,15 @@ while test_number < number_of_tests:
 
     # b. openning the target dir
     print '- Starting the process'
-    experiment_dir = 'inputs/test/'
+    experiment_dir = 'inputs/obstacle/'
     main_output = 'test_output/'
-    # experiment_run = 'python run_world.py '+ experiment_dir + ' ' + main_output + ' config_abu.csv'
-    # os.system(experiment_run)
-    # time.sleep(5)
-    #
-    # experiment_run = 'python run_world.py ' + experiment_dir + ' ' + main_output + ' config_aga.csv'
-    # os.system(experiment_run)
-    # time.sleep(5)
+    experiment_run = 'python run_world.py '+ experiment_dir + ' ' + main_output + ' config_abu.csv'
+    os.system(experiment_run)
+    time.sleep(5)
+
+    experiment_run = 'python run_world.py ' + experiment_dir + ' ' + main_output + ' config_aga.csv'
+    os.system(experiment_run)
+    time.sleep(5)
 
     experiment_run = 'python run_world.py ' + experiment_dir + ' ' + main_output + ' config_oge.csv'
     os.system(experiment_run)

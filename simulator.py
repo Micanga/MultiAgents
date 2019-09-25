@@ -78,7 +78,8 @@ class Simulator:
                     elif 'agent' in key:
 
                         #import ipdb; ipdb.set_trace()
-                        #  x, y, direction, agent_type, index
+
+                        # x, y, direction, index, agent_type
                         agnt = agent.Agent(val[1], val[2], val[3], int(val[0]), val[4])
                         #level, radius, angle
                         agnt.set_parameters(self, val[5], val[6], val[7])

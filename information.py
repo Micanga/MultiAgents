@@ -35,8 +35,8 @@ class Information:
 		self.OGE_std_len_hist = 0
 
 		self.AGA_ci_len_hist = 0
-		self.AGA_ci_len_hist = 0
-		self.AGA_ci_len_hist = 0
+		self.ABU_ci_len_hist = 0
+		self.OGE_ci_len_hist = 0
 
 		self.TRUE_timeSteps = list()
 		self.AGA_timeSteps = list()
@@ -100,7 +100,7 @@ class Information:
 		max_len = max(self.AGA_max_len_hist,self.ABU_max_len_hist,self.OGE_max_len_hist,self.TRUE_max_len_hist)
 
 		print 'max_len', max_len
-		self.AGA_mean_len_hist, self.AGA_std_len_hist, self.abu_levels_ci = self.calc_mean_len_hist(self.AGA_errors,'_AGA')
+		self.AGA_mean_len_hist, self.AGA_std_len_hist, self.AGA_ci_len_hist = self.calc_mean_len_hist(self.AGA_errors,'_AGA')
 		self.AGA_errors = self.normalise_arrays(max_len,self.AGA_errors)
 		self.AGA_typeProbHistory = self.normalise_arrays(max_len,self.AGA_typeProbHistory)
 		print '*** AGA data = ',len(self.AGA_errors),'/AGA avg len = ', self.AGA_mean_len_hist,' ***'

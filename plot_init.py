@@ -14,7 +14,7 @@ def read_files(root_dir,size,nagents, nitems,type_estimation_mode,radius=None):
     min_steps = 1000
     for root, dirs, files in os.walk(root_dir):
         if 'pickleResults.txt' in files:
-            # print root
+            print root
             with open(os.path.join(root,'pickleResults.txt'),"r") as pickleFile:
 
                 progress = 1 * float(count/1)
@@ -48,6 +48,8 @@ def read_files(root_dir,size,nagents, nitems,type_estimation_mode,radius=None):
 
                         estimationDictionary['computationalTime'] = int(endTime) - int(beginTime)
                         estimationDictionary['parameter_estimation_mode'] = systemDetails['parameter_estimation_mode']
+
+                        print estimationDictionary['parameter_estimation_mode']
 
 
                         agentDictionary = data[i]
@@ -83,7 +85,7 @@ def read_files(root_dir,size,nagents, nitems,type_estimation_mode,radius=None):
                                             # print estimationDictionary['timeSteps'] , ' ', systemDetails['parameter_estimation_mode']
                                             # print
 
-                                            if systemDetails['parameter_estimation_mode'] == 'MIN':
+                                            if systemDetails['parameter_estimation_mode'] == 'OGE':
                                                 x['root'] = root
                                                 x['step'] = estimationDictionary['timeSteps']
                                                 min_time_steps.append(x)
@@ -160,7 +162,7 @@ def extract_information(results,name,radius=None):
             # print 'ABU', result['path'] , error
             info.ABU_errors.append(error)
 
-        if result['parameter_estimation_mode'] == 'MIN':
+        if result['parameter_estimation_mode'] == 'OGE':
             if radius != None:
                 # print radius, result['mainAgentRadius'], radius == result['mainAgentRadius']
                 if radius == result['mainAgentRadius']:

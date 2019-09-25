@@ -12,16 +12,16 @@ informations = list()
 
 # 1. Defining the Graph Generation Parameters
 #ROOT_DIRS = ['categorised/POMCP/']  # ['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
-ROOT_DIRS = ['outputs']  # ['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
+ROOT_DIRS = ['test_output']  # ['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
 # ROOT_DIRS = ['nips_outputs']
 # ROOT_DIRS = ['multiple_runs']
 
 # NAMES = ['POMCP']  # ['POMCP','POMCP','POMCP']#,'POMCP_FO']
 NAMES = ['MDP']  # ['POMCP','POMCP','POMCP']#,'POMCP_FO']
 PLOT_TYPE = 'MDP'
-SIZE = ['10']  # ,'15','20','25']
+SIZE = ['5']  # ,'15','20','25']
 NAGENTS = ['1']
-NITEMS = ['10']  # ,'15','20','25']
+NITEMS = ['1']  # ,'15','20','25']
 RADIUS = ['5']
 experiment_type_set = ['ABU', 'AGA', 'MIN']
 type_estimation_mode_set = ['BPTE']
@@ -241,6 +241,7 @@ def plot_run_length_bar_true(aga_m,  abu_m,  OGE_m,  plotname):
     # 5. Saving the result
     plt.savefig(PLOTS_DIR + "/plots/" + plotname + '.pdf', bbox_inches='tight', pad_inches=0)
     plt.close(fig)
+
 
 def plot_summarised(aga, aga_std, aga_ci,
                     abu, abu_std, abu_ci, OGE, OGE_std, OGE_ci,

@@ -46,7 +46,7 @@ while test_number < number_of_tests:
                         print '- Starting the process'
                         sub_dir = 'FO_O_' + experiment
                         experiment_dir = "inputs/" + sub_dir +'/'
-                        filename = 'sim.csv'
+                        filename = 'level_output/'
                         experiment_run = 'python run_world.py '+ experiment_dir + ' ' + filename
                         print experiment_run
 
