@@ -4,6 +4,7 @@ import position
 
 
 class UnknownAgent(Agent,object):
+    # def __init__(self, x, y, direction, index, agent_type='l1'):
     def __init__(self, x, y, direction, index):
         super(UnknownAgent, self).__init__(x, y, direction, index)
 

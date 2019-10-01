@@ -16,7 +16,7 @@ config_path = None
 #         os.system('python run_world.py ' + config_path)
 #                       # + str(files[2][0])
 
-number_of_tests = 20
+number_of_tests = 40
 
 test_number = 0
 while test_number < number_of_tests:
@@ -25,13 +25,13 @@ while test_number < number_of_tests:
     print '- Starting the process'
     experiment_dir = 'inputs/test/'
     main_output = 'test_output/'
-    # experiment_run = 'python run_world.py '+ experiment_dir + ' ' + main_output + ' config_abu.csv'
-    # os.system(experiment_run)
-    # time.sleep(5)
-    #
-    # experiment_run = 'python run_world.py ' + experiment_dir + ' ' + main_output + ' config_aga.csv'
-    # os.system(experiment_run)
-    # time.sleep(5)
+    experiment_run = 'python run_world.py '+ experiment_dir + ' ' + main_output + ' config_abu.csv'
+    os.system(experiment_run)
+    time.sleep(5)
+
+    experiment_run = 'python run_world.py ' + experiment_dir + ' ' + main_output + ' config_aga.csv'
+    os.system(experiment_run)
+    time.sleep(5)
 
     experiment_run = 'python run_world.py ' + experiment_dir + ' ' + main_output + ' config_oge.csv'
     os.system(experiment_run)

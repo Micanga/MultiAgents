@@ -1125,9 +1125,8 @@ class ParameterEstimation:
                                                       (1-self.alpha) * self.l2_estimation.get_last_type_probability()
 
         self.normalize_type_probabilities()
-        print '>>> %d) %.4lf %.4lf %.4lf %.4lf' %(unknown_agent.index,self.l1_estimation.type_probability,self.l2_estimation.type_probability, \
-
-        self.f1_estimation.type_probability,self.f2_estimation.type_probability)
+        # print '>>> %d) %.4lf %.4lf ' %(unknown_agent.index,self.l1_estimation.type_probability,self.l2_estimation.type_probability)
+        #                                        # ,self.f1_estimation.type_probability,self.f2_estimation.type_probability)
 
     ####################################################################################################################
     def unseen_parameter_estimation_not_update(self,unknown_agent,types):

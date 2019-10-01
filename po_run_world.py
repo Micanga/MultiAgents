@@ -11,8 +11,6 @@ import random
 import sys
 import log
 
-
-
 # ============= Set Configurations ============
 # System Configuration
 sys.setrecursionlimit(2000)
@@ -49,13 +47,30 @@ apply_adversary = False
 if len(sys.argv) > 1:
     input_folder = sys.argv[1]
 else:
-    input_folder = log.get_input_folder()
-output_folder = log.create_output_folder('PO')
+    input_folder = ""
+
+
+input_folder = "inputs/test/"
+#input_folder = "inputs/FO_O_AGA/"
+
+if len(sys.argv) > 2:
+    main_output_folder = sys.argv[2]
+else:
+    main_output_folder = ""
+
+if len(sys.argv) > 3:
+    config_file = input_folder+ sys.argv[3]
+else:
+    config_file = input_folder+'poconfig.csv'
+
+
+output_folder = log.create_output_folder(main_output_dir = main_output_folder)
+print 'output_folder', output_folder
 
 # ============= Read Configuration ============
 # 1. Reading the sim configuration file
 info = defaultdict(list)
-with open(input_folder+'poconfig.csv') as info_read:
+with open(config_file) as info_read:
     for line in info_read:
         data = line.strip().split(',')
         key, val = data[0], data[1:]

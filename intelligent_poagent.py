@@ -84,8 +84,7 @@ class POAgent(Agent, object):
         for unknown_a in self.agent_memory:
             param_estim = parameter_estimation.ParameterEstimation(generated_data_number, PF_add_threshold, train_mode,
                                                                    apply_adversary,
-                                                                   mutation_rate,
-                                                                   unknown_a,sim)
+                                                                   mutation_rate)
             param_estim.estimation_initialisation()
             param_estim.estimation_configuration(type_selection_mode, parameter_estimation_mode, polynomial_degree,type_estimation_mode)
             
@@ -99,7 +98,7 @@ class POAgent(Agent, object):
         if sim.agents is not None:
             for ag in sim.agents:
                 x,y = ag.get_position()
-                a = unknown_agent.Agent(x, y, ag.direction,ag.index)
+                a = unknown_agent.UnknownAgent(x, y, ag.direction,ag.index)
                 if self.see_object((x,y)):
                     a.agent_type = ag.agent_type
                     a.level = ag.level
@@ -115,7 +114,7 @@ class POAgent(Agent, object):
 
         if sim.enemy_agent is not None:
             x, y = sim.enemy_agent.get_position()
-            a = unknown_agent.Agent(x, y, sim.enemy_agent.direction)
+            a = unknown_agent.UnknownAgent(x, y, sim.enemy_agent.direction)
             if self.see_object((x,y)):
                 self.visible_agents.append(a)
             else:
