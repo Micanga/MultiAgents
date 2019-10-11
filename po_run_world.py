@@ -50,7 +50,7 @@ else:
     input_folder = ""
 
 
-input_folder = "inputs/test/"
+#input_folder = "inputs/test/"
 #input_folder = "inputs/FO_O_AGA/"
 
 if len(sys.argv) > 2:

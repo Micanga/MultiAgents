@@ -10,7 +10,7 @@ def read_files(root_dir,size,nagents, nitems,type_estimation_mode,radius=None):
     results = list()
     count = 0
     min_time_steps = []
-    max_steps =0
+    max_steps = 0
     min_steps = 1000
     for root, dirs, files in os.walk(root_dir):
         if 'pickleResults.txt' in files:
@@ -30,10 +30,9 @@ def read_files(root_dir,size,nagents, nitems,type_estimation_mode,radius=None):
                 #     print root
                 if 1 == 1:
                     data = dataList[1]
-                    for i in range(len(data)):
+                    for i in range(len(data)):  # Get data for each agent
                         estimationDictionary = {}
-                        simWidth = systemDetails['simWidth']
-                        simHeight = systemDetails['simHeight']
+
                         agentsCounts = systemDetails['agentsCounts']
                         itemsCounts = systemDetails['itemsCounts']
 
@@ -50,7 +49,6 @@ def read_files(root_dir,size,nagents, nitems,type_estimation_mode,radius=None):
                         estimationDictionary['parameter_estimation_mode'] = systemDetails['parameter_estimation_mode']
 
                         print estimationDictionary['parameter_estimation_mode']
-
 
                         agentDictionary = data[i]
                         trueType = agentDictionary['trueType']
@@ -75,17 +73,17 @@ def read_files(root_dir,size,nagents, nitems,type_estimation_mode,radius=None):
                             estimationDictionary['trueParameters'] = trueParameters
                             estimationDictionary['historyParameters'] = historyParameters
                             estimationDictionary['path'] = root
-                            if size == str(simWidth):
+                            if size == str(systemDetails['simWidth']):
 
                                 if nagents == str(agentsCounts):
                                     if nitems == str(itemsCounts):
 
-                                        if systemDetails['type_estimation_mode']==type_estimation_mode:
+                                        if systemDetails['type_estimation_mode'] == type_estimation_mode:
 
                                             # print estimationDictionary['timeSteps'] , ' ', systemDetails['parameter_estimation_mode']
                                             # print
 
-                                            if systemDetails['parameter_estimation_mode'] == 'OGE':
+                                            if systemDetails['parameter_estimation_mode'] == 'MIN':
                                                 x['root'] = root
                                                 x['step'] = estimationDictionary['timeSteps']
                                                 min_time_steps.append(x)
@@ -162,7 +160,7 @@ def extract_information(results,name,radius=None):
             # print 'ABU', result['path'] , error
             info.ABU_errors.append(error)
 
-        if result['parameter_estimation_mode'] == 'OGE':
+        if result['parameter_estimation_mode'] == 'MIN':
             if radius != None:
                 # print radius, result['mainAgentRadius'], radius == result['mainAgentRadius']
                 if radius == result['mainAgentRadius']:
@@ -185,6 +183,7 @@ def extract_information(results,name,radius=None):
                 info.OGE_estimationHist.append(result['historyParameters'])
                 info.OGE_trueParameter.append(result['trueParameters'])
                 error = calculate_error(result['trueParameters'], result['historyParameters'])
+
                 # print 'OGE', result['path'], error
                 info.OGE_errors.append(error)
 
@@ -193,6 +192,7 @@ def extract_information(results,name,radius=None):
     print "number of ABU: ", len(info.ABU_timeSteps)
     print "number of OGE: ", len(info.OGE_timeSteps)
     return info
+
 
 ########################################################################################################################
 def calculate_error(true_parameter, estimated_parameter_history):

@@ -55,8 +55,10 @@ while test_number < number_of_tests:
                                 print '- Starting the process'
                                 sub_dir = 'PO_O_' + experiment
                                 experiment_dir = "po_inputs/" + sub_dir + '/'
-                                filename = 'posim.csv'
-                                experiment_run = 'python po_run_world.py '+ experiment_dir
+                                output_folder = 'po_outputs/'
+                                experiment_run = 'python po_run_world.py '+ experiment_dir + ' '+ output_folder
+
+
                                 print experiment_run
 
                                 os.system(experiment_run)

@@ -100,20 +100,20 @@ class Information:
 		max_len = max(self.AGA_max_len_hist,self.ABU_max_len_hist,self.OGE_max_len_hist,self.TRUE_max_len_hist)
 
 		print 'max_len', max_len
-		self.AGA_mean_len_hist, self.AGA_std_len_hist, self.AGA_ci_len_hist = self.calc_mean_len_hist(self.AGA_errors,'_AGA')
+		#self.AGA_mean_len_hist, self.AGA_std_len_hist, self.AGA_ci_len_hist = self.calc_mean_len_hist(self.AGA_errors,'_AGA')
 		self.AGA_errors = self.normalise_arrays(max_len,self.AGA_errors)
 		self.AGA_typeProbHistory = self.normalise_arrays(max_len,self.AGA_typeProbHistory)
-		print '*** AGA data = ',len(self.AGA_errors),'/AGA avg len = ', self.AGA_mean_len_hist,' ***'
+		#print '*** AGA data = ',len(self.AGA_errors),'/AGA avg len = ', self.AGA_mean_len_hist,' ***'
 
-		self.ABU_mean_len_hist, self.ABU_std_len_hist, self.ABU_ci_len_hist = self.calc_mean_len_hist(self.ABU_errors,'ABU')
+		#self.ABU_mean_len_hist, self.ABU_std_len_hist, self.ABU_ci_len_hist = self.calc_mean_len_hist(self.ABU_errors,'ABU')
 		self.ABU_errors = self.normalise_arrays(max_len,self.ABU_errors)
 		self.ABU_typeProbHistory = self.normalise_arrays(max_len,self.ABU_typeProbHistory)
-		print '*** ABU data = ',len(self.ABU_errors),'/ABU avg len = ', self.ABU_mean_len_hist, " ***"
+		#print '*** ABU data = ',len(self.ABU_errors),'/ABU avg len = ', self.ABU_mean_len_hist, " ***"
 
-		self.OGE_mean_len_hist, self.OGE_std_len_hist, self.OGE_ci_len_hist = self.calc_mean_len_hist(self.OGE_errors,'OGE')
+		#self.OGE_mean_len_hist, self.OGE_std_len_hist, self.OGE_ci_len_hist = self.calc_mean_len_hist(self.OGE_errors,'OGE')
 		self.OGE_errors = self.normalise_arrays(max_len,self.OGE_errors)
 		self.OGE_typeProbHistory  = self.normalise_arrays(max_len,self.OGE_typeProbHistory)
-		print '*** OGE data  = ',len(self.OGE_errors),'/OGE avg len  = ', self.OGE_mean_len_hist,' ***'
+		#print '*** OGE data  = ',len(self.OGE_errors),'/OGE avg len  = ', self.OGE_mean_len_hist,' ***'
 
 	def calc_mean_len_hist(self,errors_list,te):
 		lens = []

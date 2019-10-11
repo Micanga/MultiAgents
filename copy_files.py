@@ -4,11 +4,11 @@ import shutil
 import os
 
 import pickle
-# root_dir = "m_tmp_output"
-# files_type = "UCT"
-
-root_dir = "p_tmp_output"
-files_type = "POMCP"
+root_dir = "outputs"
+files_type = "UCT"
+#
+# root_dir = "p_tmp_output"
+# files_type = "POMCP"
 
 def copy(src, dest):
     try:
@@ -48,7 +48,7 @@ for root, dirs, files in os.walk(root_dir):
                         copy(root, dest)
                 else:
                     if systemDetails['round_count']==1:
-                        dest = 'categorised/UCT/m_s' + simWidth + '_a' + agentsCounts + "/" + str(count)
+                        dest = 'tc/UCT/m_s' + simWidth + '_a' + agentsCounts + "/" + str(count)
                         copy(root,dest)
                     else:
                         round = str(systemDetails['round_count'])

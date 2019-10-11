@@ -90,7 +90,6 @@ def print_result(main_sim,  time_steps, begin_time, end_time,mcts_mode, paramete
          systemDetails['mainAgentRadius']=  main_sim.main_agent.vision.radius
          systemDetails['mainAgentAngle']=  main_sim.main_agent.vision.angle
 
-
     systemDetails['simWidth'] = main_sim.dim_w
     systemDetails['simHeight'] = main_sim.dim_h
     systemDetails['agentsCounts'] = len(main_sim.agents)

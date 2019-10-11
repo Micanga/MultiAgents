@@ -16,7 +16,7 @@ config_path = None
 #         os.system('python run_world.py ' + config_path)
 #                       # + str(files[2][0])
 
-number_of_tests = 40
+number_of_tests = 4
 
 test_number = 0
 while test_number < number_of_tests:

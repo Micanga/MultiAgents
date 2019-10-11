@@ -11,22 +11,21 @@ results = list()
 informations = list()
 
 # 1. Defining the Graph Generation Parameters
-#ROOT_DIRS = ['categorised/UCT/m_s10_a3']  # ['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
-ROOT_DIRS = ['tc/UCT/m_s10_a3']
-#ROOT_DIRS = ['test_output']  # ['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
+ROOT_DIRS = ['categorised/UCT/m_s20_a5']  # ['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
+#ROOT_DIRS = ['outputs']  # ['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
 # ROOT_DIRS = ['nips_outputs']
 # ROOT_DIRS = ['multiple_runs']
 
 # NAMES = ['POMCP']  # ['POMCP','POMCP','POMCP']#,'POMCP_FO']
 NAMES = ['MDP']  # ['POMCP','POMCP','POMCP']#,'POMCP_FO']
 PLOT_TYPE = 'MDP'
-SIZE = ['10']  # ,'15','20','25']
-NAGENTS = ['3']
-NITEMS = ['10']  # ,'15','20','25']
+SIZE = ['20']  # ,'15','20','25']
+NAGENTS = ['5']
+NITEMS = ['20']  # ,'15','20','25']
 RADIUS = ['5']
 experiment_type_set = ['ABU', 'AGA', 'MIN']
 type_estimation_mode_set = ['BPTE']
-PLOTS_DIR = "./t_results"
+PLOTS_DIR = "./m_results"
 
 
 ############################################################################################
@@ -179,32 +178,25 @@ def plot_run_length_bar(aga_m, aga_s, abu_m, abu_s, OGE_m, OGE_s, plotname):
     plt.close(fig)
 
 
-def plot_run_length_bar_1(aga_l,  abu_l,  OGE_l,  plotname):
+def plot_run_length_bar_1(aga_m,  abu_m,  OGE_m,  plotname):
     # 1. Setting the figure
     global fig_count
     fig = plt.figure(fig_count, figsize=(6.4, 2.4))
     fig_count += 1
     bar_w = 0.5
 
-    aga_m = np.mean(np.array(aga_l))
-    aga_ci = info.calcConfInt(aga_l)
-    abu_m = np.mean(np.array(abu_l))
-    abu_ci = info.calcConfInt(abu_l)
-    OGE_m = np.mean(np.array(OGE_l))
-    OGE_ci = info.calcConfInt(OGE_l)
-
     # 2. Plotting the number of iteration for each run to load items
     # a. defining the main plot
     axis = plt.gca()
 
     # AGA
-    aga = axis.bar(1, height=aga_ci - aga_m, width=bar_w, color='#3F5D7D')
+    aga = axis.bar(1, height=aga_m, width=bar_w, color='#3F5D7D')
 
     # ABU
-    abu = axis.bar(2, height=abu_ci - abu_m, width=bar_w,  color='#37AA9C')
+    abu = axis.bar(2, height=abu_m, width=bar_w,  color='#37AA9C')
 
     # OGE
-    OGE = axis.bar(3, height=OGE_ci - OGE_m , width=bar_w,  color='#F66095')
+    OGE = axis.bar(3, height=OGE_m , width=bar_w,  color='#F66095')
 
 
 
@@ -443,27 +435,6 @@ for info in informations:
     general_OGE_ci = np.array([info.OGE_levels_ci[i] + info.OGE_radius_ci[i] \
                               + info.OGE_angles_ci[i] for i in range(info.threshold)]) / 3
 
-    # general_aga = np.array([info.aga_radius[i] \
-    #                         + info.aga_angles[i] for i in range(info.threshold)]) / 2
-    # general_aga_std_dev = np.array([ info.aga_radius_std_dev[i] \
-    #                                 + info.aga_angles_std_dev[i] for i in range(info.threshold)]) / 2
-    # general_aga_ci = np.array([ info.aga_radius_ci[i] \
-    #                            + info.aga_angles_ci[i] for i in range(info.threshold)]) / 2
-    #
-    # general_abu = np.array([ info.abu_radius[i] \
-    #                         + info.abu_angles[i] for i in range(info.threshold)]) / 2
-    # general_abu_std_dev = np.array([ info.abu_radius_std_dev[i] \
-    #                                 + info.abu_angles_std_dev[i] for i in range(info.threshold)]) / 2
-    # general_abu_ci = np.array([ info.abu_radius_ci[i] \
-    #                            + info.abu_angles_ci[i] for i in range(info.threshold)]) / 2
-    #
-    # general_OGE = np.array([ info.OGE_radius[i] \
-    #                         + info.OGE_angles[i] for i in range(info.threshold)]) / 2
-    # general_OGE_std_dev = np.array([ info.OGE_radius_std_dev[i] \
-    #                                 + info.OGE_angles_std_dev[i] for i in range(info.threshold)]) / 2
-    # general_OGE_ci = np.array([ info.OGE_radius_ci[i] \
-    #                            + info.OGE_angles_ci[i] for i in range(info.threshold)]) / 2
-
     plot_summarised(general_aga, general_aga_std_dev, general_aga_ci,
                     general_abu, general_abu_std_dev, general_abu_ci,
                     general_OGE, general_OGE_std_dev, general_OGE_ci,
@@ -491,14 +462,14 @@ for info in informations:
     #                     info.AGA_mean_len_hist, info.AGA_ci_len_hist,
     #                     info.ABU_mean_len_hist, info.ABU_ci_len_hist,
     #                     info.OGE_mean_len_hist, info.OGE_ci_len_hist, info.name+ '_Performance')
-    # plot_run_length_bar(info.AGA_mean_len_hist, info.AGA_ci_len_hist,
-    #                     info.ABU_mean_len_hist, info.ABU_ci_len_hist,
-    #                     info.OGE_mean_len_hist, info.OGE_ci_len_hist, info.name + '_Performance')
+    plot_run_length_bar(info.AGA_mean_len_hist, info.AGA_ci_len_hist,
+                        info.ABU_mean_len_hist, info.ABU_ci_len_hist,
+                        info.OGE_mean_len_hist, info.OGE_ci_len_hist, info.name + '_Performance')
 
-    plot_run_length_bar_1(
-                          info.AGA_timeSteps,
-                          info.ABU_timeSteps,
-                          info.OGE_timeSteps, info.name + '_Performance')
+    # plot_run_length_bar_1(
+    #                       info.AGA_timeSteps,
+    #                       info.ABU_timeSteps,
+    #                       info.OGE_timeSteps, info.name + '_Performance')
     # plot_run_length_bar_true(info.TRUE_timeSteps,
     #                     info.AGA_timeSteps,
     #                     info.ABU_timeSteps,

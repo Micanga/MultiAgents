@@ -49,8 +49,8 @@ else:
     input_folder = ""
 
 
-input_folder = "inputs/test/"
-#input_folder = "inputs/FO_O_AGA/"
+#input_folder = "inputs/test/"
+input_folder = "inputs/FO_O_AGA/"
 
 if len(sys.argv) > 2:
     main_output_folder = sys.argv[2]
@@ -230,7 +230,7 @@ while round <= round_count:
         sys.stdout.write("Experiment progress: %d%% | step: %d   \r" % (progress,time_step) )
         sys.stdout.flush()
 
-        log_file.write('***** Iteration #'+str(time_step)+' *****\n')
+        log_file.write('***** Iteration #'+ str(time_step)+' *****\n')
 
         # 1. Updating Unknown Agents
         if main_sim.main_agent is not None:
