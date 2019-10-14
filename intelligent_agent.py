@@ -41,14 +41,8 @@ class Agent:
 
         param_estim = None
 
-        if do_estimation:
-            param_estim = parameter_estimation.ParameterEstimation(generated_data_number, PF_add_threshold, train_mode,
-                                                                   apply_adversary, mutation_rate)
+        # if do_estimation:
 
-            param_estim.estimation_initialisation()
-
-            param_estim.estimation_configuration(type_selection_mode, parameter_estimation_mode, polynomial_degree,
-                                                 type_estimation_mode)
         for agent in sim.agents:
             x, y = agent.get_position()
             u_a = unknown_agent.UnknownAgent(x, y, agent.direction, agent.index)
@@ -57,6 +51,14 @@ class Agent:
                 u_a.set_parameters(sim, agent.level, agent.radius, agent.angle)
 
             else:
+                param_estim = parameter_estimation.ParameterEstimation(generated_data_number, PF_add_threshold,
+                                                                       train_mode,
+                                                                       apply_adversary, mutation_rate)
+
+                param_estim.estimation_initialisation()
+
+                param_estim.estimation_configuration(type_selection_mode, parameter_estimation_mode, polynomial_degree,
+                                                     type_estimation_mode)
                 if parameter_estimation_mode == 'MIN':
                     param_estim.l1_estimation.train_data.initialise_particle_data_set(u_a, sim)
                     param_estim.l2_estimation.train_data.initialise_particle_data_set(u_a, sim)

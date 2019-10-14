@@ -12,7 +12,7 @@ number_of_tests = 3
 
 
 square_grid_size = ['10']
-number_of_agents = ['1']#,'2']#,'3','5','7','10']
+number_of_agents = ['3']#,'2']#,'3','5','7','10']
 number_of_items = ['10']#,'20','25']
 
 # 1. Defining the experiment type# 1. Defining the experiment type
