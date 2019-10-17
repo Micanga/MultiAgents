@@ -11,18 +11,18 @@ results = list()
 informations = list()
 
 # 1. Defining the Graph Generation Parameters
-#ROOT_DIRS = ['categorised/UCT/m_s10_a3']  # ['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
-ROOT_DIRS = ['tc/UCT/m_s10_a3']
-#ROOT_DIRS = ['test_output']  # ['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
+ROOT_DIRS = ['categorised/UCT/m_s30_a5']  # ['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
+#ROOT_DIRS = ['tc/UCT/m_s10_a3']
+#ROOT_DIRS = ['outputs']  # ['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
 # ROOT_DIRS = ['nips_outputs']
 # ROOT_DIRS = ['multiple_runs']
 
 # NAMES = ['POMCP']  # ['POMCP','POMCP','POMCP']#,'POMCP_FO']
 NAMES = ['MDP']  # ['POMCP','POMCP','POMCP']#,'POMCP_FO']
 PLOT_TYPE = 'MDP'
-SIZE = ['10']  # ,'15','20','25']
-NAGENTS = ['3']
-NITEMS = ['10']  # ,'15','20','25']
+SIZE = ['30']  # ,'15','20','25']
+NAGENTS = ['5']
+NITEMS = ['30']  # ,'15','20','25']
 RADIUS = ['5']
 experiment_type_set = ['ABU', 'AGA', 'MIN']
 type_estimation_mode_set = ['BPTE']
@@ -38,31 +38,12 @@ PLOTS_DIR = "./t_results"
 ##		  ##	   ##	  ##	 ##	   ##    ##
 ##		  ########  #######	     ##	    ######
 ############################# ###############################################################
-def calc_CI(type_hist):
-    ci_hist = []
-    for th in type_hist:
-        ci = []
-        for e_h in th:
-            ci.append(e_h)
-        ci_hist.append(ci)
 
-    conf_int = np.zeros(len(ci_hist[0]))
-    ci_hist = np.array(ci_hist)
-
-    for i in range(len(conf_int)):
-        if not info.is_constant(ci_hist[:, i]):
-            conf_int[i] = info.calcConfInt(ci_hist[:, i])
-        else:
-            conf_int[i] = 0
-    return conf_int
 
 ############################# ###############################################################
 def plot_type_probability(aga_tp, abu_tp, OGE_tp, threshold, plotname):
 
-    #
-    # aga_tp_ci=  calc_CI(aga_tp)
-    # abu_tp_ci=  calc_CI(abu_tp)
-    # OGE_tp_ci=  calc_CI(OGE_tp)
+
     aga_tp = np.array(aga_tp)
     abu_tp = np.array(abu_tp)
     OGE_tp = np.array(OGE_tp)
@@ -187,26 +168,23 @@ def plot_run_length_bar_1(aga_l,  abu_l,  OGE_l,  plotname):
     bar_w = 0.5
 
     aga_m = np.mean(np.array(aga_l))
-    aga_ci = info.calcConfInt(aga_l)
+    aga_s = info.calcConfInt(aga_l)
     abu_m = np.mean(np.array(abu_l))
-    abu_ci = info.calcConfInt(abu_l)
+    abu_s = info.calcConfInt(abu_l)
     OGE_m = np.mean(np.array(OGE_l))
-    OGE_ci = info.calcConfInt(OGE_l)
+    OGE_s = info.calcConfInt(OGE_l)
 
     # 2. Plotting the number of iteration for each run to load items
     # a. defining the main plot
     axis = plt.gca()
 
-    # AGA
-    aga = axis.bar(1, height=aga_ci - aga_m, width=bar_w, color='#3F5D7D')
+    aga = axis.bar(1, height=aga_m, width=bar_w, yerr=aga_s - aga_m, color='#3F5D7D')
 
     # ABU
-    abu = axis.bar(2, height=abu_ci - abu_m, width=bar_w,  color='#37AA9C')
+    abu = axis.bar(2, height=abu_m, width=bar_w, yerr=abu_s - abu_m, color='#37AA9C')
 
     # OGE
-    OGE = axis.bar(3, height=OGE_ci - OGE_m , width=bar_w,  color='#F66095')
-
-
+    OGE = axis.bar(3, height=OGE_m, width=bar_w, yerr=OGE_s - OGE_m, color='#F66095')
 
     # b. getting the current axis to label
     axis.set_ylabel('Number of Iterations')
@@ -487,10 +465,6 @@ for info in informations:
     OGE_m.append(info.OGE_mean_len_hist)
     OGE_ci.append(info.OGE_ci_len_hist)
 
-    # plot_run_length_bar(info.True_mean_len_hist, info.True_ci_len_hist,
-    #                     info.AGA_mean_len_hist, info.AGA_ci_len_hist,
-    #                     info.ABU_mean_len_hist, info.ABU_ci_len_hist,
-    #                     info.OGE_mean_len_hist, info.OGE_ci_len_hist, info.name+ '_Performance')
     # plot_run_length_bar(info.AGA_mean_len_hist, info.AGA_ci_len_hist,
     #                     info.ABU_mean_len_hist, info.ABU_ci_len_hist,
     #                     info.OGE_mean_len_hist, info.OGE_ci_len_hist, info.name + '_Performance')

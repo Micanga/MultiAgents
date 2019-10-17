@@ -25,6 +25,7 @@ def read_files(root_dir,size,nagents, nitems,type_estimation_mode,radius=None):
 
                 # Simulator Information
                 systemDetails = dataList[0]
+                print systemDetails['parameter_estimation_mode']
 
                 # if systemDetails['round_count'] == 10:
                 #     print root
@@ -48,7 +49,7 @@ def read_files(root_dir,size,nagents, nitems,type_estimation_mode,radius=None):
                         estimationDictionary['computationalTime'] = int(endTime) - int(beginTime)
                         estimationDictionary['parameter_estimation_mode'] = systemDetails['parameter_estimation_mode']
 
-                        print estimationDictionary['parameter_estimation_mode']
+
 
                         agentDictionary = data[i]
                         trueType = agentDictionary['trueType']
@@ -83,7 +84,7 @@ def read_files(root_dir,size,nagents, nitems,type_estimation_mode,radius=None):
                                             # print estimationDictionary['timeSteps'] , ' ', systemDetails['parameter_estimation_mode']
                                             # print
 
-                                            if systemDetails['parameter_estimation_mode'] == 'MIN':
+                                            if systemDetails['parameter_estimation_mode'] == 'AGA':
                                                 x['root'] = root
                                                 x['step'] = estimationDictionary['timeSteps']
                                                 min_time_steps.append(x)

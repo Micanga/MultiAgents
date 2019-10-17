@@ -47,10 +47,8 @@ if len(sys.argv) > 1:
     input_folder = sys.argv[1]
 else:
     input_folder = ""
-
-
-#input_folder = "inputs/test/"
-input_folder = "inputs/FO_O_AGA/"
+    #input_folder = "inputs/test/"
+    #input_folder = "inputs/FO_O_AGA/"
 
 if len(sys.argv) > 2:
     main_output_folder = sys.argv[2]
@@ -243,9 +241,9 @@ while round <= round_count:
         for i in range(len(main_sim.agents)):
             log_file.write('2) Move Common Agent '+str(i))
             main_sim.agents[i] = main_sim.move_a_agent(main_sim.agents[i])
-            print i,':',main_sim.agents[i].index, main_sim.agents[i].agent_type,
+            # print i,':',main_sim.agents[i].index, main_sim.agents[i].agent_type,
             log_file.write(' - OK\ntarget: '+str(main_sim.agents[i].get_memory())+'\n')
-        print
+        # print
 
       #  main_sim.draw_map()
         # 3. Move Main Agent
@@ -266,10 +264,10 @@ while round <= round_count:
         # 5. Updating the Map
         log_file.write('5) Updating Map\n')
         main_sim.update_all_A_agents(main_sim)
-        print 'Main colllllaboration'
+        # print 'Main colllllaboration'
         main_sim.do_collaboration()
         main_sim.main_agent.update_unknown_agents_status(main_sim)
-        main_sim.draw_map()
+        # main_sim.draw_map()
         log.write_map(log_file,main_sim)
 
         # 6. Estimating

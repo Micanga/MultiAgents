@@ -4,6 +4,8 @@ import subprocess
 
 from copy import deepcopy
 from math import sqrt
+from scipy.stats import sem, t
+from scipy import mean
 
 LEVEL = 0
 ANGLE = 1
@@ -69,25 +71,17 @@ class Information:
 		
 	@staticmethod
 	def calcConfInt(p):
-		f = open("tmp.R","w")
-		f.write("#!/usr/bin/Rscript\n")
 
-		listStr = ""
+		confidence = 0.99
+		data = p
 
-		for n in p:
- 			listStr = listStr + str(n) + ","
+		n = len(data)
+		m = mean(data)
+		std_err = sem(data)
+		h = std_err * t.ppf((1 + confidence) / 2, n - 1)
+		return h+m
 
-		f.write("print(t.test(c("+listStr[:-1]+"),conf.level=0.99))")
 
-		f.close()
-
-		# os.system("chmod +x ./tmp.R")
-		output = subprocess.check_output(['Rscript', 'tmp.R'], stderr=subprocess.STDOUT, shell=False)
-
-		# output = subprocess.check_output("./tmp.R",stderr=subprocess.STDOUT,shell=True)
-		output = output.split()
-		#print 'end of function', float(output[-7])
-		return float(output[-7])
 
 	@staticmethod
 	def is_constant(array):
@@ -100,48 +94,17 @@ class Information:
 		max_len = max(self.AGA_max_len_hist,self.ABU_max_len_hist,self.OGE_max_len_hist,self.TRUE_max_len_hist)
 
 		print 'max_len', max_len
-		#self.AGA_mean_len_hist, self.AGA_std_len_hist, self.AGA_ci_len_hist = self.calc_mean_len_hist(self.AGA_errors,'_AGA')
+
 		self.AGA_errors = self.normalise_arrays(max_len,self.AGA_errors)
 		self.AGA_typeProbHistory = self.normalise_arrays(max_len,self.AGA_typeProbHistory)
-		#print '*** AGA data = ',len(self.AGA_errors),'/AGA avg len = ', self.AGA_mean_len_hist,' ***'
 
-		#self.ABU_mean_len_hist, self.ABU_std_len_hist, self.ABU_ci_len_hist = self.calc_mean_len_hist(self.ABU_errors,'ABU')
 		self.ABU_errors = self.normalise_arrays(max_len,self.ABU_errors)
 		self.ABU_typeProbHistory = self.normalise_arrays(max_len,self.ABU_typeProbHistory)
-		#print '*** ABU data = ',len(self.ABU_errors),'/ABU avg len = ', self.ABU_mean_len_hist, " ***"
 
-		#self.OGE_mean_len_hist, self.OGE_std_len_hist, self.OGE_ci_len_hist = self.calc_mean_len_hist(self.OGE_errors,'OGE')
 		self.OGE_errors = self.normalise_arrays(max_len,self.OGE_errors)
 		self.OGE_typeProbHistory  = self.normalise_arrays(max_len,self.OGE_typeProbHistory)
-		#print '*** OGE data  = ',len(self.OGE_errors),'/OGE avg len  = ', self.OGE_mean_len_hist,' ***'
 
-	def calc_mean_len_hist(self,errors_list,te):
-		lens = []
-		for e_l in errors_list:
-			lens.append(len(e_l))
-		file = open(self.plots_dir + "/pickles/" +self.name + '_' + te+'_Pickle','wb')
-		pickle.dump(lens,file)
-		file.close() 
 
-		len_sum = 0
-		for e_l in errors_list:
-			len_sum += len(e_l)
-		mean = len_sum/len(errors_list)
-
-		sum_ = 0
-		for e_l in errors_list:
-			sum_ += (mean-len(e_l))**2
-		std_dev = sqrt(sum_/len(errors_list))
-
-		ci_list = []
-		for e_l in errors_list:
-			ci_list.append(len(e_l))
-			if not self.is_constant(ci_list):
-				ci = self.calcConfInt(ci_list)
-			else:
-				ci = 0
-
-		return mean,std_dev,ci
 
 	def normalise_arrays(self, max_value , errors_list):
 		for e_l in errors_list:
@@ -276,14 +239,10 @@ class Information:
 		f.write("print(t.test(c(" + listStr[:-1] + "),c(" + listStr1[:-1] + ")))")
 
 
-#f.write("print(t.test(c(" + listStr[:-1] + "),c(" + listStr1[:-1] + "),conf.level=0.90))")
-
 		f.close()
 
 		# os.system("chmod +x ./tmp.R")
 		output = subprocess.check_output(['Rscript', 'tmp.R'], stderr=subprocess.STDOUT, shell=False)
 
-		# output = subprocess.check_output("./tmp.R",stderr=subprocess.STDOUT,shell=True)
-		# output = output.split()
-		# print 'end of function', float(output[-7])
+
 		print output
