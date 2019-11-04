@@ -93,7 +93,7 @@ class Information:
 	def normalise(self):
 		max_len = max(self.AGA_max_len_hist,self.ABU_max_len_hist,self.OGE_max_len_hist,self.TRUE_max_len_hist)
 
-		print 'max_len', max_len
+		# print 'max_len', max_len
 
 		self.AGA_errors = self.normalise_arrays(max_len,self.AGA_errors)
 		self.AGA_typeProbHistory = self.normalise_arrays(max_len,self.AGA_typeProbHistory)
@@ -116,13 +116,13 @@ class Information:
 
 	def extract(self):	
 		global LEVEL, RADIUS, ANGLE
-		print '*** AGA - extracting level, radius and angle info ***'
+		# print '*** AGA - extracting level, radius and angle info ***'
 		self.aga_levels, self.aga_levels_std_dev, self.aga_levels_ci = self.extract_parameter_errors(self.AGA_errors,LEVEL)
-		print 'AGA - levels OK'
+		# print 'AGA - levels OK'
 		self.aga_radius, self.aga_radius_std_dev, self.aga_radius_ci = self.extract_parameter_errors(self.AGA_errors,RADIUS)
-		print 'AGA - radius OK'
+		# print 'AGA - radius OK'
 		self.aga_angles, self.aga_angles_std_dev, self.aga_angles_ci = self.extract_parameter_errors(self.AGA_errors,ANGLE)
-		print 'AGA - angles OK'
+		# print 'AGA - angles OK'
 		self.aga_level_error_mean = np.mean(np.array(self.aga_levels))
 		self.aga_angle_error_mean = np.mean(np.array(self.aga_angles))
 		self.aga_radius_error_mean = np.mean(np.array(self.aga_radius))
@@ -134,13 +134,13 @@ class Information:
 		self.aga_radius_error_ci = np.std(np.array(self.aga_radius))
 		self.aga_type_probability_ci = np.std(np.array(self.AGA_typeProbHistory))
 
-		print '*** ABU - extracting level, radius and angle info ***'
+		# print '*** ABU - extracting level, radius and angle info ***'
 		self.abu_levels, self.abu_levels_std_dev, self.abu_levels_ci = self.extract_parameter_errors(self.ABU_errors,LEVEL)
-		print 'ABU - levels OK'
+		# print 'ABU - levels OK'
 		self.abu_radius, self.abu_radius_std_dev, self.abu_radius_ci = self.extract_parameter_errors (self.ABU_errors,RADIUS)
-		print 'ABU - radius OK'
+		# print 'ABU - radius OK'
 		self.abu_angles, self.abu_angles_std_dev, self.abu_angles_ci = self.extract_parameter_errors(self.ABU_errors,ANGLE)
-		print 'ABU - angles OK'
+		# print 'ABU - angles OK'
 
 
 		self.abu_level_error_mean = np.mean(np.array(self.abu_levels))
@@ -155,13 +155,13 @@ class Information:
 		self.abu_type_probability_ci = np.std(np.array(self.ABU_typeProbHistory))
 
 
-		print '*** OGE - extracting level, radius and angle info ***'
+		# print '*** OGE - extracting level, radius and angle info ***'
 		self.OGE_levels, self.OGE_levels_std_dev, self.OGE_levels_ci = self.extract_parameter_errors(self.OGE_errors,LEVEL)
-		print 'OGE - levels OK'
+		# print 'OGE - levels OK'
 		self.OGE_radius, self.OGE_radius_std_dev, self.OGE_radius_ci = self.extract_parameter_errors(self.OGE_errors,RADIUS)
-		print 'OGE - radius OK'
+		# print 'OGE - radius OK'
 		self.OGE_angles, self.OGE_angles_std_dev, self.OGE_angles_ci = self.extract_parameter_errors(self.OGE_errors,ANGLE)
-		print 'OGE - angles OK'
+		# print 'OGE - angles OK'
 
 		self.oge_level_error_mean = np.mean(np.array(self.OGE_levels))
 		self.oge_angle_error_mean = np.mean(np.array(self.OGE_angles))

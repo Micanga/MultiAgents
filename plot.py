@@ -3,6 +3,7 @@ import numpy as np
 import os
 import pickle
 import plot_init as init
+from scipy.stats import ttest_ind
 
 # 0. Variables
 count = 0
@@ -11,22 +12,21 @@ results = list()
 informations = list()
 
 # 1. Defining the Graph Generation Parameters
-ROOT_DIRS = ['categorised/UCT/m_s30_a5']  # ['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
-#ROOT_DIRS = ['tc/UCT/m_s10_a3']
-#ROOT_DIRS = ['outputs']  # ['AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP','AAMAS_Outputs_POMCP']#,'AAMAS_Outputs_POMCP_FO']
-# ROOT_DIRS = ['nips_outputs']
-# ROOT_DIRS = ['multiple_runs']
+ROOT_DIRS = ['categorised/UCT/']
+#ROOT_DIRS = ['categorised/UCT_mr/']
+#ROOT_DIRS = ['categorised/POMCP/']
 
-# NAMES = ['POMCP']  # ['POMCP','POMCP','POMCP']#,'POMCP_FO']
-NAMES = ['MDP']  # ['POMCP','POMCP','POMCP']#,'POMCP_FO']
-PLOT_TYPE = 'MDP'
-SIZE = ['30']  # ,'15','20','25']
-NAGENTS = ['5']
-NITEMS = ['30']  # ,'15','20','25']
-RADIUS = ['5']
+#PLOT_TYPE = 'POMCP'
+PLOT_TYPE = 'UCT'
+
+SIZE = ['10']#,'20','30']  # ,'15','20','25']
+NAGENTS = ['10']
+NITEMS = ['10']#,'20','30']
+RADIUS = ['3','5','7']
 experiment_type_set = ['ABU', 'AGA', 'MIN']
-type_estimation_mode_set = ['BPTE']
+
 PLOTS_DIR = "./t_results"
+RESTART = True
 
 
 ############################################################################################
@@ -43,7 +43,6 @@ PLOTS_DIR = "./t_results"
 ############################# ###############################################################
 def plot_type_probability(aga_tp, abu_tp, OGE_tp, threshold, plotname):
 
-
     aga_tp = np.array(aga_tp)
     abu_tp = np.array(abu_tp)
     OGE_tp = np.array(OGE_tp)
@@ -56,12 +55,10 @@ def plot_type_probability(aga_tp, abu_tp, OGE_tp, threshold, plotname):
     # 2. Normalizing TP
     aga_tp = np.array(aga_tp)
     aga_error = aga_tp.mean(axis=0)  # .tolist()
-    # for OGE in abu_tp:
-    # 	print len(OGE)
+
     abu_tp = np.array(abu_tp)
     abu_error = abu_tp.mean(axis=0)  # .tolist()
-    # for OGE in OGE_tp:
-    #     print len(OGE)
+
     OGE_tp = np.array(OGE_tp)
     OGE_error = OGE_tp.mean(axis=0)  # .tolist()
 
@@ -75,7 +72,7 @@ def plot_type_probability(aga_tp, abu_tp, OGE_tp, threshold, plotname):
     x = [t for t in range(threshold-5)]
     show_confint = True
     if show_confint:
-        # delta = (plot_aga_ci - aga_error)
+   #     delta = (plot_aga_ci - aga_error)
         plt.fill_between(x, aga_error ,#- delta,
                          aga_error, #+ delta,
                          color='#3F5D7D', alpha=.15)
@@ -329,16 +326,13 @@ for root in ROOT_DIRS:
         for sz in SIZE:
             for na in NAGENTS:
                 for ni in NITEMS:
-                    for tem in type_estimation_mode_set:
                         for ra in RADIUS:
-
-
-                            filename = 'POMCP_s' + sz + '_a' + na + '_i' + ni + '_t' + tem +'_r' + ra + '_Pickle'
-                            if not os.path.exists(PLOTS_DIR + "/pickles/" +filename):
+                            filename = 'POMCP_s' + sz + '_a' + na + '_i' + ni + '_r' + ra + '_Pickle'
+                            if not os.path.exists(PLOTS_DIR + "/pickles/" +filename) or RESTART:
                                 full_root = root + 'p_s' + sz + '_a' + na + '_r' + ra
-                                results.append(init.read_files(full_root, sz, na, ni, tem,ra))
+                                results.append(init.read_files(full_root, sz, na, ni,ra))
                                 info = init.extract_information(results[-1],
-                                                                'POMCP_s' + sz + '_a' + na + '_i' + ni + '_t'+tem+ '_r' + ra)
+                                                                'POMCP_s' + sz + '_a' + na + '_i' + ni + '_r' + ra)
                                 info.plots_dir = PLOTS_DIR
                                 info.normalise()
                                 info.extract()
@@ -357,12 +351,12 @@ for root in ROOT_DIRS:
         for sz in SIZE:
             for na in NAGENTS:
                 for ni in NITEMS:
-                    for tem in type_estimation_mode_set:
-                        filename = 'MCTS_s' + sz + '_a' + na + '_i' + ni + '_t' + tem + '_Pickle'
-                        if not os.path.exists(PLOTS_DIR + "/pickles/" +filename):
+
+                        filename = 'MCTS_s' + sz + '_a' + na + '_i' + ni +  '_Pickle'
+                        if not os.path.exists(PLOTS_DIR + "/pickles/" +filename) or RESTART:
                             full_root = root + 'm_s' + sz + '_a' + na
-                            results.append(init.read_files(root, sz, na, ni,tem))
-                            info = init.extract_information(results[-1], 'MCTS_s' + sz + '_a' + na + '_i' + ni + '_t'+tem)
+                            results.append(init.read_files(full_root, sz, na, ni))
+                            info = init.extract_information(results[-1], 'MCTS_s' + sz + '_a' + na + '_i' + ni )
                             info.plots_dir = PLOTS_DIR
                             info.normalise()
                             info.extract()
@@ -454,9 +448,9 @@ for info in informations:
     abu_m, abu_ci = list(), list()
     OGE_m, OGE_ci = list(), list()
 
-    print 'AGA', info.AGA_mean_len_hist
-    print 'ABU', info.ABU_mean_len_hist
-    print 'OGE', info.OGE_mean_len_hist
+    # print 'AGA', info.AGA_mean_len_hist
+    # print 'ABU', info.ABU_mean_len_hist
+    # print 'OGE', info.OGE_mean_len_hist
 
     aga_m.append(info.AGA_mean_len_hist)
     aga_ci.append(info.AGA_ci_len_hist)
@@ -487,4 +481,9 @@ for info in informations:
                           info.threshold, info.name + 'TypeEstimation')
 
 
-#print info.significant_difference(info.ABU_timeSteps,info.OGE_timeSteps)
+# print info.significant_difference(info.ABU_timeSteps,info.OGE_timeSteps)
+
+stat,abu_pvalue = ttest_ind(info.ABU_timeSteps,info.OGE_timeSteps)
+print 'ABU P value:' , round(abu_pvalue,5)
+stat,aga_pvalue = ttest_ind(info.AGA_timeSteps,info.OGE_timeSteps)
+print 'AGA P value:' , round(aga_pvalue,7)

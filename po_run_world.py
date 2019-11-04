@@ -241,7 +241,6 @@ while main_sim.items_left() > 0:
     for i in range(len(main_sim.agents)):
         log_file.write('2) Move Common Agent '+ str(i))
         main_sim.agents[i] = main_sim.move_a_agent(main_sim.agents[i])
-
         log_file.write(' - OK\ntarget: '+str(main_sim.agents[i].get_memory())+'\n')
 
     # 3. Move Main Agent

@@ -5,16 +5,30 @@ import pickle
 from information import Information
 
 
-def read_files(root_dir,size,nagents, nitems,type_estimation_mode,radius=None):
-    print '***** reading the files *****'
+def read_files(root_dir,size,nagents, nitems,radius=None):
+    # print '***** reading the files *****'
     results = list()
     count = 0
-    min_time_steps = []
-    max_steps = 0
-    min_steps = 1000
+    MIN_min_time_steps = []
+    MIN_max_steps = 0
+    MIN_min_steps = 1000
+    MIN_min_root = ''
+    MIN_max_root = ''
+    AGA_min_time_steps = []
+    AGA_max_steps = 0
+    AGA_min_steps = 1000
+    AGA_min_root = ''
+    AGA_max_root = ''
+    ABU_min_time_steps = []
+    ABU_max_steps = 0
+    ABU_min_steps = 1000
+    ABU_min_root = ''
+    ABU_max_root = ''
+
+    CO = 'NONE'
     for root, dirs, files in os.walk(root_dir):
         if 'pickleResults.txt' in files:
-            print root
+           # print root
             with open(os.path.join(root,'pickleResults.txt'),"r") as pickleFile:
 
                 progress = 1 * float(count/1)
@@ -25,7 +39,7 @@ def read_files(root_dir,size,nagents, nitems,type_estimation_mode,radius=None):
 
                 # Simulator Information
                 systemDetails = dataList[0]
-                print systemDetails['parameter_estimation_mode']
+               # print systemDetails['parameter_estimation_mode']
 
                 # if systemDetails['round_count'] == 10:
                 #     print root
@@ -48,8 +62,6 @@ def read_files(root_dir,size,nagents, nitems,type_estimation_mode,radius=None):
 
                         estimationDictionary['computationalTime'] = int(endTime) - int(beginTime)
                         estimationDictionary['parameter_estimation_mode'] = systemDetails['parameter_estimation_mode']
-
-
 
                         agentDictionary = data[i]
                         trueType = agentDictionary['trueType']
@@ -74,38 +86,71 @@ def read_files(root_dir,size,nagents, nitems,type_estimation_mode,radius=None):
                             estimationDictionary['trueParameters'] = trueParameters
                             estimationDictionary['historyParameters'] = historyParameters
                             estimationDictionary['path'] = root
-                            if size == str(systemDetails['simWidth']):
 
+                            #print len(historyParameters), systemDetails['timeSteps']
+
+                            if size == str(systemDetails['simWidth']):
                                 if nagents == str(agentsCounts):
                                     if nitems == str(itemsCounts):
+                                        CO ='ABU'
+                                        if systemDetails['parameter_estimation_mode'] == 'MIN':
+                                            x['root'] = root
+                                            x['step'] = estimationDictionary['timeSteps']
+                                            MIN_min_time_steps.append(x)
+                                            if estimationDictionary['timeSteps'] > MIN_max_steps:
+                                                MIN_max_steps = estimationDictionary['timeSteps']
+                                                MIN_max_root = root
+                                            if estimationDictionary['timeSteps'] < MIN_min_steps:
+                                                MIN_min_steps = estimationDictionary['timeSteps']
+                                                MIN_min_root = root
 
-                                        if systemDetails['type_estimation_mode'] == type_estimation_mode:
+                                        if systemDetails['parameter_estimation_mode'] == 'AGA':
+                                            x['root'] = root
+                                            x['step'] = estimationDictionary['timeSteps']
+                                            AGA_min_time_steps.append(x)
+                                            if estimationDictionary['timeSteps'] > AGA_max_steps:
+                                                AGA_max_steps = estimationDictionary['timeSteps']
+                                                AGA_max_root = root
+                                            if estimationDictionary['timeSteps'] < AGA_min_steps:
+                                                AGA_min_steps = estimationDictionary['timeSteps']
+                                                AGA_min_root = root
 
-                                            # print estimationDictionary['timeSteps'] , ' ', systemDetails['parameter_estimation_mode']
-                                            # print
+                                        if systemDetails['parameter_estimation_mode'] == 'ABU':
+                                            x['root'] = root
+                                            x['step'] = estimationDictionary['timeSteps']
+                                            ABU_min_time_steps.append(x)
+                                            if estimationDictionary['timeSteps'] > ABU_max_steps:
+                                                ABU_max_steps = estimationDictionary['timeSteps']
+                                                ABU_max_root = root
+                                            if estimationDictionary['timeSteps'] < ABU_min_steps:
+                                                ABU_min_steps = estimationDictionary['timeSteps']
+                                                ABU_min_root = root
 
-                                            if systemDetails['parameter_estimation_mode'] == 'AGA':
-                                                x['root'] = root
-                                                x['step'] = estimationDictionary['timeSteps']
-                                                min_time_steps.append(x)
-                                                if estimationDictionary['timeSteps'] > max_steps:
-                                                    max_steps = estimationDictionary['timeSteps']
-                                                if estimationDictionary['timeSteps'] < min_steps:
-                                                    min_steps = estimationDictionary['timeSteps']
-
-                                            if root_dir == 'po_outputs':
-                                                if radius == str(int(systemDetails['mainAgentRadius'])):
-                                                 #   estimationDictionary['mainAgentRadius'] = str(systemDetails['mainAgentRadius'])
-                                                    results.append(estimationDictionary)
-                                            else:
+                                        if root_dir == 'po_outputs':
+                                            if radius == str(int(systemDetails['mainAgentRadius'])):
                                                 results.append(estimationDictionary)
+                                        else:
+                                            results.append(estimationDictionary)
             count += 1
     #import ipdb; ipdb.set_trace()
     progress = 1 * float(count/1.0)
-    print 'Max: ', max_steps
-    print 'Min: ', min_steps
-    for m in min_time_steps:
-          print m
+    print '-----------------------------------------------'
+    print 'MIN'
+    print 'Max: ', MIN_max_steps, ' Path: ', MIN_max_root
+    print 'Min: ', MIN_min_steps, ' Path: ', MIN_min_root
+    for m in MIN_min_time_steps:
+        if int(m['step']) > 60:
+           print m
+    print '-----------------------------------------------'
+    print 'AGA'
+    print 'Max: ', AGA_max_steps, ' Path: ', AGA_max_root
+    print 'Min: ', AGA_min_steps, ' Path: ', AGA_min_root
+    print '-----------------------------------------------'
+    print 'ABU'
+    print 'Max: ', ABU_max_steps, ' Path: ', ABU_max_root
+    print 'Min: ', ABU_min_steps, ' Path: ', ABU_min_root
+    print '-----------------------------------------------'
+
 
     sys.stdout.write("Progress: %.1f%% | file #%d      \n" % (progress,count) )
     return results
@@ -115,7 +160,7 @@ def read_files(root_dir,size,nagents, nitems,type_estimation_mode,radius=None):
 
 def extract_information(results,name,radius=None):
 
-    print '***** extracting the information *****'
+    # print '***** extracting the information *****'
     info = Information(name)
 
     for result in results:

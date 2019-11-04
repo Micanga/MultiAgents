@@ -3,18 +3,18 @@ import os
 import sys
 import subprocess
 import time
-
+import gc
 from numpy import pi
 
 # 0. General Settings
 map_count       = 0
-number_of_tests =1
+number_of_tests = 100
 
 square_grid_size    = ['10']
-number_of_agents    = ['1']#'2','3','5','7','10'
+number_of_agents    = ['7','10']#'2','3','5','7','10'
 number_of_items     = ['10']#,'20','25']
 
-radius_set          = ['8']
+radius_set          = ['3','5','7']
 angle_set           = [2*pi]
 
 # 1. Defining the experiment type
@@ -62,6 +62,7 @@ while test_number < number_of_tests:
                                 print experiment_run
 
                                 os.system(experiment_run)
+                                gc.collect()
                                 time.sleep(5)
 
     test_number += 1

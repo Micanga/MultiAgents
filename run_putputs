@@ -1,0 +1,482 @@
+Traceback (most recent call last):
+  File "run_world.py", line 252, in <module>
+    r,enemy_action_prob,search_tree = main_sim.main_agent.move(reuse_tree, main_sim, search_tree, time_step)
+  File "/home/users/shafipou/MultiAgents/intelligent_agent.py", line 124, in move
+    next_action,guess_move, search_tree = self.uct_planning(reuse_tree,main_sim,search_tree, time_step)
+  File "/home/users/shafipou/MultiAgents/intelligent_agent.py", line 140, in uct_planning
+    next_action,guess_move, search_tree = self.uct.agent_planning(time_step, search_tree, main_sim, self.is_enemy)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 514, in agent_planning
+    enemy)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 489, in monte_carlo_planning
+    self.search(main_time_step, node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 430, in search
+    (next_state, reward) = self.simulate_action(node.state, action,node.enemy)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 359, in simulate_action
+    sim = state.simulator.copy(False)
+  File "/home/users/shafipou/MultiAgents/simulator.py", line 222, in copy
+    copy_main_agent = self.main_agent.copy()
+  File "/home/users/shafipou/MultiAgents/intelligent_agent.py", line 165, in copy
+    copy_agent = Agent(x, y, self.direction)
+  File "/home/users/shafipou/MultiAgents/intelligent_agent.py", line 20, in __init__
+    self.visible_agents = []
+MemoryError
+Traceback (most recent call last):
+  File "run_world.py", line 252, in <module>
+    r,enemy_action_prob,search_tree = main_sim.main_agent.move(reuse_tree, main_sim, search_tree, time_step)
+  File "/home/users/shafipou/MultiAgents/intelligent_agent.py", line 124, in move
+    next_action,guess_move, search_tree = self.uct_planning(reuse_tree,main_sim,search_tree, time_step)
+  File "/home/users/shafipou/MultiAgents/intelligent_agent.py", line 140, in uct_planning
+    next_action,guess_move, search_tree = self.uct.agent_planning(time_step, search_tree, main_sim, self.is_enemy)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 514, in agent_planning
+    enemy)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 489, in monte_carlo_planning
+    self.search(main_time_step, node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 430, in search
+    (next_state, reward) = self.simulate_action(node.state, action,node.enemy)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 359, in simulate_action
+    sim = state.simulator.copy(False)
+  File "/home/users/shafipou/MultiAgents/simulator.py", line 234, in copy
+    tmp_sim.update_the_map()
+  File "/home/users/shafipou/MultiAgents/simulator.py", line 390, in update_the_map
+    self.create_empty_map()
+  File "/home/users/shafipou/MultiAgents/simulator.py", line 186, in create_empty_map
+    self.the_map.append(list(row))
+MemoryError
+/home/users/shafipou/MultiAgents/parameter_estimation.py:199: RuntimeWarning: invalid value encountered in less
+  selected_type = choice(types, p=type_probes)  # random sampling the action
+Traceback (most recent call last):
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 430, in search
+    (next_state, reward) = self.simulate_action(node.state, action,node.enemy)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 386, in simulate_action
+    sim.move_a_agent(u_a)
+  File "/home/users/shafipou/MultiAgents/simulator.py", line 638, in move_a_agent
+    route = a.pathFind(x_agent, y_agent, x_destination, y_destination)
+  File "/home/users/shafipou/MultiAgents/a_star.py", line 88, in pathFind
+    dir_map.append(list(row))
+MemoryError
+Traceback (most recent call last):
+  File "run_world.py", line 252, in <module>
+    r,enemy_action_prob,search_tree = main_sim.main_agent.move(reuse_tree, main_sim, search_tree, time_step)
+  File "/home/users/shafipou/MultiAgents/intelligent_agent.py", line 124, in move
+    next_action,guess_move, search_tree = self.uct_planning(reuse_tree,main_sim,search_tree, time_step)
+  File "/home/users/shafipou/MultiAgents/intelligent_agent.py", line 140, in uct_planning
+    next_action,guess_move, search_tree = self.uct.agent_planning(time_step, search_tree, main_sim, self.is_enemy)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 514, in agent_planning
+    enemy)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 489, in monte_carlo_planning
+    self.search(main_time_step, node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 430, in search
+    (next_state, reward) = self.simulate_action(node.state, action,node.enemy)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 386, in simulate_action
+    sim.move_a_agent(u_a)
+  File "/home/users/shafipou/MultiAgents/simulator.py", line 638, in move_a_agent
+    route = a.pathFind(x_agent, y_agent, x_destination, y_destination)
+  File "/home/users/shafipou/MultiAgents/a_star.py", line 86, in pathFind
+    closed_nodes_map.append(list(row))
+MemoryError
+Traceback (most recent call last):
+  File "run_world.py", line 252, in <module>
+    r,enemy_action_prob,search_tree = main_sim.main_agent.move(reuse_tree, main_sim, search_tree, time_step)
+  File "/home/users/shafipou/MultiAgents/intelligent_agent.py", line 124, in move
+    next_action,guess_move, search_tree = self.uct_planning(reuse_tree,main_sim,search_tree, time_step)
+  File "/home/users/shafipou/MultiAgents/intelligent_agent.py", line 140, in uct_planning
+    next_action,guess_move, search_tree = self.uct.agent_planning(time_step, search_tree, main_sim, self.is_enemy)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 514, in agent_planning
+    enemy)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 489, in monte_carlo_planning
+    self.search(main_time_step, node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 461, in search
+    q = node.delta * reward + discount_factor * self.search(main_time_step, next_node)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 430, in search
+    (next_state, reward) = self.simulate_action(node.state, action,node.enemy)
+  File "/home/users/shafipou/MultiAgents/UCT.py", line 386, in simulate_action
+    sim.move_a_agent(u_a)
+  File "/home/users/shafipou/MultiAgents/simulator.py", line 638, in move_a_agent
+    route = a.pathFind(x_agent, y_agent, x_destination, y_destination)
+  File "/home/users/shafipou/MultiAgents/a_star.py", line 87, in pathFind
+    open_nodes_map.append(list(row))
+MemoryError

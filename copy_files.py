@@ -1,14 +1,13 @@
 import errno
 import shutil
-
 import os
-
 import pickle
+
 root_dir = "outputs"
 files_type = "UCT"
 #
-# root_dir = "p_tmp_output"
-# files_type = "POMCP"
+#root_dir = "po_outputs"
+#files_type = "POMCP"
 
 def copy(src, dest):
     try:
@@ -20,7 +19,8 @@ def copy(src, dest):
         else:
             print('Directory not copied. Error: %s' % e)
 
-count = 6500
+count = 3500 #UCT
+#count = 29100  #POMCP
 f_count = 0
 for root, dirs, files in os.walk(root_dir):
         if 'pickleResults.txt' in files:
@@ -35,19 +35,21 @@ for root, dirs, files in os.walk(root_dir):
                 simHeight = systemDetails['simHeight']
                 agentsCounts = str(systemDetails['agentsCounts'])
                 itemsCounts = systemDetails['itemsCounts']
+		round = str(systemDetails['round_count'])
+
                 if files_type =='POMCP':
                     radius = str(int(systemDetails['mainAgentRadius']))
-
-                    if systemDetails['round_count']==1:
-                        dest = 'categorised/POMCP/p_s' + simWidth + '_a' + agentsCounts + "_r" + radius + "/" + str(
+			
+                    if systemDetails['round_count']==1 or round == 'None' :
+                        dest = 'tc/POMCP/p_s' + simWidth + '_a' + agentsCounts + "_r" + radius + "/" + str(
                             count)
                         copy(root, dest )
                     else:
                         round = str(systemDetails['round_count'])
-                        dest = 'categorised/POMCP_mr/p_s' + simWidth + '_a' + agentsCounts + "_r" + radius + "_ro" + round +  "/" + str(count)
+                        dest = 'tc/POMCP_mr/p_s' + simWidth + '_a' + agentsCounts + "_r" + radius + "_ro" + round +  "/" + str(count)
                         copy(root, dest)
                 else:
-                    if systemDetails['round_count']==1:
+                    if systemDetails['round_count'] == 1 or round == 'None':
                         dest = 'tc/UCT/m_s' + simWidth + '_a' + agentsCounts + "/" + str(count)
                         copy(root,dest)
                     else:
