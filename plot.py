@@ -12,20 +12,21 @@ results = list()
 informations = list()
 
 # 1. Defining the Graph Generation Parameters
-ROOT_DIRS = ['categorised/UCT/']
+#ROOT_DIRS = ['categorised/UCT/']
+ROOT_DIRS = ['tc/UCT/']
 #ROOT_DIRS = ['categorised/UCT_mr/']
 #ROOT_DIRS = ['categorised/POMCP/']
 
 #PLOT_TYPE = 'POMCP'
 PLOT_TYPE = 'UCT'
 
-SIZE = ['10']#,'20','30']  # ,'15','20','25']
+SIZE = ['20']#,'20','30']  # ,'15','20','25']
 NAGENTS = ['10']
-NITEMS = ['10']#,'20','30']
+NITEMS = ['100']#,'20','30']
 RADIUS = ['3','5','7']
 experiment_type_set = ['ABU', 'AGA', 'MIN']
 
-PLOTS_DIR = "./t_results"
+PLOTS_DIR = "./10_results"
 RESTART = True
 
 
@@ -353,8 +354,8 @@ for root in ROOT_DIRS:
                 for ni in NITEMS:
 
                         filename = 'MCTS_s' + sz + '_a' + na + '_i' + ni +  '_Pickle'
-                        if not os.path.exists(PLOTS_DIR + "/pickles/" +filename) or RESTART:
-                            full_root = root + 'm_s' + sz + '_a' + na
+                        if not os.path.exists(PLOTS_DIR + "/pickles/" + filename) or RESTART:
+                            full_root = root + 'm_s' + sz + '_a' + na+'_i'+ni
                             results.append(init.read_files(full_root, sz, na, ni))
                             info = init.extract_information(results[-1], 'MCTS_s' + sz + '_a' + na + '_i' + ni )
                             info.plots_dir = PLOTS_DIR
@@ -481,9 +482,35 @@ for info in informations:
                           info.threshold, info.name + 'TypeEstimation')
 
 
-# print info.significant_difference(info.ABU_timeSteps,info.OGE_timeSteps)
+print info.significant_difference(info.ABU_timeSteps,info.OGE_timeSteps)
 
 stat,abu_pvalue = ttest_ind(info.ABU_timeSteps,info.OGE_timeSteps)
 print 'ABU P value:' , round(abu_pvalue,5)
 stat,aga_pvalue = ttest_ind(info.AGA_timeSteps,info.OGE_timeSteps)
 print 'AGA P value:' , round(aga_pvalue,7)
+
+
+from math import sqrt
+from scipy.stats import sem, t
+from scipy import mean
+
+
+def independent_ttest(data1, data2, alpha):
+    # calculate means
+    mean1, mean2 = mean(data1), mean(data2)
+    # calculate standard errors
+    se1, se2 = sem(data1), sem(data2)
+    # standard error on the difference between the samples
+    sed = sqrt(se1 ** 2.0 + se2 ** 2.0)
+    # calculate the t statistic
+    t_stat = (mean1 - mean2) / sed
+    # degrees of freedom
+    df = len(data1) + len(data2) - 2
+    # calculate the critical value
+    cv = t.ppf(1.0 - alpha, df)
+    # calculate the p-value
+    p = (1.0 - t.cdf(abs(t_stat), df)) * 2.0
+    # return everything
+    return t_stat, df, cv, p
+
+print independent_ttest (info.ABU_timeSteps,info.OGE_timeSteps,0.01)

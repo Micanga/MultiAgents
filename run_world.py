@@ -46,9 +46,9 @@ apply_adversary = False
 if len(sys.argv) > 1:
     input_folder = sys.argv[1]
 else:
-    input_folder = ""
+    #input_folder = ""
     #input_folder = "inputs/test/"
-    #input_folder = "inputs/FO_O_AGA/"
+    input_folder = "inputs/FO_O_POMCP/"
 
 if len(sys.argv) > 2:
     main_output_folder = sys.argv[2]
@@ -305,7 +305,7 @@ used_mem_after = psutil.virtual_memory().used
 end_cpu_time = psutil.cpu_times()
 memory_usage = used_mem_after - used_mem_before
 
-if  do_estimation:
+if do_estimation:
     log.print_result(main_sim,  time_step, begin_time, end_time,
         mcts_mode, parameter_estimation_mode, type_selection_mode,
         iteration_max,max_depth, generated_data_number,reuse_tree,

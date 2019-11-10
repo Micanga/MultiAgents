@@ -8,13 +8,13 @@ from numpy import pi
 
 # 0. General Settings
 map_count       = 0
-number_of_tests = 100
+number_of_tests = 1
 
 square_grid_size    = ['10']
-number_of_agents    = ['7','10']#'2','3','5','7','10'
+number_of_agents    = ['7']#'2','3','5','7','10'
 number_of_items     = ['10']#,'20','25']
 
-radius_set          = ['3','5','7']
+radius_set          = ['3']
 angle_set           = [2*pi]
 
 # 1. Defining the experiment type

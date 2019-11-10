@@ -40,7 +40,7 @@ class Node:
         self.cumulativeRewards = 0
         self.immediateReward = 0
         self.expectedReward = 0
-
+        self.beliefState = state
         self.QTable = self.create_empty_table()
         self.visits = 0  # N(h)
         self.value = 0    # V(h)
@@ -56,12 +56,12 @@ class Node:
         Qt.append(QTableRow('W', 0.0, 0.0, 0))
         return Qt
 
-    ####################################################################################################################
-    def uct_select_child(self):
-
-        # UCB expects mean between 0 and 1
-        s = sorted(self.childNodes, key=lambda c: c.expectedReward/self.numItems + sqrt(2 * log(self.visits) / c.visits))[-1]
-        return s
+    # ####################################################################################################################
+    # def uct_select_child(self):
+    #
+    #     # UCB expects mean between 0 and 1
+    #     s = sorted(self.childNodes, key=lambda c: c.expectedReward/self.numItems + sqrt(2 * log(self.visits) / c.visits))[-1]
+    #     return s
 
     ###################################################################################################################
 
@@ -103,7 +103,7 @@ class Node:
 
         return maxA
 
-    ####################################################################################################################
+    # ####################################################################################################################
 
     def valid(self, action):  # Check in order to avoid moving out of board.
 
@@ -164,7 +164,7 @@ class Node:
 
         return maxA
 
-    ################################################################################################################
+#################################################################################################################
     def select_action(self):
         # If all *actions* of the current node have been tried at least once, then Select Child based on UCB
 

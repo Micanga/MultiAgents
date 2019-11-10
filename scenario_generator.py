@@ -18,7 +18,7 @@ possible_directions = ['N','S','E','W']
 agent_types 		= ['l1','l2']
 selected_types 		= [False,False]
 
-experiment_type_set =['ABU', 'AGA', 'MIN']# ['TRUE','ABU', 'AGA', 'MIN']
+experiment_type_set =['POMCP']# ['TRUE','ABU', 'AGA', 'MIN']
 type_estimation_mode_set = ['BPTE']#['LPTE','BTE','BPTE','PTE']
 mutation_rate_set = ['0.2']#,'0.3','0.5','0.7','0.9']
 apply_adversary = False

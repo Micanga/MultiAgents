@@ -836,8 +836,8 @@ class ParameterEstimation:
                 estimated_parameter = self.calculate_gradient_ascent(x_train, y_train, last_parameters_value)
             elif self.parameter_estimation_mode == 'ABU':
                 estimated_parameter = self.bayesian_updating(x_train, y_train, last_parameters_value)
-            elif self.parameter_estimation_mode == 'POMCP':
-                estimated_parameter = self.POMCP_estimation()
+
+
             else:
                 estimated_parameter = None
         else:
@@ -976,8 +976,14 @@ class ParameterEstimation:
         return x_train, y_train, type_probability , max_succeed_cts
 
     ####################################################################################################################
-    # def POMCP_estimation(self):
-    #     pomcpe = POMCP_estimation.POMCP(iteration_max, max_depth, do_estimation, mcts_mode, apply_adversary, enemy=False)
+    def POMCP_estimation(self,curren_state):
+        iteration_max= 100
+        max_depth = 100
+        particle_filter_numbers = 100
+
+        pomcpe = POMCP_estimation.POMCP(iteration_max, max_depth,particle_filter_numbers)
+        estimated_parameter, estimated_type = pomcpe.start_estimation (None,  curren_state)
+        return estimated_parameter, estimated_type
 
     ####################################################################################################################
     def process_parameter_estimations(self, unknown_agent,previous_state,
@@ -986,6 +992,25 @@ class ParameterEstimation:
         x_train, types_train_data = [], []
         new_parameters_estimation = None
         max_succeed_cts = None
+
+        if self.parameter_estimation_mode == 'POMCP' :
+            estimated_parameter, estimated_type = self.POMCP_estimation(current_state)
+
+            if estimated_type == 'l1':
+                self.l1_estimation.type_probability = 1
+                self.l1_estimation.estimation_history.append(estimated_parameter)
+                # TYPE L2 ------------------
+            elif estimated_type == 'l2':
+                self.l2_estimation.type_probability = 1
+                self.l2_estimation.estimation_history.append(estimated_parameter)
+                # TYPE F1 ------------------
+            elif estimated_type == 'f1':
+                self.f1_estimation.type_probability = 1
+                self.f1_estimation.estimation_history.append(estimated_parameter)
+                # TYPE F2 ------------------
+            elif estimated_type == 'f2':
+                self.f2_estimation.type_probability = 1
+                self.f2_estimation.estimation_history.append(estimated_parameter)
 
         # print '>>>>>',po
         # 2. Estimating the agent type

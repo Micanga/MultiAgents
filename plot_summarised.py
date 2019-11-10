@@ -2,13 +2,17 @@ import numpy as np
 import pickle
 import matplotlib.pyplot as plt
 from scipy.stats import ttest_ind
+from math import sqrt
+from scipy.stats import sem, t
+from scipy import mean
 
 information = []
+alpha = 0.01
 
-PLOTS_DIR = "./t_results"
-#DATA_TYPE = 'MDP'
-DATA_TYPE = 'POMCP'
-RADIUS = ['5']
+PLOTS_DIR = "./10_results"
+DATA_TYPE = 'MDP'
+#DATA_TYPE = 'POMCP'
+RADIUS = ['7']
 P_values = {}
 parameter_estimation_mode_set = ['AGA', 'ABU', 'MIN']
 
@@ -17,9 +21,9 @@ algorithms_labels = ["AGA", "ABU", "OGE"]
 algorithms_symbol = ["^", "v", "o"]
 algorithm_colors = ["#3F5D7D","#37AA9C","#F66095"]
 
-n_agents = ['1','3','5','7','10']
-n_size = ['30']
-n_items = ['30']  # ,'15','20','25']
+n_agents = ['1','5','7','10']
+n_size = ['20']
+n_items = ['20']  # ,'15','20','25']
 # size = '20'
 # agent = '5'
 ABU_pvalue = np.zeros((len(n_agents),(len(n_size))))
@@ -32,6 +36,25 @@ type_confident_interval = np.zeros((len(n_agents),(len(n_size)), len(parameter_e
 
 performance_mean = np.zeros((len(n_agents),(len(n_size)), len(parameter_estimation_mode_set)))
 performance_confident_interval = np.zeros((len(n_agents),(len(n_size)), len(parameter_estimation_mode_set)))
+
+
+def independent_ttest(data1, data2):
+    # calculate means
+    mean1, mean2 = mean(data1), mean(data2)
+    # calculate standard errors
+    se1, se2 = sem(data1), sem(data2)
+    # standard error on the difference between the samples
+    sed = sqrt(se1 ** 2.0 + se2 ** 2.0)
+    # calculate the t statistic
+    t_stat = (mean1 - mean2) / sed
+    # degrees of freedom
+    df = len(data1) + len(data2) - 2
+    # calculate the critical value
+    cv = t.ppf(1.0 - alpha, df)
+    # calculate the p-value
+    p = (1.0 - t.cdf(abs(t_stat), df)) * 2.0
+    # return everything
+    return  p
 
 
 def fill_info(filename,na_i,sz_i,observation_type):
@@ -118,8 +141,8 @@ def fill_info(filename,na_i,sz_i,observation_type):
     performance_mean[na_i][sz_i][2] = info_item['oge_time_steps'] - 1
     performance_confident_interval[na_i][sz_i][2] = calc_CI(info.OGE_timeSteps) - 1
 
-    stat, abu_pvalue = ttest_ind(info.ABU_timeSteps, info.OGE_timeSteps)
-    stat, aga_pvalue = ttest_ind(info.AGA_timeSteps, info.OGE_timeSteps)
+    abu_pvalue = independent_ttest(info.ABU_timeSteps, info.OGE_timeSteps)
+    aga_pvalue = independent_ttest(info.AGA_timeSteps, info.OGE_timeSteps)
     ABU_pvalue[na_i][sz_i] = abu_pvalue
     AGA_pvalue[na_i][sz_i] = aga_pvalue
 
@@ -203,8 +226,22 @@ def plot_multiple_agents_performance():
                        label=algorithms_labels[a], marker=algorithms_symbol[a],color = algorithm_colors[a])
 
     plt.legend(loc=0)
-    #plt.ylim([48,200])
-    #plt.ylim([15, 120])
+    #plt.ylim([15, 120]) #10 all
+    #plt.ylim([18, 36]) # 10-7 less
+    #plt.ylim([18, 60])  # 10-7 all
+    #plt.ylim([19, 36])  # 10-5 -less
+    #plt.ylim([19, 65])  # 10-5 -all
+    #plt.ylim([18, 61])  # 10-3 all
+    #plt.ylim([18,35])  # 10-3 less
+    #plt.ylim([48,200]) #20 all
+    #plt.ylim([58, 230])  # 20-3 all
+    #plt.ylim([58, 115])  # 20-3 less
+    #plt.ylim([58, 250])  # 20-5 all
+    #plt.ylim([58, 115])  # 20-5 less
+    # plt.ylim([58, 250])  # 20-5 all
+    #plt.ylim([58, 115])  # 20-7 less
+    #plt.ylim([58, 250])  # 20-7 all
+
     plt.xlim([int(n_agents[0]) - 1, int(n_agents[-1]) + 1])
     plt.xlabel("Number of Agents")
     plt.ylabel("Number of Iterations")
