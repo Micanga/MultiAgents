@@ -6,6 +6,7 @@ import scipy.stats as st
 import agent
 from random import sample
 
+
 from copy import deepcopy
 from copy import copy
 import logging
@@ -983,7 +984,7 @@ class ParameterEstimation:
 
         pomcpe = POMCP_estimation.POMCP(iteration_max, max_depth,particle_filter_numbers)
         estimated_parameter, estimated_type = pomcpe.start_estimation (None,  curren_state)
-        return estimated_parameter, estimated_type
+        return estimated_parameter.tolist(), estimated_type
 
     ####################################################################################################################
     def process_parameter_estimations(self, unknown_agent,previous_state,
@@ -995,7 +996,7 @@ class ParameterEstimation:
 
         if self.parameter_estimation_mode == 'POMCP' :
             estimated_parameter, estimated_type = self.POMCP_estimation(current_state)
-
+            estimated_parameter = Parameter(estimated_parameter[0], estimated_parameter[1], estimated_parameter[2])
             if estimated_type == 'l1':
                 self.l1_estimation.type_probability = 1
                 self.l1_estimation.estimation_history.append(estimated_parameter)
@@ -1011,143 +1012,143 @@ class ParameterEstimation:
             elif estimated_type == 'f2':
                 self.f2_estimation.type_probability = 1
                 self.f2_estimation.estimation_history.append(estimated_parameter)
+        else :
+            # print '>>>>>',po
+            # 2. Estimating the agent type
+            for selected_type in types:
+                # a. updating the train data for the current state
+                x_train, y_train, pf_type_probability,max_succeed_cts = \
+                self.update_train_data(unknown_agent,
+                    previous_state, current_state, selected_type,loaded_items_list,po)
 
-        # print '>>>>>',po
-        # 2. Estimating the agent type
-        for selected_type in types:
-            # a. updating the train data for the current state
-            x_train, y_train, pf_type_probability,max_succeed_cts = \
-            self.update_train_data(unknown_agent,
-                previous_state, current_state, selected_type,loaded_items_list,po)
+                # b. estimating the type with the new train data
+                new_parameters_estimation = \
+                self.parameter_estimation(x_train, y_train, selected_type)
 
-            # b. estimating the type with the new train data
-            new_parameters_estimation = \
-            self.parameter_estimation(x_train, y_train, selected_type)
-            
-            # c. considering the new estimation
-            if new_parameters_estimation is not None:
-                # i. generating the particle for the selected type
-                if selected_type != 'w': # If the selected type is not
-                    tmp_sim = previous_state.copy()
-                    # print '*********previous state in simulation*******'
-                    # tmp_sim.draw_map()
+                # c. considering the new estimation
+                if new_parameters_estimation is not None:
+                    # i. generating the particle for the selected type
+                    if selected_type != 'w': # If the selected type is not
+                        tmp_sim = previous_state.copy()
+                        # print '*********previous state in simulation*******'
+                        # tmp_sim.draw_map()
 
-                    x = unknown_agent.previous_agent_status.position[0] 
-                    y = unknown_agent.previous_agent_status.position[1]
-                    direction = unknown_agent.previous_agent_status.direction
-                    tmp_agent = agent.Agent(x, y, direction,-1, selected_type)
+                        x = unknown_agent.previous_agent_status.position[0]
+                        y = unknown_agent.previous_agent_status.position[1]
+                        direction = unknown_agent.previous_agent_status.direction
+                        tmp_agent = agent.Agent(x, y, direction,-1, selected_type)
 
-                    tmp_agent.set_parameters(tmp_sim, new_parameters_estimation.level,
-                        new_parameters_estimation.radius,new_parameters_estimation.angle)
-                    tmp_agent.memory = self.update_internal_state(new_parameters_estimation,
-                        selected_type,unknown_agent,po)
+                        tmp_agent.set_parameters(tmp_sim, new_parameters_estimation.level,
+                            new_parameters_estimation.radius,new_parameters_estimation.angle)
+                        tmp_agent.memory = self.update_internal_state(new_parameters_estimation,
+                            selected_type,unknown_agent,po)
 
-                    # Runs a simulator object
-                    tmp_agent = tmp_sim.move_a_agent(tmp_agent)
-                    action_prob = tmp_agent.get_action_probability(unknown_agent.next_action)
-                    # print selected_type, tmp_agent.memory.get_position(),action_prob
-                    # print '*******************************************'
-                    if action_prob is None:
-                        action_prob = 0.2
-                    # print action_prob
-                    # ii. testing the generated particle and updating the estimation
-                    # TYPE L1 ------------------ 
-                    if selected_type == 'l1':
-                        if self.train_mode == 'history_based':
-                            if self.type_estimation_mode == 'BTE':
+                        # Runs a simulator object
+                        tmp_agent = tmp_sim.move_a_agent(tmp_agent)
+                        action_prob = tmp_agent.get_action_probability(unknown_agent.next_action)
+                        # print selected_type, tmp_agent.memory.get_position(),action_prob
+                        # print '*******************************************'
+                        if action_prob is None:
+                            action_prob = 0.2
+                        # print action_prob
+                        # ii. testing the generated particle and updating the estimation
+                        # TYPE L1 ------------------
+                        if selected_type == 'l1':
+                            if self.train_mode == 'history_based':
+                                if self.type_estimation_mode == 'BTE':
+                                    self.l1_estimation.type_probability = action_prob * self.l1_estimation.get_last_type_probability()
+
+                                if self.type_estimation_mode == 'PTE' or self.type_estimation_mode == 'BPTE':
+                                    self.l1_estimation.type_probability = pf_type_probability
+                            else:
                                 self.l1_estimation.type_probability = action_prob * self.l1_estimation.get_last_type_probability()
 
-                            if self.type_estimation_mode == 'PTE' or self.type_estimation_mode == 'BPTE':
-                                self.l1_estimation.type_probability = pf_type_probability
-                        else:
-                            self.l1_estimation.type_probability = action_prob * self.l1_estimation.get_last_type_probability()
-
-                        self.l1_estimation.update_estimation(new_parameters_estimation, action_prob)
-                    # TYPE L2 ------------------ 
-                    elif selected_type == 'l2':
-                        if self.train_mode == 'history_based':
-                            if self.type_estimation_mode == 'BTE':
+                            self.l1_estimation.update_estimation(new_parameters_estimation, action_prob)
+                        # TYPE L2 ------------------
+                        elif selected_type == 'l2':
+                            if self.train_mode == 'history_based':
+                                if self.type_estimation_mode == 'BTE':
+                                    self.l2_estimation.type_probability = action_prob * self.l2_estimation.get_last_type_probability()
+                                if self.type_estimation_mode == 'PTE' or self.type_estimation_mode == 'BPTE':
+                                    self.l2_estimation.type_probability = pf_type_probability
+                            else:
                                 self.l2_estimation.type_probability = action_prob * self.l2_estimation.get_last_type_probability()
-                            if self.type_estimation_mode == 'PTE' or self.type_estimation_mode == 'BPTE':
-                                self.l2_estimation.type_probability = pf_type_probability
-                        else:
-                            self.l2_estimation.type_probability = action_prob * self.l2_estimation.get_last_type_probability()
 
-                        self.l2_estimation.update_estimation(new_parameters_estimation, action_prob)
-                    # TYPE F1 ------------------ 
-                    elif selected_type == 'f1':
-                        if self.train_mode == 'history_based':
-                            if unknown_agent.next_action != 'L':
-                                self.f1_estimation.type_probability = action_prob * self.f1_estimation.get_last_type_probability()
-                            else:
-                                if self.type_estimation_mode == 'BTE':
+                            self.l2_estimation.update_estimation(new_parameters_estimation, action_prob)
+                        # TYPE F1 ------------------
+                        elif selected_type == 'f1':
+                            if self.train_mode == 'history_based':
+                                if unknown_agent.next_action != 'L':
                                     self.f1_estimation.type_probability = action_prob * self.f1_estimation.get_last_type_probability()
-                                if self.type_estimation_mode == 'PTE' or self.type_estimation_mode == 'BPTE':
-                                    self.f1_estimation.type_probability = pf_type_probability
-                        else:
-                            self.f1_estimation.type_probability = action_prob * self.f1_estimation.get_last_type_probability()
-                        self.f1_estimation.update_estimation(new_parameters_estimation, action_prob)
-                    # TYPE F2 ------------------ 
-                    elif selected_type == 'f2':
-                        if self.train_mode == 'history_based':
-                            if unknown_agent.next_action != 'L':
-                                self.f2_estimation.type_probability = action_prob * self.f2_estimation.get_last_type_probability()
+                                else:
+                                    if self.type_estimation_mode == 'BTE':
+                                        self.f1_estimation.type_probability = action_prob * self.f1_estimation.get_last_type_probability()
+                                    if self.type_estimation_mode == 'PTE' or self.type_estimation_mode == 'BPTE':
+                                        self.f1_estimation.type_probability = pf_type_probability
                             else:
-                                if self.type_estimation_mode == 'BTE':
+                                self.f1_estimation.type_probability = action_prob * self.f1_estimation.get_last_type_probability()
+                            self.f1_estimation.update_estimation(new_parameters_estimation, action_prob)
+                        # TYPE F2 ------------------
+                        elif selected_type == 'f2':
+                            if self.train_mode == 'history_based':
+                                if unknown_agent.next_action != 'L':
                                     self.f2_estimation.type_probability = action_prob * self.f2_estimation.get_last_type_probability()
-                                if self.type_estimation_mode == 'PTE' or self.type_estimation_mode == 'BPTE':
-                                    self.f2_estimation.type_probability = pf_type_probability
-                        else:
-                            self.f2_estimation.type_probability = action_prob * self.f2_estimation.get_last_type_probability()
-                        self.f2_estimation.update_estimation(new_parameters_estimation, action_prob)
-                # ADVERSARY ------------------ 
-                else:
-                    if self.train_mode == 'history_based':
-                        self.w_estimation.type_probability = enemy_action_prob * self.w_estimation.get_last_type_probability()
+                                else:
+                                    if self.type_estimation_mode == 'BTE':
+                                        self.f2_estimation.type_probability = action_prob * self.f2_estimation.get_last_type_probability()
+                                    if self.type_estimation_mode == 'PTE' or self.type_estimation_mode == 'BPTE':
+                                        self.f2_estimation.type_probability = pf_type_probability
+                            else:
+                                self.f2_estimation.type_probability = action_prob * self.f2_estimation.get_last_type_probability()
+                            self.f2_estimation.update_estimation(new_parameters_estimation, action_prob)
+                    # ADVERSARY ------------------
                     else:
-                        self.w_estimation.type_probability = enemy_action_prob * self.w_estimation.get_last_type_probability()
-                    self.w_estimation.update_estimation(new_parameters_estimation, enemy_action_prob)
+                        if self.train_mode == 'history_based':
+                            self.w_estimation.type_probability = enemy_action_prob * self.w_estimation.get_last_type_probability()
+                        else:
+                            self.w_estimation.type_probability = enemy_action_prob * self.w_estimation.get_last_type_probability()
+                        self.w_estimation.update_estimation(new_parameters_estimation, enemy_action_prob)
 
-        # d. If a load action was performed, restart the estimation process
-        if unknown_agent.next_action == 'L' and unknown_agent.is_item_nearby(current_state.items) != -1:
-            if unknown_agent.choose_target_state != None and max_succeed_cts != None:
-                hist = {}
-                hist['pos'] = copy(unknown_agent.choose_target_pos)
-                hist['direction'] = unknown_agent.choose_target_direction
-                # hist['state'] = max_succeed_cts # unknown_agent.choose_target_state.copy()  # todo: replace it with items and agents position instead of whole state!
-                hist['state'] =  unknown_agent.choose_target_state.copy()
-                hist['loaded_item'] = copy(unknown_agent.last_loaded_item_pos)
-                unknown_agent.choose_target_history.append(hist)
+            # d. If a load action was performed, restart the estimation process
+            if unknown_agent.next_action == 'L' and unknown_agent.is_item_nearby(current_state.items) != -1:
+                if unknown_agent.choose_target_state != None and max_succeed_cts != None:
+                    hist = {}
+                    hist['pos'] = copy(unknown_agent.choose_target_pos)
+                    hist['direction'] = unknown_agent.choose_target_direction
+                    # hist['state'] = max_succeed_cts # unknown_agent.choose_target_state.copy()  # todo: replace it with items and agents position instead of whole state!
+                    hist['state'] =  unknown_agent.choose_target_state.copy()
+                    hist['loaded_item'] = copy(unknown_agent.last_loaded_item_pos)
+                    unknown_agent.choose_target_history.append(hist)
 
-            unknown_agent.choose_target_state = current_state.copy()
-            unknown_agent.choose_target_pos = unknown_agent.get_position()
-            unknown_agent.choose_target_direction = unknown_agent.direction
+                unknown_agent.choose_target_state = current_state.copy()
+                unknown_agent.choose_target_pos = unknown_agent.get_position()
+                unknown_agent.choose_target_direction = unknown_agent.direction
 
-        # e. Normalising the type probabilities
-        if self.train_mode == 'history_based':
-            if self.type_estimation_mode == 'BPTE':
-                self.l1_estimation.type_probability, self.l2_estimation.type_probability = \
-                    self.normalize_type_probability(unknown_agent)
-                self.l1_estimation.type_probability = self.l1_estimation.type_probability * \
-                                                      self.l1_estimation.get_last_type_probability()
-                self.l2_estimation.type_probability = self.l2_estimation.type_probability * \
-                                                      self.l2_estimation.get_last_type_probability()
-                # self.f1_estimation.type_probability = self.f1_estimation.type_probability * \
-                #                                       self.f1_estimation.get_last_type_probability()
-                # self.f2_estimation.type_probability = self.f2_estimation.type_probability * \
-                #                                       self.f2_estimation.get_last_type_probability()
-            if self.type_estimation_mode == 'PTE':
-                self.l1_estimation.type_probability, self.l2_estimation.type_probability = \
-                    self.normalize_type_probability(unknown_agent)
+            # e. Normalising the type probabilities
+            if self.train_mode == 'history_based':
+                if self.type_estimation_mode == 'BPTE':
+                    self.l1_estimation.type_probability, self.l2_estimation.type_probability = \
+                        self.normalize_type_probability(unknown_agent)
+                    self.l1_estimation.type_probability = self.l1_estimation.type_probability * \
+                                                          self.l1_estimation.get_last_type_probability()
+                    self.l2_estimation.type_probability = self.l2_estimation.type_probability * \
+                                                          self.l2_estimation.get_last_type_probability()
+                    # self.f1_estimation.type_probability = self.f1_estimation.type_probability * \
+                    #                                       self.f1_estimation.get_last_type_probability()
+                    # self.f2_estimation.type_probability = self.f2_estimation.type_probability * \
+                    #                                       self.f2_estimation.get_last_type_probability()
+                if self.type_estimation_mode == 'PTE':
+                    self.l1_estimation.type_probability, self.l2_estimation.type_probability = \
+                        self.normalize_type_probability(unknown_agent)
 
-            if self.type_estimation_mode == 'LPTE':
-                self.l1_estimation.type_probability, self.l2_estimation.type_probability = \
-                    self.normalize_type_probability(unknown_agent)
+                if self.type_estimation_mode == 'LPTE':
+                    self.l1_estimation.type_probability, self.l2_estimation.type_probability = \
+                        self.normalize_type_probability(unknown_agent)
 
-                self.l1_estimation.type_probability = self.alpha * self.l1_estimation.type_probability + \
-                                                      (1-self.alpha) * self.l1_estimation.get_last_type_probability()
-                self.l2_estimation.type_probability = self.alpha *  self.l2_estimation.type_probability + \
-                                                      (1-self.alpha) * self.l2_estimation.get_last_type_probability()
+                    self.l1_estimation.type_probability = self.alpha * self.l1_estimation.type_probability + \
+                                                          (1-self.alpha) * self.l1_estimation.get_last_type_probability()
+                    self.l2_estimation.type_probability = self.alpha *  self.l2_estimation.type_probability + \
+                                                          (1-self.alpha) * self.l2_estimation.get_last_type_probability()
 
         self.normalize_type_probabilities()
         # print '>>> %d) %.4lf %.4lf ' %(unknown_agent.index,self.l1_estimation.type_probability,self.l2_estimation.type_probability)

@@ -46,9 +46,9 @@ apply_adversary = False
 if len(sys.argv) > 1:
     input_folder = sys.argv[1]
 else:
-    #input_folder = ""
+    input_folder = ""
     #input_folder = "inputs/test/"
-    input_folder = "inputs/FO_O_POMCP/"
+    #input_folder = "inputs/FO_O_POMCP/"
 
 if len(sys.argv) > 2:
     main_output_folder = sys.argv[2]

@@ -1,7 +1,7 @@
 from math import *
 from numpy.random import choice
 import random
-from copy import copy
+import numpy as np
 import agent
 
 radius_max = 1
@@ -145,33 +145,6 @@ class Node:
         return True
 
 
-####################################################################################################################
-
-    def best_action(self):
-        q_table = self.QTable
-
-        tieCases = []
-
-        # Swaps between min and max depending on if its an enemy move or a main agent move
-        maxA = None
-        maxQ = -100000000000
-        # if not self.enemy:
-        for a in range(len(q_table)):
-            print q_table[a].action, q_table[a].QValue
-            if q_table[a].QValue > maxQ and q_table[a].trials > 0:
-                maxQ = q_table[a].QValue
-                maxA = q_table[a].action
-
-        for a in range(len(q_table)):
-            if q_table[a].QValue == maxQ:
-                tieCases.append(a)
-        if len(tieCases) > 0:
-            maxA = q_table[choice(tieCases)].action
-
-        if maxA is None:
-            maxA = random.choice(actions)
-
-        return maxA
 
 #################################################################################################################
     def select_action(self):
@@ -197,7 +170,7 @@ class ONode(Node):
         self.observation = observation  # the Action that got us to this node - "None" for the root node
         self.state = state
         self.particleFilter = []
-        #self.particleFilterCount = 100
+        self.particleFilterCount = 100
 
         self.numItems = state.simulator.items_left()
         m = state.simulator.dim_w
@@ -217,18 +190,45 @@ class ONode(Node):
     def initialise_data_set(self):
         # 1. Generating initial particle filters
 
-        #for i in range(0, self.particleFilterCount):
+        for i in range(0, self.particleFilterCount):
             # 2. Random uniform parameter sampling
-        tmp_radius = random.uniform(radius_min, radius_max)  # 'radius'
-        tmp_angle = random.uniform(angle_min, angle_max)  # 'angle'
-        tmp_level = random.uniform(level_min, level_max)  # 'level'
-        tmp_type = random.choice(types)
-        pf = [tmp_level, tmp_radius, tmp_angle,  tmp_type]
-        self.particleFilter.append(pf)
-        return pf
+            tmp_radius = random.uniform(radius_min, radius_max)  # 'radius'
+            tmp_angle = random.uniform(angle_min, angle_max)  # 'angle'
+            tmp_level = random.uniform(level_min, level_max)  # 'level'
+            tmp_type = random.choice(types)
+            pf = [tmp_level, tmp_radius, tmp_angle,  tmp_type]
+            self.particleFilter.append(pf)
 
+        return random.choice(self.particleFilter)
 
-####################################################################################################################
+    ###################################################################################################################
+
+    def best_parameter_type(self):
+        parameters = []
+        types = []
+        # todo: should be implemented for all types
+        l1_count = 0
+        l2_count = 0
+        for pf in self.particleFilter:
+            parameters.append(pf[0:3])
+
+            if pf[3] == 'l1':
+                l1_count += 1
+            if pf[3] == 'l2':
+                l2_count += 1
+
+            types.append(pf[3])
+
+        if l2_count / len(self.particleFilter) > l1_count / len(self.particleFilter) :
+            estimated_type = 'l2'
+        else :
+            estimated_type = 'l1'
+
+        estimated_parameter = np.mean(np.array(parameters),axis=0)
+
+        return estimated_parameter , estimated_type
+
+    ####################################################################################################################
     def create_possible_actions(self,m,n,x, y):
 
         # if self.enemy:
@@ -499,7 +499,7 @@ class POMCP:
             self.simulate(node)
 
             iteration_number += 1
-        return node.best_action()
+        return node.best_parameter_type()
 
     ####################################################################################################################
 
